@@ -475,6 +475,89 @@
     .hero { padding: 48px 16px 40px; }
   }
 
+  /* ZLEPŠOVÁKY */
+  .zlep-stats { display: flex; gap: 24px; flex-wrap: wrap; margin-top: 16px; }
+  .zlep-stat { background: var(--green-light); border-radius: 8px; padding: 10px 16px; text-align: center; min-width: 120px; }
+  .zlep-stat-num { font-family: 'Fraunces', serif; font-size: 22px; font-weight: 700; color: var(--green); }
+  .zlep-stat-label { font-size: 11px; color: var(--green); font-weight: 500; }
+  .zlep-cat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 8px; margin-bottom: 20px; }
+  .zlep-cat {
+    background: white; border: 1.5px solid var(--border); border-radius: 10px;
+    padding: 10px 6px; text-align: center; cursor: pointer; transition: all 0.15s;
+    font-size: 12px; font-weight: 500; color: var(--ink-mid);
+  }
+  .zlep-cat:hover, .zlep-cat.active { border-color: var(--green); background: var(--green-xlight); color: var(--green); }
+  .zlep-cat .zc-icon { font-size: 22px; display: block; margin-bottom: 4px; }
+  .zlep-card {
+    background: white; border: 1px solid var(--border); border-radius: var(--r);
+    padding: 18px 20px; margin-bottom: 10px; transition: all 0.2s; cursor: pointer;
+  }
+  .zlep-card:hover { box-shadow: var(--shadow); transform: translateY(-1px); }
+  .zlep-card-top { display: flex; gap: 14px; align-items: flex-start; }
+  .zlep-card-icon { font-size: 24px; width: 44px; height: 44px; border-radius: 10px; background: var(--green-light); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .zlep-card-body { flex: 1; min-width: 0; }
+  .zlep-card-title { font-weight: 600; font-size: 15px; margin-bottom: 3px; }
+  .zlep-card-desc { font-size: 13px; color: var(--ink-mid); line-height: 1.5; margin-bottom: 8px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .zlep-card-meta { display: flex; gap: 12px; font-size: 12px; color: var(--ink-light); flex-wrap: wrap; align-items: center; }
+  .zlep-card-footer { display: flex; gap: 10px; margin-top: 12px; align-items: center; flex-wrap: wrap; }
+  .zlep-vote {
+    display: flex; align-items: center; gap: 5px; font-size: 13px; font-weight: 600;
+    padding: 5px 12px; border-radius: 20px; border: 1px solid var(--border);
+    background: white; cursor: pointer; transition: all 0.15s; color: var(--ink-mid);
+  }
+  .zlep-vote:hover, .zlep-vote.voted { background: var(--green-light); border-color: var(--green); color: var(--green); }
+  .zlep-comment-btn {
+    font-size: 13px; color: var(--ink-light); background: none; border: none;
+    cursor: pointer; display: flex; align-items: center; gap: 5px; font-family: inherit;
+  }
+  .zlep-comment-btn:hover { color: var(--green); }
+  .zlep-status-info { margin-left: auto; display: flex; align-items: center; gap: 6px; font-size: 12px; }
+  .zlep-modal-overlay {
+    display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+    z-index: 200; justify-content: center; align-items: flex-start; padding: 40px 16px; overflow-y: auto;
+  }
+  .zlep-modal {
+    background: white; border-radius: 16px; max-width: 560px; width: 100%;
+    box-shadow: var(--shadow-lg); animation: fadeIn 0.3s ease;
+  }
+  .zlep-modal-header {
+    padding: 24px 24px 0; display: flex; justify-content: space-between; align-items: center;
+  }
+  .zlep-modal-header h3 { font-family: 'Fraunces', serif; font-size: 22px; font-weight: 700; }
+  .zlep-modal-body { padding: 20px 24px 24px; }
+  .zlep-type-toggle { display: flex; gap: 8px; margin-bottom: 20px; }
+  .zlep-type-btn {
+    flex: 1; padding: 10px; border-radius: 10px; border: 1.5px solid var(--border);
+    background: white; cursor: pointer; text-align: center; transition: all 0.15s;
+    font-family: inherit; font-size: 13px; font-weight: 500; color: var(--ink-mid);
+  }
+  .zlep-type-btn.active { border-color: var(--green); background: var(--green-xlight); color: var(--green); font-weight: 600; }
+  .zlep-type-btn .zt-icon { font-size: 20px; display: block; margin-bottom: 4px; }
+  .zlep-photo-btn {
+    width: 100%; padding: 20px; border: 2px dashed var(--border); border-radius: 10px;
+    background: var(--green-xlight); cursor: pointer; text-align: center;
+    font-family: inherit; font-size: 13px; color: var(--ink-mid); transition: all 0.15s;
+  }
+  .zlep-photo-btn:hover { border-color: var(--green); color: var(--green); }
+  .zlep-priority { display: flex; gap: 8px; }
+  .zlep-pri-btn {
+    flex: 1; padding: 8px; border-radius: 8px; border: 1.5px solid var(--border);
+    background: white; cursor: pointer; text-align: center; font-family: inherit;
+    font-size: 12px; font-weight: 500; color: var(--ink-mid); transition: all 0.15s;
+  }
+  .zlep-pri-btn.active { font-weight: 600; }
+  .zlep-pri-btn.pri-low.active { border-color: var(--green); background: #E8F4EE; color: var(--green); }
+  .zlep-pri-btn.pri-mid.active { border-color: var(--orange); background: #FEF3EC; color: var(--orange); }
+  .zlep-pri-btn.pri-high.active { border-color: var(--red); background: #FDF2F2; color: var(--red); }
+  .zlep-top-list { display: flex; flex-direction: column; gap: 10px; }
+  .zlep-top-item {
+    display: flex; align-items: center; gap: 10px; font-size: 13px;
+    background: var(--green-xlight); border-radius: 8px; padding: 10px 12px;
+  }
+  .zlep-top-rank { font-family: 'Fraunces', serif; font-size: 18px; font-weight: 700; color: var(--green); min-width: 24px; }
+  .zlep-top-title { flex: 1; font-weight: 500; }
+  .zlep-top-votes { font-size: 12px; color: var(--green); font-weight: 600; white-space: nowrap; }
+
   /* PODNIKY */
   .biz-cat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; margin-bottom: 28px; }
   .biz-cat-card {
@@ -1202,114 +1285,301 @@
 
 <!-- ═══════════════════════════════ ISSUES ═══════════════════════════════ -->
 <div id="view-issues" class="view">
+  <!-- HEADER -->
   <div class="page-header container" style="border-radius:0;margin-bottom:0">
-    <h2>💡 Zlepšováky</h2>
-    <p>Nahlaste problém nebo navrhněte zlepšení a sledujte, jak ho město řeší. Každý podnět dostane odpověď.</p>
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:16px">
+      <div>
+        <h2>💡 Zlepšováky</h2>
+        <p>Nahlaste problém nebo navrhněte zlepšení. Sousedé hlasují, město řeší.</p>
+      </div>
+      <button class="btn btn-green" style="white-space:nowrap;font-size:15px" onclick="openZlepModal()">+ Přidat zlepšovák</button>
+    </div>
+    <div class="zlep-stats">
+      <div class="zlep-stat"><div class="zlep-stat-num">34</div><div class="zlep-stat-label">otevřených</div></div>
+      <div class="zlep-stat"><div class="zlep-stat-num">9 dní</div><div class="zlep-stat-label">prům. doba řešení</div></div>
+      <div class="zlep-stat"><div class="zlep-stat-num">91 %</div><div class="zlep-stat-label">míra vyřešení</div></div>
+      <div class="zlep-stat"><div class="zlep-stat-num">22</div><div class="zlep-stat-label">vyřešeno tento měsíc</div></div>
+    </div>
   </div>
+
   <div class="container" style="padding-top:24px">
     <div class="sidebar-layout">
       <div>
+        <!-- KATEGORIE -->
+        <div class="zlep-cat-grid">
+          <div class="zlep-cat active" onclick="zlepCatFilter(this,'all')"><span class="zc-icon">📋</span>Vše</div>
+          <div class="zlep-cat" onclick="zlepCatFilter(this,'cesty')"><span class="zc-icon">🕳️</span>Cesty</div>
+          <div class="zlep-cat" onclick="zlepCatFilter(this,'svetlo')"><span class="zc-icon">💡</span>Osvětlení</div>
+          <div class="zlep-cat" onclick="zlepCatFilter(this,'zelen')"><span class="zc-icon">🌳</span>Zeleň</div>
+          <div class="zlep-cat" onclick="zlepCatFilter(this,'odpady')"><span class="zc-icon">🗑️</span>Odpady</div>
+          <div class="zlep-cat" onclick="zlepCatFilter(this,'hriste')"><span class="zc-icon">🛝</span>Hřiště</div>
+          <div class="zlep-cat" onclick="zlepCatFilter(this,'bezpecnost')"><span class="zc-icon">🚸</span>Bezpečnost</div>
+          <div class="zlep-cat" onclick="zlepCatFilter(this,'napad')"><span class="zc-icon">🎯</span>Nápady</div>
+        </div>
+
+        <!-- LOKALITA CHIPS -->
+        <div class="chips" style="margin-bottom:16px">
+          <div class="chip active" onclick="zlepLocFilter(this,'all')">Celá Jesenice</div>
+          <div class="chip" onclick="zlepLocFilter(this,'centrum')">Centrum</div>
+          <div class="chip" onclick="zlepLocFilter(this,'zdimerice')">Zdiměřice</div>
+          <div class="chip" onclick="zlepLocFilter(this,'osnice')">Osnice</div>
+          <div class="chip" onclick="zlepLocFilter(this,'jircany')">Horní Jirčany</div>
+          <div class="chip" onclick="zlepLocFilter(this,'kocanda')">Kocanda</div>
+        </div>
+
+        <!-- TABY -->
         <div class="tabs">
-          <button class="tab active" onclick="switchTab('issues','open',this)">Otevřené (34)</button>
+          <button class="tab active" onclick="switchTab('issues','open',this)">Nové (34)</button>
           <button class="tab" onclick="switchTab('issues','progress',this)">Řeší se (12)</button>
           <button class="tab" onclick="switchTab('issues','done',this)">Vyřešené (89)</button>
         </div>
 
+        <!-- OTEVŘENÉ -->
         <div id="issues-open" class="tab-content active">
-          <div class="issue">
-            <div class="issue-status status-new"></div>
-            <div class="issue-content">
-              <div class="issue-title">Výtluk — Komenského ul. před č.p. 34</div>
-              <div class="issue-meta">Nahlásil: Marek S. · 5. 3. 2026 · Jesenice centrum</div>
+          <div class="zlep-card" data-cat="cesty" data-loc="centrum">
+            <div class="zlep-card-top">
+              <div class="zlep-card-icon">🕳️</div>
+              <div class="zlep-card-body">
+                <div class="zlep-card-title">Výtluk — Komenského ul. před č.p. 34</div>
+                <div class="zlep-card-desc">Hluboký výtluk uprostřed jízdního pruhu, asi 40 cm. Nebezpečný hlavně pro cyklisty a v noci pro řidiče.</div>
+                <div class="zlep-card-meta">
+                  <span>📍 Jesenice centrum</span>
+                  <span>🕐 5. 3. 2026</span>
+                  <span>👤 Marek S.</span>
+                </div>
+              </div>
+              <span class="issue-badge badge-new">Nový</span>
             </div>
-            <span class="issue-badge badge-new">Nová</span>
+            <div class="zlep-card-footer">
+              <button class="zlep-vote" onclick="zlepVote(this, event)">👍 Trápí mě to taky <strong>7</strong></button>
+              <button class="zlep-comment-btn" onclick="event.stopPropagation();toast('Komentáře — brzy!')">💬 3 komentáře</button>
+            </div>
           </div>
-          <div class="issue">
-            <div class="issue-status status-new"></div>
-            <div class="issue-content">
-              <div class="issue-title">Poničená lavička — park u sv. Prokopa</div>
-              <div class="issue-meta">Nahlásila: Jana K. · 3. 3. 2026 · Jesenice centrum</div>
+
+          <div class="zlep-card" data-cat="hriste" data-loc="centrum">
+            <div class="zlep-card-top">
+              <div class="zlep-card-icon">🛝</div>
+              <div class="zlep-card-body">
+                <div class="zlep-card-title">Poničená lavička — park u sv. Prokopa</div>
+                <div class="zlep-card-desc">Dvě prkna prolomená, trčí hřebíky. Nebezpečné hlavně pro děti, které na lavičce lezou.</div>
+                <div class="zlep-card-meta">
+                  <span>📍 Jesenice centrum</span>
+                  <span>🕐 3. 3. 2026</span>
+                  <span>👤 Jana K.</span>
+                </div>
+              </div>
+              <span class="issue-badge badge-new">Nový</span>
             </div>
-            <span class="issue-badge badge-new">Nová</span>
+            <div class="zlep-card-footer">
+              <button class="zlep-vote" onclick="zlepVote(this, event)">👍 Trápí mě to taky <strong>12</strong></button>
+              <button class="zlep-comment-btn" onclick="event.stopPropagation();toast('Komentáře — brzy!')">💬 5 komentářů</button>
+            </div>
           </div>
-          <div class="issue">
-            <div class="issue-status status-new"></div>
-            <div class="issue-content">
-              <div class="issue-title">Přeplněný kontejner — Osnice, u samoobsluhy</div>
-              <div class="issue-meta">Nahlásil: Pavel D. · 2. 3. 2026 · Osnice</div>
+
+          <div class="zlep-card" data-cat="odpady" data-loc="osnice">
+            <div class="zlep-card-top">
+              <div class="zlep-card-icon">🗑️</div>
+              <div class="zlep-card-body">
+                <div class="zlep-card-title">Přeplněný kontejner — Osnice, u samoobsluhy</div>
+                <div class="zlep-card-desc">Kontejner na plast je přeplněný už třetí den. Odpadky se válí kolem, smrdí. Prosím o častější svoz.</div>
+                <div class="zlep-card-meta">
+                  <span>📍 Osnice</span>
+                  <span>🕐 2. 3. 2026</span>
+                  <span>👤 Pavel D.</span>
+                </div>
+              </div>
+              <span class="issue-badge badge-new">Nový</span>
             </div>
-            <span class="issue-badge badge-new">Nová</span>
+            <div class="zlep-card-footer">
+              <button class="zlep-vote" onclick="zlepVote(this, event)">👍 Trápí mě to taky <strong>4</strong></button>
+              <button class="zlep-comment-btn" onclick="event.stopPropagation();toast('Komentáře — brzy!')">💬 1 komentář</button>
+            </div>
+          </div>
+
+          <div class="zlep-card" data-cat="napad" data-loc="centrum">
+            <div class="zlep-card-top">
+              <div class="zlep-card-icon" style="background:#EBF3FC">🎯</div>
+              <div class="zlep-card-body">
+                <div class="zlep-card-title">Nápad: Pítko u cyklostezky směr Průhonice</div>
+                <div class="zlep-card-desc">Na celé trase chybí pítko nebo fontánka. V létě by ocenili cyklisté, běžci i rodiče s dětmi. Ideální místo: u odpočívadla za mostem.</div>
+                <div class="zlep-card-meta">
+                  <span>📍 Jesenice centrum</span>
+                  <span>🕐 28. 2. 2026</span>
+                  <span>👤 Tereza M.</span>
+                </div>
+              </div>
+              <span class="issue-badge" style="background:#EBF3FC;color:var(--blue)">Nápad</span>
+            </div>
+            <div class="zlep-card-footer">
+              <button class="zlep-vote" onclick="zlepVote(this, event)">👍 Skvělý nápad! <strong>31</strong></button>
+              <button class="zlep-comment-btn" onclick="event.stopPropagation();toast('Komentáře — brzy!')">💬 8 komentářů</button>
+            </div>
+          </div>
+
+          <div class="zlep-card" data-cat="bezpecnost" data-loc="zdimerice">
+            <div class="zlep-card-top">
+              <div class="zlep-card-icon" style="background:#FDF2F2">🚸</div>
+              <div class="zlep-card-body">
+                <div class="zlep-card-title">Chybí zrcadlo — výjezd z Lipové ul., Zdiměřice</div>
+                <div class="zlep-card-desc">Nepřehledná křižovatka, auta vyjíždějí naslepo. Už se tu staly 2 nehody. Stačilo by silniční zrcadlo.</div>
+                <div class="zlep-card-meta">
+                  <span>📍 Zdiměřice</span>
+                  <span>🕐 25. 2. 2026</span>
+                  <span>👤 Roman B.</span>
+                </div>
+              </div>
+              <span class="issue-badge badge-new">Nový</span>
+            </div>
+            <div class="zlep-card-footer">
+              <button class="zlep-vote" onclick="zlepVote(this, event)">👍 Trápí mě to taky <strong>18</strong></button>
+              <button class="zlep-comment-btn" onclick="event.stopPropagation();toast('Komentáře — brzy!')">💬 6 komentářů</button>
+            </div>
           </div>
         </div>
+
+        <!-- ŘEŠÍ SE -->
         <div id="issues-progress" class="tab-content">
-          <div class="issue">
-            <div class="issue-status status-progress"></div>
-            <div class="issue-content">
-              <div class="issue-title">Chybí přechod pro chodce — Budějovická / Hálkova</div>
-              <div class="issue-meta">Nahlásil: 8 obyvatel · 15. 2. 2026 · Reagovalo: TSJ do 3 dnů</div>
+          <div class="zlep-card" data-cat="bezpecnost" data-loc="centrum">
+            <div class="zlep-card-top">
+              <div class="zlep-card-icon" style="background:#EBF3FC">🚸</div>
+              <div class="zlep-card-body">
+                <div class="zlep-card-title">Chybí přechod pro chodce — Budějovická / Hálkova</div>
+                <div class="zlep-card-desc">Nebezpečné přecházení hlavní silnice. Podpořilo 8 obyvatel. TSJ slíbily řešení do dubna.</div>
+                <div class="zlep-card-meta">
+                  <span>📍 Jesenice centrum</span>
+                  <span>🕐 15. 2. 2026</span>
+                  <span>👤 8 obyvatel</span>
+                </div>
+              </div>
+              <span class="issue-badge badge-progress">Řeší se</span>
             </div>
-            <span class="issue-badge badge-progress">Řeší se</span>
+            <div class="zlep-card-footer">
+              <button class="zlep-vote voted" onclick="zlepVote(this, event)">👍 Trápí mě to taky <strong>24</strong></button>
+              <button class="zlep-comment-btn" onclick="event.stopPropagation();toast('Komentáře — brzy!')">💬 11 komentářů</button>
+              <div class="zlep-status-info"><span style="color:var(--blue);font-weight:600">🔧 TSJ · termín: duben 2026</span></div>
+            </div>
           </div>
-          <div class="issue">
-            <div class="issue-status status-progress"></div>
-            <div class="issue-content">
-              <div class="issue-title">Nefunkční lampa — ul. Zahradní, Zdiměřice</div>
-              <div class="issue-meta">Nahlásila: Marie V. · 18. 2. 2026 · Objednána výměna</div>
+
+          <div class="zlep-card" data-cat="svetlo" data-loc="zdimerice">
+            <div class="zlep-card-top">
+              <div class="zlep-card-icon">💡</div>
+              <div class="zlep-card-body">
+                <div class="zlep-card-title">Nefunkční lampa — ul. Zahradní, Zdiměřice</div>
+                <div class="zlep-card-desc">Lampa nesvítí 3. týden. Objednána výměna, čeká se na díl od dodavatele.</div>
+                <div class="zlep-card-meta">
+                  <span>📍 Zdiměřice</span>
+                  <span>🕐 18. 2. 2026</span>
+                  <span>👤 Marie V.</span>
+                </div>
+              </div>
+              <span class="issue-badge badge-progress">Řeší se</span>
             </div>
-            <span class="issue-badge badge-progress">Řeší se</span>
+            <div class="zlep-card-footer">
+              <button class="zlep-vote voted" onclick="zlepVote(this, event)">👍 Trápí mě to taky <strong>5</strong></button>
+              <button class="zlep-comment-btn" onclick="event.stopPropagation();toast('Komentáře — brzy!')">💬 2 komentáře</button>
+              <div class="zlep-status-info"><span style="color:var(--blue);font-weight:600">🔧 Objednán díl</span></div>
+            </div>
           </div>
         </div>
+
+        <!-- VYŘEŠENÉ -->
         <div id="issues-done" class="tab-content">
-          <div class="issue">
-            <div class="issue-status status-done"></div>
-            <div class="issue-content">
-              <div class="issue-title">Nefunkční lampa — u hřiště Osnice</div>
-              <div class="issue-meta">Vyřešeno: 1. 3. 2026 · Čas řešení: 8 dní</div>
+          <div class="zlep-card" data-cat="svetlo" data-loc="osnice">
+            <div class="zlep-card-top">
+              <div class="zlep-card-icon" style="background:#E8F4EE">💡</div>
+              <div class="zlep-card-body">
+                <div class="zlep-card-title">Nefunkční lampa — u hřiště Osnice</div>
+                <div class="zlep-card-desc">Lampa opravena, nový LED panel. Díky za nahlášení!</div>
+                <div class="zlep-card-meta">
+                  <span>📍 Osnice</span>
+                  <span>✅ Vyřešeno 1. 3. 2026</span>
+                  <span>⏱️ 8 dní</span>
+                </div>
+              </div>
+              <span class="issue-badge badge-done">Vyřešeno ✓</span>
             </div>
-            <span class="issue-badge badge-done">Vyřešeno ✓</span>
           </div>
-          <div class="issue">
-            <div class="issue-status status-done"></div>
-            <div class="issue-content">
-              <div class="issue-title">Výtluk — Průhonická ul.</div>
-              <div class="issue-meta">Vyřešeno: 20. 2. 2026 · Čas řešení: 12 dní</div>
+
+          <div class="zlep-card" data-cat="cesty" data-loc="centrum">
+            <div class="zlep-card-top">
+              <div class="zlep-card-icon" style="background:#E8F4EE">🕳️</div>
+              <div class="zlep-card-body">
+                <div class="zlep-card-title">Výtluk — Průhonická ul.</div>
+                <div class="zlep-card-desc">Výtluk zalit asfaltem, cesta v pořádku.</div>
+                <div class="zlep-card-meta">
+                  <span>📍 Jesenice centrum</span>
+                  <span>✅ Vyřešeno 20. 2. 2026</span>
+                  <span>⏱️ 12 dní</span>
+                </div>
+              </div>
+              <span class="issue-badge badge-done">Vyřešeno ✓</span>
             </div>
-            <span class="issue-badge badge-done">Vyřešeno ✓</span>
+          </div>
+
+          <div class="zlep-card" data-cat="odpady" data-loc="jircany">
+            <div class="zlep-card-top">
+              <div class="zlep-card-icon" style="background:#E8F4EE">🗑️</div>
+              <div class="zlep-card-body">
+                <div class="zlep-card-title">Chybějící koš — zastávka Horní Jirčany</div>
+                <div class="zlep-card-desc">Nový odpadkový koš nainstalován. Díky za podnět!</div>
+                <div class="zlep-card-meta">
+                  <span>📍 Horní Jirčany</span>
+                  <span>✅ Vyřešeno 15. 2. 2026</span>
+                  <span>⏱️ 5 dní</span>
+                </div>
+              </div>
+              <span class="issue-badge badge-done">Vyřešeno ✓</span>
+            </div>
           </div>
         </div>
       </div>
 
+      <!-- SIDEBAR -->
       <div>
         <div class="sidebar-card">
-          <h4>📌 Nahlásit nový zlepšovák</h4>
-          <div class="form-group">
-            <label>Typ podnětu</label>
-            <select>
-              <option>Výtluk / poškozená cesta</option>
-              <option>Osvětlení</option>
-              <option>Kontejnery / odpady</option>
-              <option>Zeleň</option>
-              <option>Hřiště / lavičky</option>
-              <option>Jiné</option>
-            </select>
+          <h4>🔥 Nejhlasovanější</h4>
+          <div class="zlep-top-list">
+            <div class="zlep-top-item">
+              <div class="zlep-top-rank">1.</div>
+              <div class="zlep-top-title">Pítko u cyklostezky</div>
+              <div class="zlep-top-votes">👍 31</div>
+            </div>
+            <div class="zlep-top-item">
+              <div class="zlep-top-rank">2.</div>
+              <div class="zlep-top-title">Přechod Budějovická / Hálkova</div>
+              <div class="zlep-top-votes">👍 24</div>
+            </div>
+            <div class="zlep-top-item">
+              <div class="zlep-top-rank">3.</div>
+              <div class="zlep-top-title">Zrcadlo — výjezd Lipová, Zdiměřice</div>
+              <div class="zlep-top-votes">👍 18</div>
+            </div>
           </div>
-          <div class="form-group">
-            <label>Popis</label>
-            <textarea placeholder="Popište problém nebo návrh na zlepšení..." style="min-height:60px"></textarea>
+        </div>
+        <div class="sidebar-card">
+          <h4>✅ Naposledy vyřešené</h4>
+          <div style="font-size:13px;display:flex;flex-direction:column;gap:10px">
+            <div style="display:flex;gap:8px;align-items:flex-start">
+              <span style="color:var(--green)">✓</span>
+              <div><strong>Lampa u hřiště Osnice</strong><br><span style="color:var(--ink-light)">1. 3. · za 8 dní</span></div>
+            </div>
+            <div style="display:flex;gap:8px;align-items:flex-start">
+              <span style="color:var(--green)">✓</span>
+              <div><strong>Výtluk Průhonická</strong><br><span style="color:var(--ink-light)">20. 2. · za 12 dní</span></div>
+            </div>
+            <div style="display:flex;gap:8px;align-items:flex-start">
+              <span style="color:var(--green)">✓</span>
+              <div><strong>Koš — zastávka H. Jirčany</strong><br><span style="color:var(--ink-light)">15. 2. · za 5 dní</span></div>
+            </div>
           </div>
-          <div class="form-group">
-            <label>Ulice / lokalita</label>
-            <input type="text" placeholder="Např. Komenského ul. 34">
-          </div>
-          <div class="map-placeholder" style="height:140px;margin-bottom:12px;font-size:12px">
-            <span style="font-size:24px">📍</span>
-            Klikněte pro označení na mapě
-          </div>
-          <button class="btn btn-green" style="width:100%" onclick="toast('Zlepšovák nahlášen! Dostanete notifikaci o průběhu.')">Odeslat zlepšovák</button>
         </div>
         <div class="sidebar-card">
           <h4>📊 Statistiky</h4>
           <div style="font-size:13px;display:flex;flex-direction:column;gap:8px">
+            <div style="display:flex;justify-content:space-between">
+              <span style="color:var(--ink-mid)">Celkem podnětů</span>
+              <strong>135</strong>
+            </div>
             <div style="display:flex;justify-content:space-between">
               <span style="color:var(--ink-mid)">Průměrná doba řešení</span>
               <strong>9 dní</strong>
@@ -1325,6 +1595,85 @@
           </div>
         </div>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- ZLEPŠOVÁK MODAL -->
+<div id="zlep-modal" class="zlep-modal-overlay" onclick="closeZlepModal(event)">
+  <div class="zlep-modal" onclick="event.stopPropagation()">
+    <div class="zlep-modal-header">
+      <h3>💡 Nový zlepšovák</h3>
+      <button class="close-btn" onclick="closeZlepModal()">&times;</button>
+    </div>
+    <div class="zlep-modal-body">
+      <div class="zlep-type-toggle">
+        <button class="zlep-type-btn active" onclick="zlepType(this,'problem')">
+          <span class="zt-icon">🔧</span>Nahlášení problému
+        </button>
+        <button class="zlep-type-btn" onclick="zlepType(this,'napad')">
+          <span class="zt-icon">🎯</span>Nápad na zlepšení
+        </button>
+      </div>
+
+      <div class="form-group">
+        <label>Kategorie</label>
+        <div class="zlep-cat-grid" id="zlep-form-cats" style="margin-bottom:0">
+          <div class="zlep-cat active" onclick="zlepFormCat(this)" data-cat="cesty"><span class="zc-icon">🕳️</span>Cesty</div>
+          <div class="zlep-cat" onclick="zlepFormCat(this)" data-cat="svetlo"><span class="zc-icon">💡</span>Osvětlení</div>
+          <div class="zlep-cat" onclick="zlepFormCat(this)" data-cat="zelen"><span class="zc-icon">🌳</span>Zeleň</div>
+          <div class="zlep-cat" onclick="zlepFormCat(this)" data-cat="odpady"><span class="zc-icon">🗑️</span>Odpady</div>
+          <div class="zlep-cat" onclick="zlepFormCat(this)" data-cat="hriste"><span class="zc-icon">🛝</span>Hřiště</div>
+          <div class="zlep-cat" onclick="zlepFormCat(this)" data-cat="bezpecnost"><span class="zc-icon">🚸</span>Bezpečnost</div>
+          <div class="zlep-cat" onclick="zlepFormCat(this)" data-cat="jine"><span class="zc-icon">📦</span>Jiné</div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Název</label>
+        <input type="text" id="zlep-title" placeholder="Stručný název problému nebo nápadu">
+      </div>
+      <div class="form-group">
+        <label id="zlep-desc-label">Popis problému</label>
+        <textarea id="zlep-desc" placeholder="Popište co se děje, kde přesně, jak dlouho..." style="min-height:80px"></textarea>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div class="form-group">
+          <label>Lokalita</label>
+          <select id="zlep-loc">
+            <option value="centrum">Jesenice centrum</option>
+            <option value="zdimerice">Zdiměřice</option>
+            <option value="osnice">Osnice</option>
+            <option value="jircany">Horní Jirčany</option>
+            <option value="kocanda">Kocanda</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Ulice / upřesnění</label>
+          <input type="text" id="zlep-street" placeholder="Např. Komenského 34">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Fotka (volitelné)</label>
+        <button class="zlep-photo-btn" onclick="toast('Nahrávání fotek — brzy!')">📷 Přidat fotku problému</button>
+      </div>
+
+      <div class="form-group">
+        <label>Priorita</label>
+        <div class="zlep-priority">
+          <button class="zlep-pri-btn pri-low active" onclick="zlepPri(this)">🟢 Nízká</button>
+          <button class="zlep-pri-btn pri-mid" onclick="zlepPri(this)">🟠 Střední</button>
+          <button class="zlep-pri-btn pri-high" onclick="zlepPri(this)">🔴 Urgentní</button>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px">
+        <input type="checkbox" id="zlep-anon" style="width:auto;accent-color:var(--green)">
+        <label for="zlep-anon" style="font-weight:400;font-size:13px;color:var(--ink-mid);margin-bottom:0;cursor:pointer">Nechci zveřejnit své jméno</label>
+      </div>
+
+      <button class="btn btn-green" style="width:100%;padding:14px;font-size:15px" onclick="submitZlep()">Odeslat zlepšovák</button>
     </div>
   </div>
 </div>
@@ -3743,6 +4092,109 @@ function bazarFilter(el, filter) {
   el.classList.add('active');
   toast(filter === 'vse' ? 'Zobrazuji vše' : 'Filtrováno: ' + el.textContent.split(' (')[0]);
 }
+// === ZLEPŠOVÁKY ===
+function openZlepModal() {
+  document.getElementById('zlep-modal').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+function closeZlepModal(e) {
+  if (!e || e.target === document.getElementById('zlep-modal')) {
+    document.getElementById('zlep-modal').style.display = 'none';
+    document.body.style.overflow = '';
+  }
+}
+function zlepType(btn, type) {
+  document.querySelectorAll('.zlep-type-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  const label = document.getElementById('zlep-desc-label');
+  const desc = document.getElementById('zlep-desc');
+  if (type === 'napad') {
+    label.textContent = 'Popis nápadu';
+    desc.placeholder = 'Popište svůj nápad, proč by pomohl a kde by se mohl realizovat...';
+  } else {
+    label.textContent = 'Popis problému';
+    desc.placeholder = 'Popište co se děje, kde přesně, jak dlouho...';
+  }
+}
+function zlepFormCat(el) {
+  document.querySelectorAll('#zlep-form-cats .zlep-cat').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+}
+function zlepPri(btn) {
+  document.querySelectorAll('.zlep-pri-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+function zlepVote(btn, e) {
+  e.stopPropagation();
+  const strong = btn.querySelector('strong');
+  if (btn.classList.contains('voted')) {
+    btn.classList.remove('voted');
+    strong.textContent = parseInt(strong.textContent) - 1;
+  } else {
+    btn.classList.add('voted');
+    strong.textContent = parseInt(strong.textContent) + 1;
+  }
+}
+function zlepCatFilter(el, cat) {
+  document.querySelectorAll('.zlep-cat-grid:first-child .zlep-cat, #view-issues > .container .zlep-cat-grid .zlep-cat').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('#view-issues .zlep-card').forEach(c => {
+    c.style.display = (cat === 'all' || c.dataset.cat === cat) ? '' : 'none';
+  });
+}
+function zlepLocFilter(el, loc) {
+  el.parentElement.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('#view-issues .zlep-card').forEach(c => {
+    c.style.display = (loc === 'all' || c.dataset.loc === loc) ? '' : 'none';
+  });
+}
+function submitZlep() {
+  const title = document.getElementById('zlep-title').value.trim();
+  const desc = document.getElementById('zlep-desc').value.trim();
+  if (!title) { toast('Vyplňte název zlepšováku.'); return; }
+  if (!desc) { toast('Popište problém nebo nápad.'); return; }
+  const activeCat = document.querySelector('#zlep-form-cats .zlep-cat.active');
+  const cat = activeCat ? activeCat.dataset.cat : 'jine';
+  const loc = document.getElementById('zlep-loc').value;
+  const street = document.getElementById('zlep-street').value.trim();
+  const isNapad = document.querySelector('.zlep-type-btn.active').textContent.includes('Nápad');
+  const anon = document.getElementById('zlep-anon').checked;
+  const catEmojis = {cesty:'🕳️',svetlo:'💡',zelen:'🌳',odpady:'🗑️',hriste:'🛝',bezpecnost:'🚸',napad:'🎯',jine:'📦'};
+  const locNames = {centrum:'Jesenice centrum',zdimerice:'Zdiměřice',osnice:'Osnice',jircany:'Horní Jirčany',kocanda:'Kocanda'};
+  const emoji = catEmojis[cat] || '📦';
+  const card = document.createElement('div');
+  card.className = 'zlep-card';
+  card.dataset.cat = isNapad ? 'napad' : cat;
+  card.dataset.loc = loc;
+  card.innerHTML = `
+    <div class="zlep-card-top">
+      <div class="zlep-card-icon"${isNapad ? ' style="background:#EBF3FC"' : ''}>${isNapad ? '🎯' : emoji}</div>
+      <div class="zlep-card-body">
+        <div class="zlep-card-title">${isNapad ? 'Nápad: ' : ''}${title}</div>
+        <div class="zlep-card-desc">${desc}</div>
+        <div class="zlep-card-meta">
+          <span>📍 ${locNames[loc]}${street ? ', ' + street : ''}</span>
+          <span>🕐 právě teď</span>
+          <span>👤 ${anon ? 'Anonymní' : 'Vy'}</span>
+        </div>
+      </div>
+      <span class="issue-badge ${isNapad ? '" style="background:#EBF3FC;color:var(--blue)' : 'badge-new'}">${isNapad ? 'Nápad' : 'Nový'}</span>
+    </div>
+    <div class="zlep-card-footer">
+      <button class="zlep-vote" onclick="zlepVote(this, event)">👍 ${isNapad ? 'Skvělý nápad!' : 'Trápí mě to taky'} <strong>0</strong></button>
+      <button class="zlep-comment-btn" onclick="event.stopPropagation();toast('Komentáře — brzy!')">💬 0 komentářů</button>
+    </div>`;
+  const container = document.getElementById('issues-open');
+  container.insertBefore(card, container.firstChild);
+  document.getElementById('zlep-title').value = '';
+  document.getElementById('zlep-desc').value = '';
+  document.getElementById('zlep-street').value = '';
+  document.getElementById('zlep-anon').checked = false;
+  closeZlepModal();
+  toast(isNapad ? 'Nápad zveřejněn! Sousedé mohou hlasovat.' : 'Zlepšovák nahlášen! Dostanete notifikaci o průběhu.');
+}
+
 function registerUser() {
   const fname = document.getElementById('reg-fname').value.trim();
   const lname = document.getElementById('reg-lname').value.trim();
