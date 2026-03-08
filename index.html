@@ -5600,7 +5600,16 @@
 const views = ['home','community','issues','projects','events','welcome','login','register','budget','bazar','spojeni','podniky','brigady','challenge'];
 const navMap = { community:'nav-community', issues:'nav-issues', projects:'nav-projects', budget:'nav-budget', events:'nav-events', welcome:'nav-welcome', login:'nav-login', bazar:'nav-bazar', spojeni:'nav-spojeni', podniky:'nav-podniky', brigady:'nav-brigady', challenge:'nav-challenge' };
 
-function showView(id) {
+const hashMap = {
+  home:'', community:'komunita', issues:'zlepsovaky', projects:'projekty',
+  events:'akce', welcome:'novy-v-jesenici', login:'prihlaseni', register:'registrace',
+  budget:'rozpocet', bazar:'bazar', spojeni:'hledam-partaka', podniky:'mistni-podniky',
+  brigady:'brigady', challenge:'challenge'
+};
+const hashReverse = {};
+Object.entries(hashMap).forEach(([k,v]) => { if (v) hashReverse[v] = k; });
+
+function showView(id, skipHash) {
   views.forEach(v => {
     const el = document.getElementById('view-' + v);
     if (el) el.classList.remove('active');
@@ -5615,7 +5624,23 @@ function showView(id) {
     const nav = document.getElementById(navMap[id]);
     if (nav) nav.classList.add('active');
   }
+  if (!skipHash) {
+    const h = hashMap[id];
+    history.pushState(null, '', h ? '#' + h : window.location.pathname);
+  }
 }
+
+window.addEventListener('hashchange', () => {
+  const h = location.hash.slice(1);
+  const viewId = hashReverse[h];
+  if (viewId) showView(viewId, true);
+  else if (!h) showView('home', true);
+});
+
+(function() {
+  const h = location.hash.slice(1);
+  if (h && hashReverse[h]) showView(hashReverse[h], true);
+})();
 
 function toast(msg) {
   const t = document.getElementById('toast');
