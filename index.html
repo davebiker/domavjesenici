@@ -678,6 +678,16 @@
   .gig-urgency-hot { background: #FDEDEC; color: #E74C3C; }
   .gig-urgency-new { background: #EBF5FB; color: var(--blue); }
   .gig-urgency-ok { background: var(--green-xlight); color: var(--green); }
+  .gig-toggle {
+    flex: 1; padding: 10px; border: none; background: white; font-size: 14px;
+    font-weight: 600; cursor: pointer; color: var(--ink-light); transition: all .15s;
+  }
+  .gig-toggle.active { background: var(--orange); color: white; }
+  .gig-toggle:first-child { border-radius: var(--r) 0 0 var(--r); }
+  .gig-toggle:last-child { border-radius: 0 var(--r) var(--r) 0; }
+  @media (max-width: 700px) {
+    .grid-2 { grid-template-columns: 1fr !important; }
+  }
 
   .leaderboard-row {
     display: flex; align-items: center; gap: 12px;
@@ -853,6 +863,19 @@
   .bazar-title { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
   .bazar-meta { font-size: 12px; color: var(--ink-light); display: flex; gap: 8px; flex-wrap: wrap; }
   .bazar-seller { display: flex; align-items: center; gap: 8px; margin-top: 10px; padding-top:10px; border-top: 1px solid var(--border); font-size: 12px; color: var(--ink-mid); }
+  .spojeni-modal {
+    position: fixed; inset: 0; z-index: 200;
+    background: rgba(0,0,0,0.5);
+    display: flex; align-items: center; justify-content: center;
+    padding: 24px;
+    animation: fadeIn 0.2s;
+  }
+  .spojeni-detail {
+    background: white; border-radius: var(--r);
+    max-width: 520px; width: 100%;
+    max-height: 90vh; overflow-y: auto; padding: 24px;
+  }
+
   .bazar-detail-modal {
     position: fixed; inset: 0; z-index: 200;
     background: rgba(0,0,0,0.5);
@@ -2744,7 +2767,7 @@
       <div>
         <!-- FILTERS -->
         <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px" id="gig-filters">
-          <div class="chip active" onclick="filterGigs('vse',this)">Vše (12)</div>
+          <div class="chip active" onclick="filterGigs('vse',this)">Vše</div>
           <div class="chip" onclick="filterGigs('zahrada',this)">🌿 Zahrada</div>
           <div class="chip" onclick="filterGigs('zvirata',this)">🐕 Zvířata</div>
           <div class="chip" onclick="filterGigs('deti',this)">👶 Hlídání dětí</div>
@@ -2765,7 +2788,7 @@
 
         <div class="grid-2" id="gig-grid">
 
-          <div class="gig-card" data-cat="zahrada" onclick="claimGig(this,'Posečení trávníku — Zdiměřice')">
+          <div class="gig-card" data-cat="zahrada" onclick="openGigDetail(this,'🌿 Posečení trávníku','Zahrada cca 200 m², vlastní sekačka výhodou (mám i svoji). Jesenice — Zdiměřice, tento víkend. Platba na místě v hotovosti.','500 Kč','📍 Zdiměřice','⏰ Tento víkend','⏱️ ~2 hodiny','JP','Jana P.','⭐ 4.9','var(--green)')">
             <div class="gig-top">
               <div>
                 <div class="gig-title">🌿 Posečení trávníku</div>
@@ -2788,7 +2811,7 @@
             </div>
           </div>
 
-          <div class="gig-card" data-cat="zvirata" onclick="claimGig(this,'Venčení psa 3× denně — týden')">
+          <div class="gig-card" data-cat="zvirata" onclick="openGigDetail(this,'🐕 Venčení psa — dovolená','Jedeme na týden pryč (12.–19.4.), potřebujeme spolehlivého venčiče. Zlatý retrívr, hodný, skvělý kamarád. Krmení a procházka 3× denně.','1 400 Kč','📍 Osnice','⏰ 12.–19. dubna','⏱️ 3× denně','TH','Tomáš H.','⭐ 5.0','var(--blue)')">
             <div class="gig-top">
               <div>
                 <div class="gig-title">🐕 Venčení psa — dovolená</div>
@@ -2811,7 +2834,7 @@
             </div>
           </div>
 
-          <div class="gig-card" data-cat="doucovani" onclick="claimGig(this,'Doučování matematiky — 8. třída')">
+          <div class="gig-card" data-cat="doucovani" onclick="openGigDetail(this,'📚 Doučování matiky — 8. třída','Syn potřebuje pomoc s algebrou a geometrií. 1–2× týdně, u nás nebo online. Hledáme někoho trpělivého. Ideálně student/ka VŠ.','250 Kč/hod','📍 Jesenice centrum','⏰ Opakovaně','⏱️ 60–90 min','PK','Pavel K.','⭐ 4.8','#C0392B')">
             <div class="gig-top">
               <div>
                 <div class="gig-title">📚 Doučování matiky — 8. třída</div>
@@ -2834,7 +2857,7 @@
             </div>
           </div>
 
-          <div class="gig-card" data-cat="deti" onclick="claimGig(this,'Hlídání dětí — sobota večer')">
+          <div class="gig-card" data-cat="deti" onclick="openGigDetail(this,'👶 Hlídání dětí — sobota večer','Dvě děti (5 a 8 let), od 18:00 do ~23:00. Děti jsou klidné, chodí spát v 20:30. WiFi a jídlo zajištěno. Platba při vyzvednutí.','600 Kč','📍 Zdiměřice','⏰ Sobota 22.3.','⏱️ ~5 hodin','MN','Martina N.','⭐ 4.9','#9B59B6')">
             <div class="gig-top">
               <div>
                 <div class="gig-title">👶 Hlídání dětí — sobota večer</div>
@@ -2857,7 +2880,7 @@
             </div>
           </div>
 
-          <div class="gig-card" data-cat="it" onclick="claimGig(this,'Nastavení routeru a WiFi — seniorka')">
+          <div class="gig-card" data-cat="it" onclick="openGigDetail(this,'💻 Nastavení WiFi a počítače','Potřebuji pomoct s nastavením nového routeru a přenesením fotek z telefonu na počítač. Jsem seniorka, prosím o trpělivost. Odměna + kafe a buchta 🙂','300 Kč','📍 Jesenice centrum','⏰ Kdykoliv tento týden','⏱️ ~1 hodina','MV','Marie V.','⭐ 5.0','#888')">
             <div class="gig-top">
               <div>
                 <div class="gig-title">💻 Nastavení WiFi a počítače</div>
@@ -2880,7 +2903,7 @@
             </div>
           </div>
 
-          <div class="gig-card" data-cat="stehovani" onclick="claimGig(this,'Pomoc se stěhováním — 2 hodiny')">
+          <div class="gig-card" data-cat="stehovani" onclick="openGigDetail(this,'📦 Pomoc se stěhováním','Stěhujeme se v rámci Jesenice (centrum → Osnice), potřebujeme 2–3 pomocné ruce. Auto máme. Krabice + lehký nábytek, nic těžkého. Pivo a pizza zajištěny.','200 Kč/hod','📍 Jesenice centrum → Osnice','⏰ Sobota 29.3.','⏱️ ~3 hodiny','LF','Lukáš F.','⭐ 4.7','var(--green-mid)')">
             <div class="gig-top">
               <div>
                 <div class="gig-title">📦 Pomoc se stěhováním</div>
@@ -2903,7 +2926,206 @@
             </div>
           </div>
 
+          <div class="gig-card" data-cat="zahrada" onclick="openGigDetail(this,'🌿 Prořezání živého plotu','Živý plot cca 30 m, výška 1,5 m. Potřebuji prořezat a uklidit. Nůžky mám. Ideálně tento víkend dopoledne.','800 Kč','📍 Jesenice centrum','⏰ Tento víkend','⏱️ ~3 hodiny','AK','Anna K.','⭐ 4.8','var(--green-mid)')">
+            <div class="gig-top">
+              <div>
+                <div class="gig-title">🌿 Prořezání živého plotu</div>
+                <div class="gig-desc">Živý plot cca 30 m, výška 1,5 m. Nůžky mám, potřebuji šikovné ruce. Ideálně víkend dopoledne.</div>
+              </div>
+              <div class="gig-price">800 Kč</div>
+            </div>
+            <div class="gig-meta">
+              <span>📍 Jesenice centrum</span><span>⏰ Tento víkend</span><span>⏱️ ~3 hodiny</span>
+            </div>
+            <div class="gig-footer">
+              <div style="display:flex;gap:6px;align-items:center">
+                <div class="leaderboard-avatar" style="background:var(--green-mid);width:28px;height:28px;font-size:11px">AK</div>
+                <span style="font-size:12px;color:var(--ink-mid)">Anna K. · ⭐ 4.8</span>
+              </div>
+              <div style="display:flex;gap:8px;align-items:center">
+                <span class="gig-urgency gig-urgency-ok">✅ Volno</span>
+                <button class="gig-btn">Beru to!</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="gig-card" data-cat="zvirata" onclick="openGigDetail(this,'🐱 Krmení koček — víkend','Jedeme na víkend pryč (pá–ne), máme 2 kočky. Stačí přijít 2× denně nasypat granule, vyměnit vodu a pomazlit se. Klíče předáme předem.','400 Kč','📍 Zdiměřice','⏰ Pá 14.3. – Ne 16.3.','⏱️ 2× denně 15 min','EH','Eva H.','⭐ 5.0','#9B59B6')">
+            <div class="gig-top">
+              <div>
+                <div class="gig-title">🐱 Krmení koček — víkend</div>
+                <div class="gig-desc">2 kočky, stačí přijít 2× denně nasypat a pomazlit. Klíče předáme předem. Pá–Ne.</div>
+              </div>
+              <div class="gig-price">400 Kč</div>
+            </div>
+            <div class="gig-meta">
+              <span>📍 Zdiměřice</span><span>⏰ Pá–Ne 14.–16.3.</span><span>⏱️ 2× 15 min</span>
+            </div>
+            <div class="gig-footer">
+              <div style="display:flex;gap:6px;align-items:center">
+                <div class="leaderboard-avatar" style="background:#9B59B6;width:28px;height:28px;font-size:11px">EH</div>
+                <span style="font-size:12px;color:var(--ink-mid)">Eva H. · ⭐ 5.0</span>
+              </div>
+              <div style="display:flex;gap:8px;align-items:center">
+                <span class="gig-urgency gig-urgency-hot">🔥 Brzy</span>
+                <button class="gig-btn">Beru to!</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="gig-card" data-cat="it" onclick="openGigDetail(this,'💻 WordPress web pro spolek','Malý spolek potřebuje jednoduchý web — pár stránek, kontakt, fotogalerie. WordPress stačí. Zaplatíme i hosting na rok.','2 500 Kč','📍 Online / Jesenice','⏰ Do konce března','⏱️ ~8 hodin','RN','Robert N.','⭐ 4.6','var(--blue)')">
+            <div class="gig-top">
+              <div>
+                <div class="gig-title">💻 WordPress web pro spolek</div>
+                <div class="gig-desc">Potřebujeme jednoduchý web — pár stránek, kontakt, fotogalerie. WordPress stačí. Zaplatíme i hosting.</div>
+              </div>
+              <div class="gig-price">2 500 Kč</div>
+            </div>
+            <div class="gig-meta">
+              <span>📍 Online / Jesenice</span><span>⏰ Do konce března</span><span>⏱️ ~8 hodin</span>
+            </div>
+            <div class="gig-footer">
+              <div style="display:flex;gap:6px;align-items:center">
+                <div class="leaderboard-avatar" style="background:var(--blue);width:28px;height:28px;font-size:11px">RN</div>
+                <span style="font-size:12px;color:var(--ink-mid)">Robert N. · ⭐ 4.6</span>
+              </div>
+              <div style="display:flex;gap:8px">
+                <span class="gig-urgency gig-urgency-new">🆕 Nová</span>
+                <button class="gig-btn">Beru to!</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="gig-card" data-cat="ostatni" onclick="openGigDetail(this,'📷 Focení rodinných fotek','Hledáme někoho šikovného s foťákem na rodinné focení v přírodě. Nemusí být profesionál, stačí hezké přirozené fotky. 1–2 hodiny, okolí Jesenice.','1 000 Kč','📍 Okolí Jesenice','⏰ Víkend dle dohody','⏱️ 1–2 hodiny','DV','Dana V.','⭐ Nová','#C0392B')">
+            <div class="gig-top">
+              <div>
+                <div class="gig-title">📷 Focení rodinných fotek</div>
+                <div class="gig-desc">Hledáme šikovného fotografa na přírodní focení. Nemusí být profi, stačí hezké přirozené fotky. 1–2 hodiny.</div>
+              </div>
+              <div class="gig-price">1 000 Kč</div>
+            </div>
+            <div class="gig-meta">
+              <span>📍 Okolí Jesenice</span><span>⏰ Víkend dle dohody</span><span>⏱️ 1–2 hodiny</span>
+            </div>
+            <div class="gig-footer">
+              <div style="display:flex;gap:6px;align-items:center">
+                <div class="leaderboard-avatar" style="background:#C0392B;width:28px;height:28px;font-size:11px">DV</div>
+                <span style="font-size:12px;color:var(--ink-mid)">Dana V. · ⭐ Nová</span>
+              </div>
+              <div style="display:flex;gap:8px">
+                <span class="gig-urgency gig-urgency-ok">✅ Volno</span>
+                <button class="gig-btn">Beru to!</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="gig-card" data-cat="deti" onclick="openGigDetail(this,'👶 Hlídání po škole — pravidelně','Hledáme spolehlivého teenagera nebo dospělého na vyzvedávání syna (7 let) ze školy a hlídání do 17:00 (2–3× týdně). Škola v Jesenici, bydlíme 5 min pěšky.','150 Kč/hod','📍 Jesenice centrum','⏰ Po, St, Pá 13–17h','⏱️ 4 hod/den','KM','Kateřina M.','⭐ 4.9','var(--orange)')">
+            <div class="gig-top">
+              <div>
+                <div class="gig-title">👶 Hlídání po škole — pravidelně</div>
+                <div class="gig-desc">Vyzvedávání syna (7) ze školy a hlídání do 17:00, 2–3× týdně. 5 min od školy, klidné dítě.</div>
+              </div>
+              <div class="gig-price">150 Kč/hod</div>
+            </div>
+            <div class="gig-meta">
+              <span>📍 Jesenice centrum</span><span>⏰ Po, St, Pá</span><span>⏱️ 4 hod/den</span>
+            </div>
+            <div class="gig-footer">
+              <div style="display:flex;gap:6px;align-items:center">
+                <div class="leaderboard-avatar" style="background:var(--orange);width:28px;height:28px;font-size:11px">KM</div>
+                <span style="font-size:12px;color:var(--ink-mid)">Kateřina M. · ⭐ 4.9</span>
+              </div>
+              <div style="display:flex;gap:8px;align-items:center">
+                <span class="gig-urgency gig-urgency-new">🆕 Nová</span>
+                <button class="gig-btn">Beru to!</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="gig-card" data-cat="zahrada" onclick="openGigDetail(this,'🌿 Hrabání listí a úklid zahrady','Velká zahrada po zimě — potřebuji pomoct s hrabáním listí, odklizením větví a obecným jarním úklidem. Nářadí mám. Ideálně 2 lidi najednou.','350 Kč/os','📍 Horní Jirčany','⏰ Sobota 15.3.','⏱️ ~3 hodiny','FK','František K.','⭐ 4.7','#888')">
+            <div class="gig-top">
+              <div>
+                <div class="gig-title">🌿 Hrabání listí a úklid zahrady</div>
+                <div class="gig-desc">Velká zahrada po zimě, hrabání listí + větve. Nářadí mám. Ideálně 2 lidi najednou, sobota dopoledne.</div>
+              </div>
+              <div class="gig-price">350 Kč/os</div>
+            </div>
+            <div class="gig-meta">
+              <span>📍 Horní Jirčany</span><span>⏰ Sobota 15.3.</span><span>⏱️ ~3 hodiny</span>
+            </div>
+            <div class="gig-footer">
+              <div style="display:flex;gap:6px;align-items:center">
+                <div class="leaderboard-avatar" style="background:#888;width:28px;height:28px;font-size:11px">FK</div>
+                <span style="font-size:12px;color:var(--ink-mid)">František K. · ⭐ 4.7</span>
+              </div>
+              <div style="display:flex;gap:8px;align-items:center">
+                <span class="gig-urgency gig-urgency-hot">🔥 Brzy</span>
+                <button class="gig-btn">Beru to!</button>
+              </div>
+            </div>
+          </div>
+
         </div><!-- /gig-grid -->
+
+        <!-- TOGGLE -->
+        <div style="display:flex;gap:0;margin-top:20px;margin-bottom:20px;background:var(--cream);border-radius:var(--r);border:1px solid var(--border);overflow:hidden">
+          <button class="gig-toggle active" id="gig-toggle-hledam" onclick="toggleGigMode('hledam')">🔍 Hledám brigádníka</button>
+          <button class="gig-toggle" id="gig-toggle-nabizim" onclick="toggleGigMode('nabizim')">🙋 Nabízím pomoc</button>
+        </div>
+        <div id="gig-offers" style="display:none">
+          <div class="grid-2">
+            <div class="gig-card" style="border-color:var(--green)" onclick="toast('Kontaktujte nabízejícího přes portál.')">
+              <div class="gig-top">
+                <div>
+                  <div class="gig-title">🔧 Opravy v domácnosti</div>
+                  <div class="gig-desc">Umím drobné opravy — kapající kohoutek, montáž polic, seřízení dveří. 15 let praxe, férové ceny.</div>
+                </div>
+                <div class="gig-price" style="color:var(--green)">200 Kč/h</div>
+              </div>
+              <div class="gig-meta"><span>📍 Celá Jesenice</span><span>⏰ Flexibilní</span><span>⭐ 5.0 (12 hodnocení)</span></div>
+              <div class="gig-footer">
+                <div style="display:flex;gap:6px;align-items:center">
+                  <div class="leaderboard-avatar" style="background:var(--green);width:28px;height:28px;font-size:11px">PB</div>
+                  <span style="font-size:12px;color:var(--ink-mid)">Pavel B. · Ověřený pomocník</span>
+                </div>
+                <button class="gig-btn" style="background:var(--green)" onclick="event.stopPropagation();toast('Zpráva odeslána Pavlovi!')">Kontaktovat</button>
+              </div>
+            </div>
+            <div class="gig-card" style="border-color:var(--green)" onclick="toast('Kontaktujte nabízejícího přes portál.')">
+              <div class="gig-top">
+                <div>
+                  <div class="gig-title">🌱 Zahradnické práce</div>
+                  <div class="gig-desc">Sekání, stříhání plotů, výsadba, údržba záhonů. Mám vlastní vybavení. Jesenice a okolí.</div>
+                </div>
+                <div class="gig-price" style="color:var(--green)">180 Kč/h</div>
+              </div>
+              <div class="gig-meta"><span>📍 Jesenice + okolí</span><span>⏰ Víkendy</span><span>⭐ 4.9 (8 hodnocení)</span></div>
+              <div class="gig-footer">
+                <div style="display:flex;gap:6px;align-items:center">
+                  <div class="leaderboard-avatar" style="background:var(--green-mid);width:28px;height:28px;font-size:11px">JR</div>
+                  <span style="font-size:12px;color:var(--ink-mid)">Jakub R. · Ověřený pomocník</span>
+                </div>
+                <button class="gig-btn" style="background:var(--green)" onclick="event.stopPropagation();toast('Zpráva odeslána Jakubovi!')">Kontaktovat</button>
+              </div>
+            </div>
+            <div class="gig-card" style="border-color:var(--green)" onclick="toast('Kontaktujte nabízejícího přes portál.')">
+              <div class="gig-top">
+                <div>
+                  <div class="gig-title">💻 IT pomoc pro seniory</div>
+                  <div class="gig-desc">Pomůžu s počítačem, telefonem, tabletem. Nastavení, instalace, zálohování fotek. Trpělivě a srozumitelně.</div>
+                </div>
+                <div class="gig-price" style="color:var(--green)">Zdarma</div>
+              </div>
+              <div class="gig-meta"><span>📍 Celá Jesenice</span><span>⏰ Odpoledne</span><span>🎓 Student IT</span></div>
+              <div class="gig-footer">
+                <div style="display:flex;gap:6px;align-items:center">
+                  <div class="leaderboard-avatar" style="background:var(--blue);width:28px;height:28px;font-size:11px">DK</div>
+                  <span style="font-size:12px;color:var(--ink-mid)">David K. · Dobrovolník</span>
+                </div>
+                <button class="gig-btn" style="background:var(--green)" onclick="event.stopPropagation();toast('Zpráva odeslána Davidovi!')">Kontaktovat</button>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- SIDEBAR -->
@@ -2965,23 +3187,47 @@
         <!-- ADD GIG -->
         <div class="sidebar-card">
           <h4>💡 Potřebujete pomoc?</h4>
-          <p style="font-size:13px;color:var(--ink-mid);margin-bottom:12px">Přidejte brigádu a místní mladí se ozvou. Rychle, levně, bez agentury.</p>
+          <p style="font-size:13px;color:var(--ink-mid);margin-bottom:12px">Přidejte brigádu a místní se ozvou. Rychle, levně, bez agentury.</p>
           <div class="form-group">
             <label>Co potřebujete udělat?</label>
             <input type="text" placeholder="Např. Posečení trávníku" id="gig-title-input">
           </div>
           <div class="form-group">
-            <label>Odměna (Kč)</label>
-            <input type="number" placeholder="500" id="gig-price-input" min="50">
+            <label>Popis</label>
+            <textarea id="gig-desc-input" placeholder="Popište co přesně potřebujete, co máte zajištěné..." style="min-height:60px"></textarea>
           </div>
-          <div class="form-group">
-            <label>Lokalita</label>
-            <select id="gig-loc-input">
-              <option>Jesenice centrum</option>
-              <option>Osnice</option>
-              <option>Zdiměřice</option>
-              <option>Horní Jirčany</option>
-            </select>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+            <div class="form-group">
+              <label>Kategorie</label>
+              <select id="gig-cat-input">
+                <option value="zahrada">🌿 Zahrada</option>
+                <option value="zvirata">🐕 Zvířata</option>
+                <option value="deti">👶 Hlídání</option>
+                <option value="doucovani">📚 Doučování</option>
+                <option value="it">💻 IT & tech</option>
+                <option value="stehovani">📦 Stěhování</option>
+                <option value="ostatni">🔧 Ostatní</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Odměna</label>
+              <input type="text" placeholder="500 Kč" id="gig-price-input">
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+            <div class="form-group">
+              <label>Lokalita</label>
+              <select id="gig-loc-input">
+                <option>Jesenice centrum</option>
+                <option>Osnice</option>
+                <option>Zdiměřice</option>
+                <option>Horní Jirčany</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Časový odhad</label>
+              <input type="text" placeholder="~2 hodiny" id="gig-time-input">
+            </div>
           </div>
           <button class="btn btn-orange" style="width:100%;background:var(--orange);color:white;border:none;padding:10px;border-radius:8px;font-weight:700;cursor:pointer;font-size:14px" onclick="addGigCard()">Přidat brigádu</button>
         </div>
@@ -3007,6 +3253,33 @@
             <div style="display:flex;justify-content:space-between"><span style="color:var(--ink-mid)">Průměrné hodnocení</span><strong>⭐ 4.8</strong></div>
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- GIG DETAIL MODAL -->
+<div id="gig-modal" class="zlep-modal-overlay" onclick="closeGigModal(event)">
+  <div class="zlep-modal" onclick="event.stopPropagation()" style="max-width:520px">
+    <div class="zlep-modal-header">
+      <h3 id="gig-modal-title">⚡ Detail brigády</h3>
+      <button class="close-btn" onclick="closeGigModal()">&times;</button>
+    </div>
+    <div class="zlep-modal-body">
+      <div id="gig-modal-desc" style="font-size:14px;color:var(--ink-mid);line-height:1.7;background:var(--cream);padding:16px;border-radius:8px;margin-bottom:16px"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:16px" id="gig-modal-details"></div>
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;padding:14px;background:#FEF3EC;border-radius:8px">
+        <div class="leaderboard-avatar" id="gig-modal-avatar" style="width:42px;height:42px;font-size:15px">JP</div>
+        <div>
+          <div id="gig-modal-author" style="font-weight:600;font-size:14px"></div>
+          <div id="gig-modal-rating" style="font-size:12px;color:var(--orange)"></div>
+        </div>
+        <div id="gig-modal-price" style="margin-left:auto;font-family:'Fraunces',serif;font-size:24px;font-weight:700;color:var(--orange)"></div>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn" style="flex:1;background:var(--orange);color:white;border:none;font-weight:700" onclick="toast('🎉 Brigáda přijata! Kontakt na zadavatele odeslán na email.');closeGigModal()">⚡ Beru to!</button>
+        <button class="btn" style="background:#FEF3EC;color:var(--orange);border:none" onclick="toast('Brigáda uložena do oblíbených.')">🔖 Uložit</button>
+        <button class="btn" style="background:var(--cream);color:var(--ink-mid);border:1px solid var(--border)" onclick="toast('Odkaz zkopírován!')">🔗</button>
       </div>
     </div>
   </div>
@@ -3296,8 +3569,13 @@
 <!-- ═══════════════════════════════ SPOJENÍ ═══════════════════════════════ -->
 <div id="view-spojeni" class="view">
   <div class="page-header container" style="border-radius:0;margin-bottom:0">
-    <h2>🤝 Hledám parťáka</h2>
-    <p>Najděte sousedy se stejnými zájmy, životní situací nebo potřebou. Spojení začíná tady.</p>
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
+      <div>
+        <h2>🤝 Hledám parťáka</h2>
+        <p>Najděte sousedy se stejnými zájmy, životní situací nebo potřebou. Spojení začíná tady.</p>
+      </div>
+      <button class="btn btn-green" style="white-space:nowrap;font-size:15px" onclick="openPartnerModal()">+ Přidat hledání</button>
+    </div>
   </div>
   <div class="container" style="padding-top:24px">
 
@@ -3310,49 +3588,49 @@
           <div class="sc-icon">🎾</div>
           <h4>Sport & pohyb</h4>
           <p>Tenis, běh, cyklo, plavání, posilovna…</p>
-          <div class="sc-count">14 hledání</div>
+          <div class="sc-count">2 hledání</div>
         </div>
         <div class="situation-card" onclick="filterSituation('psi','🐕 Majitelé psů')">
           <div class="sc-icon">🐕</div>
           <h4>Majitelé psů</h4>
           <p>Společné procházky, tipy, vzájemné hlídání…</p>
-          <div class="sc-count">8 hledání</div>
+          <div class="sc-count">1 hledání</div>
         </div>
         <div class="situation-card" onclick="filterSituation('rodice','👨‍👩‍👧 Rodiče s dětmi')">
           <div class="sc-icon">👨‍👩‍👧</div>
           <h4>Rodiče s dětmi</h4>
           <p>Výlety, hřiště, tipy na školu, školka…</p>
-          <div class="sc-count">11 hledání</div>
+          <div class="sc-count">2 hledání</div>
         </div>
         <div class="situation-card" onclick="filterSituation('novar','🏠 Nový v Jesenici')">
           <div class="sc-icon">🏠</div>
           <h4>Nový v Jesenici</h4>
           <p>Právě se stěhuju, hledám první kontakty…</p>
-          <div class="sc-count">6 hledání</div>
+          <div class="sc-count">1 hledání</div>
         </div>
         <div class="situation-card" onclick="filterSituation('senior','👴 Senioři')">
           <div class="sc-icon">👴</div>
           <h4>Senioři</h4>
           <p>Káva, karty, procházky, sdílení zkušeností…</p>
-          <div class="sc-count">5 hledání</div>
+          <div class="sc-count">1 hledání</div>
         </div>
         <div class="situation-card" onclick="filterSituation('hobby','🎨 Koníčky')">
           <div class="sc-icon">🎨</div>
           <h4>Koníčky</h4>
           <p>Zahrada, vaření, destilace, deskové hry…</p>
-          <div class="sc-count">9 hledání</div>
+          <div class="sc-count">1 hledání</div>
         </div>
         <div class="situation-card" onclick="filterSituation('spolujizda','🚗 Spolujízda')">
           <div class="sc-icon">🚗</div>
           <h4>Spolujízda</h4>
           <p>Do Prahy, na nákup, sdílení cest…</p>
-          <div class="sc-count">7 hledání</div>
+          <div class="sc-count">1 hledání</div>
         </div>
         <div class="situation-card" onclick="filterSituation('jazyk','🌍 Jazyky')">
           <div class="sc-icon">🌍</div>
           <h4>Jazyky & expats</h4>
           <p>Language exchange, cizinci v Jesenici…</p>
-          <div class="sc-count">4 hledání</div>
+          <div class="sc-count">1 hledání</div>
         </div>
       </div>
     </div>
@@ -3539,6 +3817,46 @@
             </div>
           </div>
 
+          <div class="partner-card" data-cat="novar" onclick="openSpojeni('Petr a Markéta S.','PS','#E07A3A','33 a 31 let · Osnice','Noví v Jesenici — hledáme první přátele','Přestěhovali jsme se z Prahy před 2 měsíci. Máme dceru (2 roky). Zatím nikoho neznáme. Rádi bychom potkali sousedy na kafe, procházku nebo grilování. Jsme otevření čemukoli! 😊','Nový soused','Víkendy','Dle nálady')">
+            <div class="partner-top">
+              <div class="partner-avatar" style="background:var(--orange)">PS</div>
+              <div class="partner-info">
+                <div class="partner-name">Petr a Markéta S.</div>
+                <div class="partner-age">33 a 31 let · Osnice · 🆕 Noví</div>
+                <div class="partner-headline"><strong>Noví v Jesenici</strong> — přestěhovali jsme se z Prahy, hledáme první přátele. Dcera 2 roky. Kafe, grilování, cokoli! 😊</div>
+              </div>
+            </div>
+            <div class="partner-tags">
+              <span class="partner-tag">🏠 Nový v Jesenici</span>
+              <span class="partner-tag">👶 Dcera 2 roky</span>
+              <span class="partner-tag">🍖 Grilování</span>
+            </div>
+            <div class="partner-footer">
+              <div class="partner-meta"><span>📍 Osnice</span><span>🕐 dnes</span><span>💬 9 odpovědí</span></div>
+              <button class="partner-btn" onclick="event.stopPropagation();toast('Zpráva Petrovi a Markétě odeslána!')">Napsat →</button>
+            </div>
+          </div>
+
+          <div class="partner-card" data-cat="rodice" onclick="openSpojeni('Ondřej B.','OB','#2A6EBB','40 let · Jesenice centrum','Táta dvou kluků hledá parťáka na víkendové výlety','Mám dva kluky (6 a 9) a rád bych našel dalšího tátu nebo rodinu na společné víkendové výlety — kola, lesy, hrady, koupaliště. Manželka ráda zůstane doma, takže jezdím s klukama sám. Čím víc dětí, tím líp! 🚴','Děti 6 a 9 let','Víkendy','2× měsíčně')">
+            <div class="partner-top">
+              <div class="partner-avatar" style="background:var(--blue)">OB</div>
+              <div class="partner-info">
+                <div class="partner-name">Ondřej B.</div>
+                <div class="partner-age">40 let · Jesenice centrum</div>
+                <div class="partner-headline"><strong>Táta dvou kluků</strong> (6 a 9) hledá partu na víkendové výlety — kola, hrady, koupaliště. Čím víc dětí, tím líp! 🚴</div>
+              </div>
+            </div>
+            <div class="partner-tags">
+              <span class="partner-tag">👦 Děti 6 a 9</span>
+              <span class="partner-tag">🚴 Výlety</span>
+              <span class="partner-tag">⛰️ Příroda</span>
+            </div>
+            <div class="partner-footer">
+              <div class="partner-meta"><span>📍 Jesenice</span><span>🕐 1 den</span><span>💬 5 odpovědí</span></div>
+              <button class="partner-btn" onclick="event.stopPropagation();toast('Zpráva Ondřejovi odeslána!')">Napsat →</button>
+            </div>
+          </div>
+
         </div><!-- /partner-grid -->
       </div>
 
@@ -3548,38 +3866,26 @@
         <div style="background:white;border:1px solid var(--border);border-radius:var(--r);padding:22px;margin-bottom:16px">
           <div style="font-family:'Fraunces',serif;font-size:17px;font-weight:700;margin-bottom:4px">🙋 Hledáte vy?</div>
           <p style="font-size:13px;color:var(--ink-mid);margin-bottom:16px">Přidejte hledání a nechte sousedy přijít za vámi.</p>
-          <div class="form-group">
-            <label>Co hledáte? (nadpis)</label>
-            <input type="text" placeholder="Např. Hledám parťáka na kolo" id="partner-title">
+          <button class="btn btn-green" style="width:100%" onclick="openPartnerModal()">+ Přidat hledání</button>
+        </div>
+
+        <!-- SUCCESS STORIES -->
+        <div class="sidebar-card" style="border-color:var(--green);background:var(--green-xlight)">
+          <h4>💚 Úspěšná spojení</h4>
+          <div style="font-size:13px;display:flex;flex-direction:column;gap:14px">
+            <div>
+              <div style="font-weight:600;color:var(--ink);margin-bottom:2px">Lucie + Radek — běžecká parta</div>
+              <div style="color:var(--ink-mid);line-height:1.5">„Potkali jsme se přes portál a teď běháme 3× týdně. Radek mě dotlačil k půlmaratonu!" — Lucie M.</div>
+            </div>
+            <div style="border-top:1px solid var(--border);padding-top:12px">
+              <div style="font-weight:600;color:var(--ink);margin-bottom:2px">Jana + 3 maminky — kávová parta</div>
+              <div style="color:var(--ink-mid);line-height:1.5">„Hledala jsem jednu kamarádku a získala tři. Scházíme se každý čtvrtek." — Jana K.</div>
+            </div>
+            <div style="border-top:1px solid var(--border);padding-top:12px">
+              <div style="font-weight:600;color:var(--ink);margin-bottom:2px">Petra + 2 spolujezdci — úspora 3 000 Kč/měs</div>
+              <div style="color:var(--ink-mid);line-height:1.5">„Jezdíme spolu do Prahy každý den. Ušetříme a ještě si pokecáme." — Petra D.</div>
+            </div>
           </div>
-          <div class="form-group">
-            <label>Kategorie</label>
-            <select id="partner-cat">
-              <option value="">— vyberte —</option>
-              <option value="sport">🎾 Sport & pohyb</option>
-              <option value="psi">🐕 Majitelé psů</option>
-              <option value="rodice">👨‍👩‍👧 Rodiče s dětmi</option>
-              <option value="novar">🏠 Nový v Jesenici</option>
-              <option value="senior">👴 Senioři</option>
-              <option value="hobby">🎨 Koníčky</option>
-              <option value="spolujizda">🚗 Spolujízda</option>
-              <option value="jazyk">🌍 Jazyky & expats</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Popis (kdo jste, co hledáte)</label>
-            <textarea placeholder="Napište pár vět o sobě a co hledáte..." id="partner-desc" style="min-height:80px"></textarea>
-          </div>
-          <div class="form-group">
-            <label>Lokalita</label>
-            <select id="partner-loc">
-              <option>Jesenice centrum</option>
-              <option>Osnice</option>
-              <option>Zdiměřice</option>
-              <option>Horní Jirčany</option>
-            </select>
-          </div>
-          <button class="btn btn-green" style="width:100%" onclick="addPartnerCard()">Přidat hledání</button>
         </div>
 
         <!-- HOW IT WORKS -->
@@ -3603,10 +3909,13 @@
           <h4>📊 Komunita v číslech</h4>
           <div style="font-size:13px;display:flex;flex-direction:column;gap:8px">
             <div style="display:flex;justify-content:space-between">
-              <span style="color:var(--ink-mid)">Aktivní hledání</span><strong>43</strong>
+              <span style="color:var(--ink-mid)">Aktivní hledání</span><strong>53</strong>
             </div>
             <div style="display:flex;justify-content:space-between">
               <span style="color:var(--ink-mid)">Spojení tento měsíc</span><strong style="color:var(--green)">28</strong>
+            </div>
+            <div style="display:flex;justify-content:space-between">
+              <span style="color:var(--ink-mid)">Úspěšnost spojení</span><strong style="color:var(--green)">74 %</strong>
             </div>
             <div style="display:flex;justify-content:space-between">
               <span style="color:var(--ink-mid)">Spolujízdaři ušetřili</span><strong style="color:var(--green)">~14 200 Kč</strong>
@@ -3614,6 +3923,60 @@
           </div>
         </div>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- PARTNER FORM MODAL -->
+<div id="partner-modal" class="zlep-modal-overlay" onclick="closePartnerModal(event)">
+  <div class="zlep-modal" onclick="event.stopPropagation()" style="max-width:520px">
+    <div class="zlep-modal-header">
+      <h3>🙋 Nové hledání</h3>
+      <button class="close-btn" onclick="closePartnerModal()">&times;</button>
+    </div>
+    <div class="zlep-modal-body">
+      <div class="form-group">
+        <label>Co hledáte? (nadpis)</label>
+        <input type="text" placeholder="Např. Hledám parťáka na kolo" id="partner-title">
+      </div>
+      <div class="form-group">
+        <label>Kategorie</label>
+        <select id="partner-cat">
+          <option value="">— vyberte —</option>
+          <option value="sport">🎾 Sport & pohyb</option>
+          <option value="psi">🐕 Majitelé psů</option>
+          <option value="rodice">👨‍👩‍👧 Rodiče s dětmi</option>
+          <option value="novar">🏠 Nový v Jesenici</option>
+          <option value="senior">👴 Senioři</option>
+          <option value="hobby">🎨 Koníčky</option>
+          <option value="spolujizda">🚗 Spolujízda</option>
+          <option value="jazyk">🌍 Jazyky & expats</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Pár slov o vás</label>
+        <input type="text" placeholder="Např. 35 let, Jesenice centrum" id="partner-about">
+      </div>
+      <div class="form-group">
+        <label>Popis (kdo jste, co hledáte)</label>
+        <textarea placeholder="Napište pár vět o sobě a co hledáte..." id="partner-desc" style="min-height:100px"></textarea>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div class="form-group">
+          <label>Lokalita</label>
+          <select id="partner-loc">
+            <option>Jesenice centrum</option>
+            <option>Osnice</option>
+            <option>Zdiměřice</option>
+            <option>Horní Jirčany</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Kdy se hodí?</label>
+          <input type="text" placeholder="Ráno / Večer / Víkendy" id="partner-when">
+        </div>
+      </div>
+      <button class="btn btn-green" style="width:100%;padding:14px;font-size:15px" onclick="addPartnerCard()">Přidat hledání</button>
     </div>
   </div>
 </div>
@@ -3775,30 +4138,76 @@ function claimGig(card, title) {
   btn.classList.remove('gig-btn');
   toast('🎉 Brigáda přijata! Kontakt na zadavatele byl odeslán na tvůj email.');
 }
+function openGigDetail(card, title, desc, price, loc, when, duration, initials, author, rating, color) {
+  document.getElementById('gig-modal-title').textContent = title;
+  document.getElementById('gig-modal-desc').textContent = desc;
+  document.getElementById('gig-modal-price').textContent = price;
+  document.getElementById('gig-modal-author').textContent = author;
+  document.getElementById('gig-modal-rating').textContent = rating;
+  const av = document.getElementById('gig-modal-avatar');
+  av.textContent = initials;
+  av.style.background = color;
+  document.getElementById('gig-modal-details').innerHTML = `
+    <div style="background:#FEF3EC;border-radius:8px;padding:10px;text-align:center">
+      <div style="font-size:10px;color:var(--orange);font-weight:600;text-transform:uppercase;margin-bottom:3px">Kde</div>
+      <div style="font-size:13px;font-weight:600">${loc.replace('📍 ','')}</div>
+    </div>
+    <div style="background:#FEF3EC;border-radius:8px;padding:10px;text-align:center">
+      <div style="font-size:10px;color:var(--orange);font-weight:600;text-transform:uppercase;margin-bottom:3px">Kdy</div>
+      <div style="font-size:13px;font-weight:600">${when.replace('⏰ ','')}</div>
+    </div>
+    <div style="background:#FEF3EC;border-radius:8px;padding:10px;text-align:center">
+      <div style="font-size:10px;color:var(--orange);font-weight:600;text-transform:uppercase;margin-bottom:3px">Trvání</div>
+      <div style="font-size:13px;font-weight:600">${duration.replace('⏱️ ','')}</div>
+    </div>`;
+  document.getElementById('gig-modal').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+function closeGigModal(e) {
+  if (e && e.target && e.target.id !== 'gig-modal') return;
+  document.getElementById('gig-modal').style.display = 'none';
+  document.body.style.overflow = '';
+}
+function toggleGigMode(mode) {
+  document.getElementById('gig-toggle-hledam').classList.toggle('active', mode === 'hledam');
+  document.getElementById('gig-toggle-nabizim').classList.toggle('active', mode === 'nabizim');
+  document.getElementById('gig-grid').style.display = mode === 'hledam' ? '' : 'none';
+  document.getElementById('gig-offers').style.display = mode === 'nabizim' ? '' : 'none';
+}
 function addGigCard() {
   const title = document.getElementById('gig-title-input').value.trim();
-  const price = document.getElementById('gig-price-input').value;
+  const price = document.getElementById('gig-price-input').value.trim();
   const loc = document.getElementById('gig-loc-input').value;
+  const cat = document.getElementById('gig-cat-input').value;
+  const desc = document.getElementById('gig-desc-input').value.trim();
+  const time = document.getElementById('gig-time-input').value.trim() || 'Dle dohody';
   if (!title || !price) { toast('Vyplň název a odměnu.'); return; }
+  const catEmojis = {zahrada:'🌿',zvirata:'🐕',deti:'👶',doucovani:'📚',it:'💻',stehovani:'📦',ostatni:'🔧'};
+  const em = catEmojis[cat] || '🔧';
   const card = document.createElement('div');
   card.className = 'gig-card';
-  card.dataset.cat = 'ostatni';
+  card.dataset.cat = cat;
+  card.onclick = function() { openGigDetail(card, em + ' ' + title, desc || 'Nová brigáda — čeká na zájemce.', price, '📍 ' + loc, '⏰ Ihned', '⏱️ ' + time, 'VY', 'Vy', '⭐ Nový', 'var(--green)'); };
   card.innerHTML = `
     <div class="gig-top">
-      <div><div class="gig-title">${title}</div><div class="gig-desc">Nová brigáda — čeká na zájemce.</div></div>
-      <div class="gig-price">${parseInt(price).toLocaleString('cs')} Kč</div>
+      <div><div class="gig-title">${em} ${title}</div><div class="gig-desc">${desc || 'Nová brigáda — čeká na zájemce.'}</div></div>
+      <div class="gig-price">${price}</div>
     </div>
-    <div class="gig-meta"><span>📍 ${loc}</span><span>⏰ Ihned</span></div>
+    <div class="gig-meta"><span>📍 ${loc}</span><span>⏰ Ihned</span><span>⏱️ ${time}</span></div>
     <div class="gig-footer">
       <div style="display:flex;gap:6px;align-items:center">
         <div class="leaderboard-avatar" style="background:var(--green);width:28px;height:28px;font-size:11px">VY</div>
         <span style="font-size:12px;color:var(--ink-mid)">Vy · ⭐ Nový</span>
       </div>
-      <div style="display:flex;gap:8px"><span class="gig-urgency gig-urgency-new">🆕 Nová</span><button class="gig-btn" onclick="toast('Toto je váš inzerát!')">Váš inzerát</button></div>
+      <div style="display:flex;gap:8px"><span class="gig-urgency gig-urgency-new">🆕 Nová</span><button class="gig-btn" onclick="event.stopPropagation();toast('Toto je váš inzerát!')">Váš inzerát</button></div>
     </div>`;
   document.getElementById('gig-grid').insertBefore(card, document.getElementById('gig-grid').firstChild);
   document.getElementById('gig-title-input').value = '';
   document.getElementById('gig-price-input').value = '';
+  document.getElementById('gig-desc-input').value = '';
+  document.getElementById('gig-time-input').value = '';
+  const cnt = document.getElementById('gig-count');
+  if (cnt) cnt.textContent = parseInt(cnt.textContent) + 1;
   toast('✅ Brigáda přidána! Místní ji uvidí ihned.');
 }
 
@@ -4253,11 +4662,22 @@ function resetSituationFilter() {
   document.querySelectorAll('#partner-grid .partner-card').forEach(c => c.style.display = '');
   document.getElementById('active-filter-banner').style.display = 'none';
 }
+function openPartnerModal() {
+  document.getElementById('partner-modal').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+function closePartnerModal(e) {
+  if (e && e.target && e.target.id !== 'partner-modal') return;
+  document.getElementById('partner-modal').style.display = 'none';
+  document.body.style.overflow = '';
+}
 function addPartnerCard() {
   const title = document.getElementById('partner-title').value.trim();
   const cat = document.getElementById('partner-cat').value;
   const desc = document.getElementById('partner-desc').value.trim();
   const loc = document.getElementById('partner-loc').value;
+  const about = document.getElementById('partner-about') ? document.getElementById('partner-about').value.trim() : '';
+  const when = document.getElementById('partner-when') ? document.getElementById('partner-when').value.trim() : 'Flexibilní';
   if (!title || !cat) { toast('Vyplňte název a kategorii.'); return; }
   const catEmojis = {sport:'🎾',psi:'🐕',rodice:'👨‍👩‍👧',novar:'🏠',senior:'👴',hobby:'🎨',spolujizda:'🚗',jazyk:'🌍'};
   const avatarColors = {sport:'#1F5C3A',psi:'#2A6EBB',rodice:'#C0392B',novar:'#E07A3A',senior:'#888',hobby:'#2D7A52',spolujizda:'#E07A3A',jazyk:'#9B59B6'};
@@ -4272,23 +4692,27 @@ function addPartnerCard() {
       <div class="partner-avatar" style="background:${color}">VY</div>
       <div class="partner-info">
         <div class="partner-name">Vy</div>
-        <div class="partner-age">Jesenice · ${loc}</div>
+        <div class="partner-age">${about || 'Jesenice · ' + loc}</div>
         <div class="partner-headline">${title}</div>
       </div>
     </div>
     <div class="partner-tags">
       <span class="partner-tag">${em} ${catLabels[cat]}</span>
       <span class="partner-tag">📍 ${loc}</span>
+      ${when ? '<span class="partner-tag">⏰ ' + when + '</span>' : ''}
     </div>
     <div class="partner-footer">
       <div class="partner-meta"><span>🕐 právě teď</span><span>💬 0 odpovědí</span></div>
-      <button class="partner-btn" onclick="toast('To je váš vlastní inzerát!')">Váš inzerát</button>
+      <button class="partner-btn" onclick="event.stopPropagation();toast('To je váš vlastní inzerát!')">Váš inzerát</button>
     </div>`;
-  card.onclick = () => openSpojeni('Vy', 'VY', color, loc, title, desc || 'Bez popisu.', catLabels[cat], 'Flexibilní', 'Dle dohody');
+  card.onclick = () => openSpojeni('Vy', 'VY', color, about || loc, title, desc || 'Bez popisu.', catLabels[cat], when || 'Flexibilní', 'Dle dohody');
   document.getElementById('partner-grid').insertBefore(card, document.getElementById('partner-grid').firstChild);
   document.getElementById('partner-title').value = '';
   document.getElementById('partner-desc').value = '';
   document.getElementById('partner-cat').value = '';
+  if (document.getElementById('partner-about')) document.getElementById('partner-about').value = '';
+  if (document.getElementById('partner-when')) document.getElementById('partner-when').value = '';
+  closePartnerModal();
   toast('Hledání přidáno! Sousedé vám mohou napsat.');
 }
 
