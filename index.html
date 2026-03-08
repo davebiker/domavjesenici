@@ -94,6 +94,7 @@
   .view { display: none; animation: fadeIn 0.3s ease; }
   .view.active { display: block; }
   @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .4; } }
 
   /* HERO */
   .hero {
@@ -1358,7 +1359,6 @@
     <!-- TABS -->
     <div class="tabs" id="community-tabs">
       <button class="tab active" onclick="switchCommunityTab('nastenka',this)">📋 Nástěnka</button>
-      <button class="tab" onclick="switchCommunityTab('aktivita',this)">⚡ Aktivita</button>
       <button class="tab" onclick="switchCommunityTab('ankety',this)">🗳️ Ankety</button>
     </div>
 
@@ -1366,6 +1366,64 @@
     <div id="com-tab-nastenka" class="tab-content active">
       <div class="sidebar-layout">
         <div>
+          <!-- LIVE ACTIVITY -->
+          <div style="background:white;border:1px solid var(--border);border-radius:var(--r);padding:16px 20px;margin-bottom:20px">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+              <div style="font-weight:700;font-size:14px;display:flex;align-items:center;gap:6px"><span style="display:inline-block;width:8px;height:8px;background:#27AE60;border-radius:50%;animation:pulse 2s infinite"></span> Co se právě děje</div>
+              <button style="font-size:12px;color:var(--ink-light);background:none;border:none;cursor:pointer" onclick="document.getElementById('activity-section').style.display=document.getElementById('activity-section').style.display==='none'?'':'none'">Sbalit / Rozbalit</button>
+            </div>
+            <div id="activity-section" class="activity-feed" style="max-height:280px;overflow-y:auto">
+              <div class="activity-item" style="padding:10px 0">
+                <div class="activity-icon" style="background:#FEF3EC;color:var(--orange);width:32px;height:32px;font-size:14px">⚡</div>
+                <div class="activity-body" style="font-size:13px">
+                  <div><strong>Kateřina M.</strong> přidala brigádu <a onclick="showView('brigady')" style="color:var(--green);cursor:pointer;font-weight:600">Hlídání po škole</a></div>
+                  <div class="activity-time">před 12 min</div>
+                </div>
+              </div>
+              <div class="activity-item" style="padding:10px 0">
+                <div class="activity-icon" style="background:var(--green-light);color:var(--green);width:32px;height:32px;font-size:14px">💡</div>
+                <div class="activity-body" style="font-size:13px">
+                  <div><strong>5 sousedů</strong> hlasovalo pro <a onclick="showView('issues')" style="color:var(--green);cursor:pointer;font-weight:600">Rozbitý chodník u pošty</a></div>
+                  <div class="activity-time">před 25 min</div>
+                </div>
+              </div>
+              <div class="activity-item" style="padding:10px 0">
+                <div class="activity-icon" style="background:#EBF3FC;color:var(--blue);width:32px;height:32px;font-size:14px">📅</div>
+                <div class="activity-body" style="font-size:13px">
+                  <div><strong>Radek P.</strong> se přihlásil na <a onclick="showView('events')" style="color:var(--green);cursor:pointer;font-weight:600">Sportovní den</a></div>
+                  <div class="activity-time">před 40 min</div>
+                </div>
+              </div>
+              <div class="activity-item" style="padding:10px 0">
+                <div class="activity-icon" style="background:var(--green-light);color:var(--green);width:32px;height:32px;font-size:14px">🤝</div>
+                <div class="activity-body" style="font-size:13px">
+                  <div><strong>Petr a Markéta S.</strong> hledají parťáky — <a onclick="showView('spojeni')" style="color:var(--green);cursor:pointer;font-weight:600">Noví v Jesenici</a></div>
+                  <div class="activity-time">před 1 hod</div>
+                </div>
+              </div>
+              <div class="activity-item" style="padding:10px 0">
+                <div class="activity-icon" style="background:#F5EEF8;color:#9B59B6;width:32px;height:32px;font-size:14px">🛒</div>
+                <div class="activity-body" style="font-size:13px">
+                  <div><strong>Martina N.</strong> přidala do <a onclick="showView('bazar')" style="color:var(--green);cursor:pointer;font-weight:600">Bazaru</a> — Dětské kolo 20"</div>
+                  <div class="activity-time">před 1 hod</div>
+                </div>
+              </div>
+              <div class="activity-item" style="padding:10px 0">
+                <div class="activity-icon" style="background:var(--green-light);color:var(--green);width:32px;height:32px;font-size:14px">✅</div>
+                <div class="activity-body" style="font-size:13px">
+                  <div>Zlepšovák <a onclick="showView('issues')" style="color:var(--green);cursor:pointer;font-weight:600">Osvětlení — Osnice</a> <strong style="color:var(--green)">vyřešen</strong></div>
+                  <div class="activity-time">před 3 hod</div>
+                </div>
+              </div>
+              <div class="activity-item" style="padding:10px 0;border-bottom:none">
+                <div class="activity-icon" style="background:#FDEDEC;color:#E74C3C;width:32px;height:32px;font-size:14px">🏆</div>
+                <div class="activity-body" style="font-size:13px">
+                  <div><strong>Klára H.</strong> získala odznak <strong style="color:#9B59B6">Na vlně</strong></div>
+                  <div class="activity-time">před 6 hod</div>
+                </div>
+              </div>
+            </div>
+          </div>
           <!-- NEW POST -->
           <div class="new-post-box">
             <div class="avatar">VY</div>
@@ -1544,25 +1602,6 @@
 
         <!-- SIDEBAR -->
         <div>
-          <!-- PARTS OF TOWN -->
-          <div class="sidebar-card">
-            <h4>🏙️ Části města</h4>
-            <div style="display:flex;flex-direction:column;gap:6px;font-size:13px">
-              <label style="cursor:pointer;display:flex;align-items:center;gap:8px;margin:0;color:var(--ink);font-weight:400">
-                <input type="checkbox" checked> Jesenice (centrum)
-              </label>
-              <label style="cursor:pointer;display:flex;align-items:center;gap:8px;margin:0;color:var(--ink);font-weight:400">
-                <input type="checkbox" checked> Osnice
-              </label>
-              <label style="cursor:pointer;display:flex;align-items:center;gap:8px;margin:0;color:var(--ink);font-weight:400">
-                <input type="checkbox" checked> Zdiměřice
-              </label>
-              <label style="cursor:pointer;display:flex;align-items:center;gap:8px;margin:0;color:var(--ink);font-weight:400">
-                <input type="checkbox" checked> Horní Jirčany
-              </label>
-            </div>
-          </div>
-
           <!-- NEJAKTIVNĚJŠÍ -->
           <div class="sidebar-card" style="border-color:var(--green)">
             <h4>🏅 Nejaktivnější sousedé</h4>
@@ -1617,93 +1656,6 @@
               <a onclick="showView('spojeni')" style="font-size:13px;color:var(--green);cursor:pointer;font-weight:500">🤝 Parťák — najděte souseda</a>
               <a onclick="showView('bazar')" style="font-size:13px;color:var(--green);cursor:pointer;font-weight:500">🛒 Bazar — prodejte / darujte</a>
               <a onclick="showView('events')" style="font-size:13px;color:var(--green);cursor:pointer;font-weight:500">📅 Akce — co se děje</a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ═══ AKTIVITA TAB ═══ -->
-    <div id="com-tab-aktivita" class="tab-content">
-      <div style="max-width:680px">
-        <div style="font-size:14px;color:var(--ink-mid);margin-bottom:16px">Co se právě děje v Jesenici — živý přehled z celého portálu.</div>
-
-        <div class="activity-feed">
-          <div class="activity-item">
-            <div class="activity-icon" style="background:#FEF3EC;color:var(--orange)">⚡</div>
-            <div class="activity-body">
-              <div><strong>Kateřina M.</strong> přidala brigádu <a onclick="showView('brigady')" style="color:var(--green);cursor:pointer;font-weight:600">Hlídání po škole — pravidelně</a></div>
-              <div class="activity-time">před 12 min</div>
-            </div>
-          </div>
-          <div class="activity-item">
-            <div class="activity-icon" style="background:var(--green-light);color:var(--green)">💡</div>
-            <div class="activity-body">
-              <div><strong>5 sousedů</strong> hlasovalo pro zlepšovák <a onclick="showView('issues')" style="color:var(--green);cursor:pointer;font-weight:600">Rozbitý chodník u pošty</a></div>
-              <div class="activity-time">před 25 min</div>
-            </div>
-          </div>
-          <div class="activity-item">
-            <div class="activity-icon" style="background:#EBF3FC;color:var(--blue)">📅</div>
-            <div class="activity-body">
-              <div><strong>Radek P.</strong> se přihlásil na akci <a onclick="showView('events')" style="color:var(--green);cursor:pointer;font-weight:600">Sportovní den — 1 rok areálu</a></div>
-              <div class="activity-time">před 40 min</div>
-            </div>
-          </div>
-          <div class="activity-item">
-            <div class="activity-icon" style="background:var(--green-light);color:var(--green)">🤝</div>
-            <div class="activity-body">
-              <div><strong>Petr a Markéta S.</strong> přidali hledání v <a onclick="showView('spojeni')" style="color:var(--green);cursor:pointer;font-weight:600">Hledám parťáka</a> — Noví v Jesenici</div>
-              <div class="activity-time">před 1 hod</div>
-            </div>
-          </div>
-          <div class="activity-item">
-            <div class="activity-icon" style="background:#F5EEF8;color:#9B59B6">🛒</div>
-            <div class="activity-body">
-              <div><strong>Martina N.</strong> přidala inzerát do <a onclick="showView('bazar')" style="color:var(--green);cursor:pointer;font-weight:600">Bazaru</a> — Dětské kolo 20"</div>
-              <div class="activity-time">před 1 hod</div>
-            </div>
-          </div>
-          <div class="activity-item">
-            <div class="activity-icon" style="background:#FEF3EC;color:var(--orange)">⚡</div>
-            <div class="activity-body">
-              <div><strong>Jakub R.</strong> přijal brigádu <a onclick="showView('brigady')" style="color:var(--green);cursor:pointer;font-weight:600">Posečení trávníku — Zdiměřice</a></div>
-              <div class="activity-time">před 2 hod</div>
-            </div>
-          </div>
-          <div class="activity-item">
-            <div class="activity-icon" style="background:var(--green-light);color:var(--green)">💡</div>
-            <div class="activity-body">
-              <div>Zlepšovák <a onclick="showView('issues')" style="color:var(--green);cursor:pointer;font-weight:600">Chybějící osvětlení — Osnice</a> byl <strong style="color:var(--green)">vyřešen</strong> městem</div>
-              <div class="activity-time">před 3 hod</div>
-            </div>
-          </div>
-          <div class="activity-item">
-            <div class="activity-icon" style="background:#EBF3FC;color:var(--blue)">📅</div>
-            <div class="activity-body">
-              <div><strong>Nová akce:</strong> <a onclick="showView('events')" style="color:var(--green);cursor:pointer;font-weight:600">Zastupitelstvo — veřejné zasedání</a> — 13. března 18:00</div>
-              <div class="activity-time">před 4 hod</div>
-            </div>
-          </div>
-          <div class="activity-item">
-            <div class="activity-icon" style="background:var(--green-light);color:var(--green)">🤝</div>
-            <div class="activity-body">
-              <div><strong>Lucie M.</strong> a <strong>Radek P.</strong> se spojili přes <a onclick="showView('spojeni')" style="color:var(--green);cursor:pointer;font-weight:600">Hledám parťáka</a> — běžecká parta!</div>
-              <div class="activity-time">před 5 hod</div>
-            </div>
-          </div>
-          <div class="activity-item">
-            <div class="activity-icon" style="background:#FDEDEC;color:#E74C3C">🏆</div>
-            <div class="activity-body">
-              <div><strong>Klára H.</strong> získala odznak <strong style="color:#9B59B6">Na vlně</strong> — 3 výzvy v jednom měsíci!</div>
-              <div class="activity-time">před 6 hod</div>
-            </div>
-          </div>
-          <div class="activity-item">
-            <div class="activity-icon" style="background:#FEF3EC;color:var(--orange)">⚡</div>
-            <div class="activity-body">
-              <div><strong>Marie V.</strong> přidala brigádu <a onclick="showView('brigady')" style="color:var(--green);cursor:pointer;font-weight:600">Nastavení WiFi a počítače</a> — 300 Kč</div>
-              <div class="activity-time">před 8 hod</div>
             </div>
           </div>
         </div>
@@ -4805,7 +4757,7 @@ function switchTab(group, tab, el) {
 /* ═══ COMMUNITY ═══ */
 function switchCommunityTab(tab, el) {
   document.querySelectorAll('#community-tabs .tab').forEach(t => t.classList.remove('active'));
-  ['nastenka','aktivita','ankety'].forEach(t => {
+  ['nastenka','ankety'].forEach(t => {
     const el2 = document.getElementById('com-tab-' + t);
     if (el2) el2.classList.remove('active');
   });
