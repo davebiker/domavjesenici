@@ -893,6 +893,53 @@
   
   .sidebar-card { background: white; border: 1px solid var(--border); border-radius: var(--r); padding: 20px; margin-bottom: 16px; }
   .sidebar-card h4 { font-weight: 700; font-size: 14px; margin-bottom: 12px; color: var(--ink); }
+
+  /* EVENTS */
+  .event-card {
+    display: flex; gap: 16px; background: white; border-radius: var(--r);
+    border: 1px solid var(--border); padding: 20px; margin-bottom: 12px;
+    transition: box-shadow .2s, transform .15s; cursor: default;
+  }
+  .event-card:hover { box-shadow: var(--shadow); transform: translateY(-1px); }
+  .evt-date {
+    min-width: 56px; height: 56px; border-radius: var(--r-sm);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    font-weight: 700; line-height: 1.1; flex-shrink: 0;
+  }
+  .evt-day { font-size: 22px; }
+  .evt-month { font-size: 11px; text-transform: uppercase; letter-spacing: .5px; }
+  .evt-body { flex: 1; min-width: 0; }
+  .evt-badges { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 6px; }
+  .evt-badge {
+    display: inline-block; padding: 2px 10px; border-radius: 20px;
+    font-size: 12px; font-weight: 600;
+  }
+  .evt-urgency {
+    display: inline-block; padding: 2px 10px; border-radius: 20px;
+    font-size: 12px; font-weight: 600;
+  }
+  .evt-title { font-family: 'Fraunces', serif; font-size: 17px; font-weight: 700; margin-bottom: 4px; }
+  .evt-detail { display: flex; gap: 14px; flex-wrap: wrap; font-size: 13px; color: var(--ink-light); margin-bottom: 6px; }
+  .evt-desc { font-size: 13px; color: var(--ink-mid); margin-bottom: 10px; line-height: 1.5; }
+  .evt-footer { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+  .evt-attendees { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--ink-light); }
+  .evt-actions { display: flex; gap: 6px; }
+  .evt-btn {
+    padding: 6px 12px; border-radius: var(--r-sm); border: 1px solid var(--border);
+    background: white; font-size: 13px; cursor: pointer; transition: all .15s;
+  }
+  .evt-btn:hover { background: var(--cream); }
+  .evt-btn-primary {
+    background: var(--green-light); color: var(--green); border-color: var(--green-light); font-weight: 600;
+  }
+  .evt-btn-primary:hover { background: var(--green); color: white; }
+  .evt-btn-primary.joined { background: var(--green); color: white; border-color: var(--green); }
+  @media (max-width: 600px) {
+    .event-card { flex-direction: column; gap: 10px; }
+    .evt-date { flex-direction: row; gap: 6px; width: fit-content; height: auto; padding: 6px 14px; }
+    .evt-detail { gap: 8px; }
+    .evt-footer { flex-direction: column; align-items: flex-start; }
+  }
 </style>
 </head>
 <body>
@@ -1759,109 +1806,412 @@
 
 <!-- ═══════════════════════════════ EVENTS ═══════════════════════════════ -->
 <div id="view-events" class="view">
+  <!-- HEADER -->
   <div class="page-header container" style="border-radius:0;margin-bottom:0">
-    <h2>📅 Akce a spolky</h2>
-    <p>Vše co se děje v Jesenici — sport, kultura, sousedská setkání.</p>
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:16px">
+      <div>
+        <h2>📅 Akce a spolky</h2>
+        <p>Vše co se děje v Jesenici — sport, kultura, sousedská setkání, radnice.</p>
+      </div>
+      <button class="btn btn-green" style="white-space:nowrap;font-size:15px" onclick="openEventModal()">+ Přidat akci</button>
+    </div>
+    <div class="zlep-stats" style="margin-top:16px">
+      <div class="zlep-stat"><div class="zlep-stat-num">12</div><div class="zlep-stat-label">akcí tento měsíc</div></div>
+      <div class="zlep-stat"><div class="zlep-stat-num">187</div><div class="zlep-stat-label">přihlášených</div></div>
+      <div class="zlep-stat"><div class="zlep-stat-num">8</div><div class="zlep-stat-label">spolků</div></div>
+    </div>
   </div>
+
   <div class="container" style="padding-top:24px">
+
+    <!-- HERO EVENT -->
+    <div style="background:linear-gradient(135deg,var(--green) 0%,#1a4d30 100%);border-radius:var(--r);padding:28px 28px;margin-bottom:24px;display:flex;gap:24px;align-items:center;flex-wrap:wrap">
+      <div style="background:rgba(255,255,255,0.15);border-radius:12px;padding:14px 18px;text-align:center;min-width:70px">
+        <div style="font-family:'Fraunces',serif;font-size:36px;font-weight:700;color:white;line-height:1">21</div>
+        <div style="font-size:13px;font-weight:600;color:rgba(255,255,255,0.8);text-transform:uppercase">Bře</div>
+      </div>
+      <div style="flex:1;min-width:200px">
+        <div style="font-size:11px;font-weight:600;color:rgba(255,255,255,0.6);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px">Nejbližší velká akce</div>
+        <div style="font-family:'Fraunces',serif;font-size:22px;font-weight:700;color:white;margin-bottom:4px">Reprezentační ples města Jesenice</div>
+        <div style="font-size:14px;color:rgba(255,255,255,0.8)">19:00 · Sportovní areál · Kapela Uši Music Band · Vstupenky od 450 Kč</div>
+        <div style="display:flex;gap:6px;margin-top:10px;align-items:center">
+          <div style="display:flex">
+            <div class="avatar" style="width:24px;height:24px;font-size:9px;border:2px solid var(--green);margin-right:-6px">JK</div>
+            <div class="avatar" style="width:24px;height:24px;font-size:9px;border:2px solid var(--green);margin-right:-6px">MS</div>
+            <div class="avatar" style="width:24px;height:24px;font-size:9px;border:2px solid var(--green)">+34</div>
+          </div>
+          <span style="font-size:12px;color:rgba(255,255,255,0.7)">Jana, Marek a 34 dalších jde</span>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn btn-white" onclick="toast('Přesměrování na Ticketportal...')">🎟️ Koupit lístky</button>
+        <button class="btn btn-outline" onclick="toast('Přidáno do kalendáře!')">📅 Přidat</button>
+      </div>
+    </div>
+
+    <!-- FILTERS -->
+    <div class="chips" style="margin-bottom:8px">
+      <div class="chip active" onclick="evtCatFilter(this,'all')">Vše</div>
+      <div class="chip" onclick="evtCatFilter(this,'sport')">⚽ Sport</div>
+      <div class="chip" onclick="evtCatFilter(this,'kultura')">🎭 Kultura</div>
+      <div class="chip" onclick="evtCatFilter(this,'komunita')">🤝 Komunita</div>
+      <div class="chip" onclick="evtCatFilter(this,'deti')">👶 Děti</div>
+      <div class="chip" onclick="evtCatFilter(this,'senior')">👴 Senioři</div>
+      <div class="chip" onclick="evtCatFilter(this,'priroda')">🌿 Příroda</div>
+      <div class="chip" onclick="evtCatFilter(this,'radnice')">🏛️ Radnice</div>
+    </div>
+    <div class="chips" style="margin-bottom:20px">
+      <div class="chip active" onclick="evtLocFilter(this,'all')" style="font-size:12px">Celá Jesenice</div>
+      <div class="chip" onclick="evtLocFilter(this,'centrum')" style="font-size:12px">Centrum</div>
+      <div class="chip" onclick="evtLocFilter(this,'zdimerice')" style="font-size:12px">Zdiměřice</div>
+      <div class="chip" onclick="evtLocFilter(this,'osnice')" style="font-size:12px">Osnice</div>
+      <div class="chip" onclick="evtLocFilter(this,'jircany')" style="font-size:12px">H. Jirčany</div>
+    </div>
+
     <div class="sidebar-layout">
       <div>
-        <div class="chips" style="margin-bottom:16px">
-          <div class="chip active">Vše</div>
-          <div class="chip">Sport</div>
-          <div class="chip">Kultura</div>
-          <div class="chip">Komunita</div>
-          <div class="chip">Děti</div>
-          <div class="chip">Senioři</div>
-        </div>
-        <div class="event">
-          <div class="event-date">
-            <div class="event-day">13</div>
-            <div class="event-month">Bře</div>
+        <!-- EVENTS LIST -->
+        <div id="events-list">
+
+          <div class="event-card" data-cat="radnice" data-loc="centrum" style="border-left:4px solid #9B59B6">
+            <div class="evt-date" style="background:#F5EEF8;color:#9B59B6">
+              <div class="evt-day">13</div><div class="evt-month">Bře</div>
+            </div>
+            <div class="evt-body">
+              <div class="evt-badges">
+                <span class="evt-badge" style="background:#F5EEF8;color:#9B59B6">🏛️ Radnice</span>
+                <span class="evt-urgency" style="background:#FEF3EC;color:var(--orange)">Za 5 dní</span>
+              </div>
+              <h4 class="evt-title">Zastupitelstvo — veřejné zasedání</h4>
+              <div class="evt-detail">
+                <span>🕐 18:00</span><span>📍 MÚ Jesenice, Budějovická 303</span><span>🎟️ Volný vstup</span>
+              </div>
+              <p class="evt-desc">Projednávání rozpočtu, územního plánu a investičních projektů. Veřejnost může klást dotazy.</p>
+              <div class="evt-footer">
+                <div class="evt-attendees">
+                  <div class="avatar" style="width:22px;height:22px;font-size:9px;margin-right:-4px">PD</div>
+                  <div class="avatar" style="width:22px;height:22px;font-size:9px">+8</div>
+                  <span>9 přijde</span>
+                </div>
+                <div class="evt-actions">
+                  <button class="evt-btn evt-btn-primary" onclick="evtJoin(this)">✅ Přijdu</button>
+                  <button class="evt-btn" onclick="toast('Přidáno do kalendáře!')">📅</button>
+                  <button class="evt-btn" onclick="toast('Odkaz zkopírován!')">🔗</button>
+                </div>
+              </div>
+            </div>
           </div>
-          <div class="event-info">
-            <h4>Zastupitelstvo — veřejné zasedání</h4>
-            <p>18:00 · MÚ Jesenice, Budějovická 303 · Volný vstup</p>
+
+          <div class="event-card" data-cat="komunita" data-loc="jircany" style="border-left:4px solid var(--green)">
+            <div class="evt-date" style="background:var(--green-light);color:var(--green)">
+              <div class="evt-day">15</div><div class="evt-month">Bře</div>
+            </div>
+            <div class="evt-body">
+              <div class="evt-badges">
+                <span class="evt-badge" style="background:var(--green-light);color:var(--green)">🤝 Komunita</span>
+                <span class="evt-urgency" style="background:#FEF3EC;color:var(--orange)">Za 7 dní</span>
+              </div>
+              <h4 class="evt-title">Sousedský úklid — Horní Jirčany</h4>
+              <div class="evt-detail">
+                <span>🕐 9:00–12:00</span><span>📍 U hasičárny, H. Jirčany</span><span>🎟️ Zdarma</span>
+              </div>
+              <p class="evt-desc">Jarní úklid okolí. Rukavice a pytle zajištěny. Po úklidu grilování a pivo pro dobrovolníky!</p>
+              <div class="evt-footer">
+                <div class="evt-attendees">
+                  <div class="avatar" style="width:22px;height:22px;font-size:9px;margin-right:-4px">TH</div>
+                  <div class="avatar" style="width:22px;height:22px;font-size:9px;margin-right:-4px">JK</div>
+                  <div class="avatar" style="width:22px;height:22px;font-size:9px">+15</div>
+                  <span>17 přijde</span>
+                </div>
+                <div class="evt-actions">
+                  <button class="evt-btn evt-btn-primary" onclick="evtJoin(this)">✅ Přijdu</button>
+                  <button class="evt-btn" onclick="toast('Přidáno do kalendáře!')">📅</button>
+                  <button class="evt-btn" onclick="toast('Odkaz zkopírován!')">🔗</button>
+                </div>
+              </div>
+            </div>
           </div>
-          <button class="btn" style="padding:6px 14px;font-size:12px;background:var(--green-light);color:var(--green);margin-left:auto;align-self:center;white-space:nowrap" onclick="toast('Přidáno do kalendáře!')">📅 Přidat</button>
-        </div>
-        <div class="event">
-          <div class="event-date">
-            <div class="event-day">15</div>
-            <div class="event-month">Bře</div>
+
+          <div class="event-card" data-cat="sport" data-loc="centrum" style="border-left:4px solid var(--blue)">
+            <div class="evt-date" style="background:#EBF3FC;color:var(--blue)">
+              <div class="evt-day">2</div><div class="evt-month">Dub</div>
+            </div>
+            <div class="evt-body">
+              <div class="evt-badges">
+                <span class="evt-badge" style="background:#EBF3FC;color:var(--blue)">⚽ Sport</span>
+              </div>
+              <h4 class="evt-title">Sportovní den — 1 rok areálu</h4>
+              <div class="evt-detail">
+                <span>🕐 10:00–18:00</span><span>📍 Sportovní areál Jesenice</span><span>🎟️ Vstup zdarma</span>
+              </div>
+              <p class="evt-desc">Turnaje ve fotbale, volejbale a tenisu. Ukázky bojových umění, dětský program, stánky s občerstvením.</p>
+              <div class="evt-footer">
+                <div class="evt-attendees">
+                  <div class="avatar" style="width:22px;height:22px;font-size:9px;margin-right:-4px">RP</div>
+                  <div class="avatar" style="width:22px;height:22px;font-size:9px">+42</div>
+                  <span>43 přijde</span>
+                </div>
+                <div class="evt-actions">
+                  <button class="evt-btn evt-btn-primary" onclick="evtJoin(this)">✅ Přijdu</button>
+                  <button class="evt-btn" onclick="toast('Přidáno do kalendáře!')">📅</button>
+                  <button class="evt-btn" onclick="toast('Odkaz zkopírován!')">🔗</button>
+                </div>
+              </div>
+            </div>
           </div>
-          <div class="event-info">
-            <h4>Sousedský úklid — Horní Jirčany</h4>
-            <p>9:00 · U hasičárny · Komunitní akce · Přijďte s rukavicemi</p>
+
+          <div class="event-card" data-cat="deti" data-loc="centrum" style="border-left:4px solid var(--orange)">
+            <div class="evt-date" style="background:#FEF3EC;color:var(--orange)">
+              <div class="evt-day">12</div><div class="evt-month">Dub</div>
+            </div>
+            <div class="evt-body">
+              <div class="evt-badges">
+                <span class="evt-badge" style="background:#FEF3EC;color:var(--orange)">👶 Děti</span>
+              </div>
+              <h4 class="evt-title">Velikonoční dílny pro děti</h4>
+              <div class="evt-detail">
+                <span>🕐 14:00–17:00</span><span>📍 Komunitní centrum Jesenice</span><span>🎟️ 50 Kč/dítě</span>
+              </div>
+              <p class="evt-desc">Zdobení vajíček, pletení pomlázek, malování. Pro děti 3–10 let. Materiál v ceně vstupného.</p>
+              <div class="evt-footer">
+                <div class="evt-attendees">
+                  <div class="avatar" style="width:22px;height:22px;font-size:9px;margin-right:-4px">JK</div>
+                  <div class="avatar" style="width:22px;height:22px;font-size:9px">+21</div>
+                  <span>22 přijde</span>
+                </div>
+                <div class="evt-actions">
+                  <button class="evt-btn evt-btn-primary" onclick="evtJoin(this)">✅ Přijdu</button>
+                  <button class="evt-btn" onclick="toast('Přidáno do kalendáře!')">📅</button>
+                  <button class="evt-btn" onclick="toast('Odkaz zkopírován!')">🔗</button>
+                </div>
+              </div>
+            </div>
           </div>
-          <button class="btn" style="padding:6px 14px;font-size:12px;background:var(--green-light);color:var(--green);margin-left:auto;align-self:center;white-space:nowrap" onclick="toast('Zapojení potvrzeno! Uvidíme se v 9:00.')">✅ Přihlásit</button>
-        </div>
-        <div class="event">
-          <div class="event-date">
-            <div class="event-day">21</div>
-            <div class="event-month">Bře</div>
+
+          <div class="event-card" data-cat="priroda" data-loc="osnice" style="border-left:4px solid #27AE60">
+            <div class="evt-date" style="background:#E8F8EE;color:#27AE60">
+              <div class="evt-day">19</div><div class="evt-month">Dub</div>
+            </div>
+            <div class="evt-body">
+              <div class="evt-badges">
+                <span class="evt-badge" style="background:#E8F8EE;color:#27AE60">🌿 Příroda</span>
+              </div>
+              <h4 class="evt-title">Výsadba stromů — lesopark Osnice</h4>
+              <div class="evt-detail">
+                <span>🕐 9:00–13:00</span><span>📍 Lesopark za Osnicí</span><span>🎟️ Zdarma</span>
+              </div>
+              <p class="evt-desc">Společná výsadba 50 lip a dubů. Nářadí zajištěno. Po akci opékání buřtů pro dobrovolníky.</p>
+              <div class="evt-footer">
+                <div class="evt-attendees">
+                  <div class="avatar" style="width:22px;height:22px;font-size:9px">+11</div>
+                  <span>11 přijde</span>
+                </div>
+                <div class="evt-actions">
+                  <button class="evt-btn evt-btn-primary" onclick="evtJoin(this)">✅ Přijdu</button>
+                  <button class="evt-btn" onclick="toast('Přidáno do kalendáře!')">📅</button>
+                  <button class="evt-btn" onclick="toast('Odkaz zkopírován!')">🔗</button>
+                </div>
+              </div>
+            </div>
           </div>
-          <div class="event-info">
-            <h4>Reprezentační ples města Jesenice</h4>
-            <p>19:00 · Sportovní areál · Vstupenky: Ticketportal · Kapela Uši Music Band</p>
+
+          <div class="event-card" data-cat="kultura" data-loc="centrum" style="border-left:4px solid #E74C3C">
+            <div class="evt-date" style="background:#FDF2F2;color:#E74C3C">
+              <div class="evt-day">3</div><div class="evt-month">Kvě</div>
+            </div>
+            <div class="evt-body">
+              <div class="evt-badges">
+                <span class="evt-badge" style="background:#FDF2F2;color:#E74C3C">🎭 Kultura</span>
+              </div>
+              <h4 class="evt-title">Divadelní představení — „Noc na Karlštejně"</h4>
+              <div class="evt-detail">
+                <span>🕐 19:30</span><span>📍 Sportovní areál Jesenice</span><span>🎟️ 200 Kč</span>
+              </div>
+              <p class="evt-desc">Divadelní spolek Jesenice uvádí klasiku české komedie. Vhodné pro celou rodinu.</p>
+              <div class="evt-footer">
+                <div class="evt-attendees">
+                  <div class="avatar" style="width:22px;height:22px;font-size:9px;margin-right:-4px">LM</div>
+                  <div class="avatar" style="width:22px;height:22px;font-size:9px">+28</div>
+                  <span>29 přijde</span>
+                </div>
+                <div class="evt-actions">
+                  <button class="evt-btn evt-btn-primary" onclick="evtJoin(this)">✅ Přijdu</button>
+                  <button class="evt-btn" onclick="toast('Přidáno do kalendáře!')">📅</button>
+                  <button class="evt-btn" onclick="toast('Odkaz zkopírován!')">🔗</button>
+                </div>
+              </div>
+            </div>
           </div>
-          <button class="btn" style="padding:6px 14px;font-size:12px;background:var(--green-light);color:var(--green);margin-left:auto;align-self:center;white-space:nowrap" onclick="toast('Přesměrování na Ticketportal...')">🎟️ Lístky</button>
-        </div>
-        <div class="event">
-          <div class="event-date">
-            <div class="event-day">2</div>
-            <div class="event-month">Dub</div>
+
+          <div class="event-card" data-cat="senior" data-loc="centrum" style="border-left:4px solid #888">
+            <div class="evt-date" style="background:#F0F0F0;color:#888">
+              <div class="evt-day">8</div><div class="evt-month">Kvě</div>
+            </div>
+            <div class="evt-body">
+              <div class="evt-badges">
+                <span class="evt-badge" style="background:#F0F0F0;color:#666">👴 Senioři</span>
+              </div>
+              <h4 class="evt-title">Přednáška — Bezpečně na internetu</h4>
+              <div class="evt-detail">
+                <span>🕐 14:00–15:30</span><span>📍 Knihovna Jesenice</span><span>🎟️ Zdarma</span>
+              </div>
+              <p class="evt-desc">Jak poznat podvodné emaily, bezpečné nakupování online, hesla. Přijďte s vlastním telefonem nebo tabletem.</p>
+              <div class="evt-footer">
+                <div class="evt-attendees">
+                  <div class="avatar" style="width:22px;height:22px;font-size:9px">+6</div>
+                  <span>6 přijde</span>
+                </div>
+                <div class="evt-actions">
+                  <button class="evt-btn evt-btn-primary" onclick="evtJoin(this)">✅ Přijdu</button>
+                  <button class="evt-btn" onclick="toast('Přidáno do kalendáře!')">📅</button>
+                  <button class="evt-btn" onclick="toast('Odkaz zkopírován!')">🔗</button>
+                </div>
+              </div>
+            </div>
           </div>
-          <div class="event-info">
-            <h4>Sportovní den — 1 rok areálu</h4>
-            <p>10:00–18:00 · Sportovní areál Jesenice · Turnaje, ukázky, vstup zdarma</p>
+
+          <div class="event-card" data-cat="sport" data-loc="centrum" style="border-left:4px solid var(--blue)">
+            <div class="evt-date" style="background:#EBF3FC;color:var(--blue)">
+              <div class="evt-day">13</div><div class="evt-month">Čvn</div>
+            </div>
+            <div class="evt-body">
+              <div class="evt-badges">
+                <span class="evt-badge" style="background:#EBF3FC;color:var(--blue)">⚽ Sport</span>
+              </div>
+              <h4 class="evt-title">VI. ročník Velké jesenické — běh</h4>
+              <div class="evt-detail">
+                <span>🕐 9:00</span><span>📍 Start: Sportovní areál → Průhonický park</span><span>🎟️ Startovné 350 Kč</span>
+              </div>
+              <p class="evt-desc">Tratě 5 km, 10 km a dětský běh. Online registrace do 31. 5. Medaile a občerstvení v cíli.</p>
+              <div class="evt-footer">
+                <div class="evt-attendees">
+                  <div class="avatar" style="width:22px;height:22px;font-size:9px;margin-right:-4px">RP</div>
+                  <div class="avatar" style="width:22px;height:22px;font-size:9px">+67</div>
+                  <span>68 registrováno</span>
+                </div>
+                <div class="evt-actions">
+                  <button class="evt-btn evt-btn-primary" onclick="toast('Přesměrování na registraci...')">🏃 Registrace</button>
+                  <button class="evt-btn" onclick="toast('Přidáno do kalendáře!')">📅</button>
+                  <button class="evt-btn" onclick="toast('Odkaz zkopírován!')">🔗</button>
+                </div>
+              </div>
+            </div>
           </div>
-          <button class="btn" style="padding:6px 14px;font-size:12px;background:var(--green-light);color:var(--green);margin-left:auto;align-self:center;white-space:nowrap" onclick="toast('Přidáno do kalendáře!')">📅 Přidat</button>
-        </div>
-        <div class="event">
-          <div class="event-date">
-            <div class="event-day">13</div>
-            <div class="event-month">Čvn</div>
-          </div>
-          <div class="event-info">
-            <h4>VI. ročník Velké jesenické — běh</h4>
-            <p>9:00 · Start: Sportovní areál · Průhonický park · Registrace na webu závodu</p>
-          </div>
-          <button class="btn" style="padding:6px 14px;font-size:12px;background:var(--green-light);color:var(--green);margin-left:auto;align-self:center;white-space:nowrap" onclick="toast('Přesměrování na registraci...')">🏃 Registrace</button>
+
         </div>
       </div>
 
+      <!-- SIDEBAR -->
       <div>
         <div class="sidebar-card">
           <h4>🏟️ Spolky v Jesenici</h4>
           <div style="display:flex;flex-direction:column;gap:8px;font-size:13px">
-            <div style="padding-bottom:8px;border-bottom:1px solid var(--border)">⚽ <strong>FC Jesenice</strong> — fotbal, všechny věkové kategorie</div>
+            <div style="padding-bottom:8px;border-bottom:1px solid var(--border)">⚽ <strong>FC Jesenice</strong> — fotbal, všechny věkové kat.</div>
             <div style="padding-bottom:8px;border-bottom:1px solid var(--border)">🏐 <strong>VK Jesenice</strong> — volejbal</div>
             <div style="padding-bottom:8px;border-bottom:1px solid var(--border)">🎭 <strong>Divadelní spolek</strong> — amatérské divadlo</div>
             <div style="padding-bottom:8px;border-bottom:1px solid var(--border)">🌱 <strong>Zahradníci Jesenice</strong> — komunitní zahrada</div>
-            <div>🔴 <strong>SDH Jesenice</strong> — dobrovolní hasiči</div>
+            <div style="padding-bottom:8px;border-bottom:1px solid var(--border)">🔴 <strong>SDH Jesenice</strong> — dobrovolní hasiči</div>
+            <div style="padding-bottom:8px;border-bottom:1px solid var(--border)">🐴 <strong>JK Rangers</strong> — jezdectví, tábory</div>
+            <div style="padding-bottom:8px;border-bottom:1px solid var(--border)">🥋 <strong>Krav Maga Point</strong> — sebeobrana</div>
+            <div>💃 <strong>In Dance</strong> — taneční škola</div>
           </div>
           <button class="btn" style="width:100%;margin-top:12px;background:var(--green-light);color:var(--green);font-size:13px;padding:8px" onclick="toast('Registrace spolku — brzy!')">+ Přidat spolek</button>
         </div>
+
         <div class="sidebar-card">
-          <h4>📢 Přidat akci</h4>
-          <div class="form-group" style="margin-bottom:10px">
-            <label>Název akce</label>
-            <input type="text" placeholder="Název vaší akce">
-          </div>
-          <div class="two-col" style="gap:8px;margin-bottom:10px">
-            <div>
-              <label>Datum</label>
-              <input type="date">
+          <h4>🔄 Pravidelné akce</h4>
+          <div style="display:flex;flex-direction:column;gap:10px;font-size:13px">
+            <div style="display:flex;gap:8px;align-items:flex-start">
+              <span style="font-size:16px">🏃</span>
+              <div><strong>Ranní běh — soboty</strong><br><span style="color:var(--ink-light)">7:00 · Sportovní areál · každou sobotu</span></div>
             </div>
-            <div>
-              <label>Čas</label>
-              <input type="time" value="18:00">
+            <div style="display:flex;gap:8px;align-items:flex-start">
+              <span style="font-size:16px">🧘</span>
+              <div><strong>Jóga v parku — středy</strong><br><span style="color:var(--ink-light)">18:00 · Park u sv. Prokopa · od dubna</span></div>
+            </div>
+            <div style="display:flex;gap:8px;align-items:flex-start">
+              <span style="font-size:16px">📚</span>
+              <div><strong>Čtení pro děti — pátky</strong><br><span style="color:var(--ink-light)">16:00 · Knihovna Jesenice</span></div>
+            </div>
+            <div style="display:flex;gap:8px;align-items:flex-start">
+              <span style="font-size:16px">🛒</span>
+              <div><strong>Farmářské trhy — 1. sobota</strong><br><span style="color:var(--ink-light)">8:00–12:00 · Náměstí Jesenice</span></div>
             </div>
           </div>
-          <button class="btn btn-green" style="width:100%;font-size:13px;padding:9px" onclick="toast('Akce odeslána ke schválení!')">Přidat akci</button>
         </div>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- EVENT MODAL -->
+<div id="event-modal" class="zlep-modal-overlay" onclick="closeEventModal(event)">
+  <div class="zlep-modal" onclick="event.stopPropagation()">
+    <div class="zlep-modal-header">
+      <h3>📅 Nová akce</h3>
+      <button class="close-btn" onclick="closeEventModal()">&times;</button>
+    </div>
+    <div class="zlep-modal-body">
+      <div class="form-group">
+        <label>Název akce</label>
+        <input type="text" id="evt-title" placeholder="Název vaší akce">
+      </div>
+      <div class="form-group">
+        <label>Popis</label>
+        <textarea id="evt-desc" placeholder="Co se bude dít, pro koho je akce určená..." style="min-height:70px"></textarea>
+      </div>
+      <div class="form-group">
+        <label>Kategorie</label>
+        <div class="zlep-cat-grid" id="evt-form-cats" style="margin-bottom:0;grid-template-columns:repeat(auto-fill,minmax(90px,1fr))">
+          <div class="zlep-cat active" onclick="evtFormCat(this)" data-cat="komunita"><span class="zc-icon">🤝</span>Komunita</div>
+          <div class="zlep-cat" onclick="evtFormCat(this)" data-cat="sport"><span class="zc-icon">⚽</span>Sport</div>
+          <div class="zlep-cat" onclick="evtFormCat(this)" data-cat="kultura"><span class="zc-icon">🎭</span>Kultura</div>
+          <div class="zlep-cat" onclick="evtFormCat(this)" data-cat="deti"><span class="zc-icon">👶</span>Děti</div>
+          <div class="zlep-cat" onclick="evtFormCat(this)" data-cat="priroda"><span class="zc-icon">🌿</span>Příroda</div>
+          <div class="zlep-cat" onclick="evtFormCat(this)" data-cat="senior"><span class="zc-icon">👴</span>Senioři</div>
+          <div class="zlep-cat" onclick="evtFormCat(this)" data-cat="radnice"><span class="zc-icon">🏛️</span>Radnice</div>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div class="form-group">
+          <label>Datum</label>
+          <input type="date" id="evt-date">
+        </div>
+        <div class="form-group">
+          <label>Čas</label>
+          <input type="time" id="evt-time" value="18:00">
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div class="form-group">
+          <label>Místo</label>
+          <select id="evt-loc">
+            <option value="centrum">Jesenice centrum</option>
+            <option value="zdimerice">Zdiměřice</option>
+            <option value="osnice">Osnice</option>
+            <option value="jircany">Horní Jirčany</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Upřesnění místa</label>
+          <input type="text" id="evt-place" placeholder="Např. Sportovní areál">
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div class="form-group">
+          <label>Vstupné</label>
+          <input type="text" id="evt-price" placeholder="Zdarma / 100 Kč">
+        </div>
+        <div class="form-group">
+          <label>Kapacita (volitelné)</label>
+          <input type="number" id="evt-cap" placeholder="Neomezeno">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Odkaz (volitelné)</label>
+        <input type="url" id="evt-link" placeholder="https://...">
+      </div>
+      <button class="btn btn-green" style="width:100%;padding:14px;font-size:15px" onclick="submitEvent()">Přidat akci</button>
     </div>
   </div>
 </div>
@@ -4120,6 +4470,111 @@ function addBazarItem() {
   const countEl = document.getElementById('bazar-count');
   if (countEl) countEl.textContent = parseInt(countEl.textContent) + 1;
   toast('Inzerát zveřejněn! Sousedé ho uvidí ihned.');
+}
+
+/* ═══ EVENTS ═══ */
+function openEventModal() {
+  document.getElementById('event-modal').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+function closeEventModal(e) {
+  if (e && e.target && e.target.id !== 'event-modal') return;
+  document.getElementById('event-modal').style.display = 'none';
+  document.body.style.overflow = '';
+}
+function evtCatFilter(el, cat) {
+  el.parentElement.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('#view-events .event-card').forEach(card => {
+    card.style.display = (cat === 'all' || card.dataset.cat === cat) ? 'flex' : 'none';
+  });
+}
+function evtLocFilter(el, loc) {
+  el.parentElement.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('#view-events .event-card').forEach(card => {
+    card.style.display = (loc === 'all' || card.dataset.loc === loc) ? 'flex' : 'none';
+  });
+}
+function evtJoin(btn) {
+  if (btn.classList.contains('joined')) {
+    btn.classList.remove('joined');
+    btn.textContent = '✅ Přijdu';
+    const footer = btn.closest('.evt-footer');
+    const span = footer.querySelector('.evt-attendees span');
+    if (span) { const n = parseInt(span.textContent) - 1; span.textContent = n + ' přijde'; }
+    toast('Účast zrušena');
+  } else {
+    btn.classList.add('joined');
+    btn.textContent = '✔️ Přijdu!';
+    const footer = btn.closest('.evt-footer');
+    const span = footer.querySelector('.evt-attendees span');
+    if (span) { const n = parseInt(span.textContent) + 1; span.textContent = n + ' přijde'; }
+    toast('Skvělé! Uvidíme se tam 🎉');
+  }
+}
+let evtSelectedCat = '';
+function evtFormCat(el) {
+  el.parentElement.querySelectorAll('.zlep-cat').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  evtSelectedCat = el.dataset.cat;
+}
+function submitEvent() {
+  const title = document.getElementById('evt-title').value.trim();
+  const desc = document.getElementById('evt-desc').value.trim();
+  const date = document.getElementById('evt-date').value;
+  const time = document.getElementById('evt-time').value;
+  const loc = document.getElementById('evt-loc').value;
+  const place = document.getElementById('evt-place').value.trim();
+  const price = document.getElementById('evt-price').value.trim() || 'Zdarma';
+  if (!title || !evtSelectedCat || !date) { toast('Vyplňte název, kategorii a datum.'); return; }
+  const catLabels = {komunita:'🤝 Komunita',sport:'⚽ Sport',kultura:'🎭 Kultura',deti:'👶 Děti',priroda:'🌿 Příroda',senior:'👴 Senioři',radnice:'🏛️ Radnice'};
+  const catColors = {komunita:'var(--green)',sport:'var(--blue)',kultura:'#9B59B6',deti:'var(--orange)',priroda:'#27AE60',senior:'#8E44AD',radnice:'#9B59B6'};
+  const catBgs = {komunita:'var(--green-light)',sport:'#EBF3FC',kultura:'#F5EEF8',deti:'#FEF3EC',priroda:'#E8F8E8',senior:'#F5EEF8',radnice:'#F5EEF8'};
+  const color = catColors[evtSelectedCat] || 'var(--green)';
+  const bg = catBgs[evtSelectedCat] || 'var(--green-light)';
+  const label = catLabels[evtSelectedCat] || evtSelectedCat;
+  const locNames = {centrum:'Jesenice centrum',zdimerice:'Zdiměřice',osnice:'Osnice',jircany:'Horní Jirčany'};
+  const d = new Date(date);
+  const months = ['Led','Úno','Bře','Dub','Kvě','Čvn','Čvc','Srp','Zář','Říj','Lis','Pro'];
+  const card = document.createElement('div');
+  card.className = 'event-card';
+  card.dataset.cat = evtSelectedCat;
+  card.dataset.loc = loc;
+  card.style.borderLeft = '4px solid ' + color;
+  card.innerHTML = `
+    <div class="evt-date" style="background:${bg};color:${color}">
+      <div class="evt-day">${d.getDate()}</div><div class="evt-month">${months[d.getMonth()]}</div>
+    </div>
+    <div class="evt-body">
+      <div class="evt-badges"><span class="evt-badge" style="background:${bg};color:${color}">${label}</span></div>
+      <h4 class="evt-title">${title}</h4>
+      <div class="evt-detail">
+        <span>🕐 ${time || '—'}</span><span>📍 ${place || locNames[loc]}</span><span>🎟️ ${price}</span>
+      </div>
+      <p class="evt-desc">${desc || ''}</p>
+      <div class="evt-footer">
+        <div class="evt-attendees"><div class="avatar" style="width:22px;height:22px;font-size:9px">VY</div><span>1 přijde</span></div>
+        <div class="evt-actions">
+          <button class="evt-btn evt-btn-primary joined" onclick="evtJoin(this)">✔️ Přijdu!</button>
+          <button class="evt-btn" onclick="toast('Přidáno do kalendáře!')">📅</button>
+          <button class="evt-btn" onclick="toast('Odkaz zkopírován!')">🔗</button>
+        </div>
+      </div>
+    </div>`;
+  const grid = document.querySelector('#view-events .event-card');
+  grid ? grid.parentElement.insertBefore(card, grid) : document.querySelector('#view-events .container').appendChild(card);
+  document.getElementById('event-modal').style.display = 'none';
+  document.body.style.overflow = '';
+  document.getElementById('evt-title').value = '';
+  document.getElementById('evt-desc').value = '';
+  document.getElementById('evt-date').value = '';
+  document.getElementById('evt-place').value = '';
+  document.getElementById('evt-price').value = '';
+  document.getElementById('evt-link').value = '';
+  evtSelectedCat = '';
+  document.querySelectorAll('#evt-form-cats .zlep-cat').forEach(c => c.classList.remove('active'));
+  toast('Akce přidána! Sousedé ji uvidí ihned 🎉');
 }
 </script>
 </body>
