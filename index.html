@@ -863,6 +863,70 @@
   .bazar-title { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
   .bazar-meta { font-size: 12px; color: var(--ink-light); display: flex; gap: 8px; flex-wrap: wrap; }
   .bazar-seller { display: flex; align-items: center; gap: 8px; margin-top: 10px; padding-top:10px; border-top: 1px solid var(--border); font-size: 12px; color: var(--ink-mid); }
+  /* POST TAGS */
+  .post-tag { font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 20px; }
+  .tag-question { background: #EBF3FC; color: var(--blue); }
+  .tag-tip { background: var(--green-light); color: var(--green); }
+  .tag-warning { background: #FDEDEC; color: #E74C3C; }
+  .tag-praise { background: #F5EEF8; color: #9B59B6; }
+  .tag-discuss { background: var(--cream); color: var(--ink-mid); border: 1px solid var(--border); }
+  .post-answer {
+    margin-top: 10px; padding: 12px 14px; background: var(--green-xlight);
+    border-left: 3px solid var(--green); border-radius: 0 8px 8px 0;
+  }
+  .post-best-answer {
+    font-size: 10px; font-weight: 700; color: var(--green);
+    background: var(--green-light); padding: 1px 8px; border-radius: 10px;
+  }
+
+  /* ACTIVITY FEED */
+  .activity-feed { display: flex; flex-direction: column; }
+  .activity-item {
+    display: flex; gap: 14px; align-items: flex-start;
+    padding: 14px 0; border-bottom: 1px solid var(--border);
+  }
+  .activity-item:last-child { border-bottom: none; }
+  .activity-icon {
+    width: 40px; height: 40px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; flex-shrink: 0;
+  }
+  .activity-body { flex: 1; font-size: 14px; line-height: 1.5; }
+  .activity-time { font-size: 12px; color: var(--ink-light); margin-top: 2px; }
+
+  /* POLLS */
+  .poll-card {
+    background: white; border: 1px solid var(--border); border-radius: var(--r);
+    padding: 24px; margin-bottom: 16px;
+  }
+  .poll-active { border-left: 4px solid var(--green); }
+  .poll-ended { opacity: 0.85; }
+  .poll-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+  .poll-status { font-size: 12px; font-weight: 600; }
+  .poll-status-active { color: var(--green); }
+  .poll-status-ended { color: var(--ink-light); }
+  .poll-deadline { font-size: 12px; color: var(--ink-light); }
+  .poll-title { font-family: 'Fraunces', serif; font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+  .poll-desc { font-size: 13px; color: var(--ink-mid); line-height: 1.5; margin-bottom: 8px; }
+  .poll-author { font-size: 12px; color: var(--ink-light); margin-bottom: 16px; }
+  .poll-options { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+  .poll-option {
+    position: relative; display: flex; align-items: center;
+    padding: 12px 16px; border: 1.5px solid var(--border); border-radius: var(--r-sm);
+    background: white; cursor: pointer; font-size: 14px; text-align: left;
+    transition: all .15s; overflow: hidden;
+  }
+  .poll-option:hover { border-color: var(--green); background: var(--green-xlight); }
+  .poll-option.voted { border-color: var(--green); background: var(--green-light); font-weight: 600; }
+  .poll-option-text { position: relative; z-index: 1; }
+  .poll-option-bar {
+    position: absolute; left: 0; top: 0; height: 100%;
+    background: var(--green-light); border-radius: var(--r-sm); transition: width .5s;
+  }
+  .poll-option-pct { position: relative; z-index: 1; margin-left: auto; font-weight: 700; font-size: 14px; color: var(--green); }
+  .poll-result { margin-bottom: 8px; }
+  .poll-footer { display: flex; gap: 16px; flex-wrap: wrap; font-size: 13px; color: var(--ink-light); }
+
   .spojeni-modal {
     position: fixed; inset: 0; z-index: 200;
     background: rgba(0,0,0,0.5);
@@ -1215,141 +1279,481 @@
 <div id="view-community" class="view">
   <div class="page-header container" style="border-radius:0;margin-bottom:0">
     <h2>🏘️ Komunita</h2>
-    <p>Propojte se se sousedy — sdílejte, ptejte se, nabízejte pomoc.</p>
+    <p>Sousedská nástěnka — ptejte se, sdílejte tipy, upozorněte sousedy. Všechno na jednom místě.</p>
   </div>
   <div class="container" style="padding-top:24px">
-    <div class="sidebar-layout">
-      <div>
-        <div class="new-post-box">
-          <div class="avatar">VY</div>
-          <div style="flex:1">
-            <textarea class="new-post-input" placeholder="Co chcete sdílet se sousedy?" id="new-post-text"></textarea>
-            <div style="display:flex;gap:8px;margin-top:10px;align-items:center;flex-wrap:wrap">
-              <select style="flex:1;min-width:140px;font-size:13px" id="post-category">
-                <option>📌 Kategorie</option>
-                <option>🤝 Hledám / nabízím pomoc</option>
-                <option>🎁 Daruji / prodám</option>
-                <option>🔧 Hledám řemeslníka</option>
-                <option>📅 Pozvu na akci</option>
-                <option>💬 Obecná diskuse</option>
-              </select>
-              <button class="btn btn-green" onclick="submitPost()" style="padding:8px 18px;font-size:14px">Publikovat</button>
+
+    <!-- TABS -->
+    <div class="tabs" id="community-tabs">
+      <button class="tab active" onclick="switchCommunityTab('nastenka',this)">📋 Nástěnka</button>
+      <button class="tab" onclick="switchCommunityTab('aktivita',this)">⚡ Aktivita</button>
+      <button class="tab" onclick="switchCommunityTab('ankety',this)">🗳️ Ankety</button>
+    </div>
+
+    <!-- ═══ NÁSTĚNKA TAB ═══ -->
+    <div id="com-tab-nastenka" class="tab-content active">
+      <div class="sidebar-layout">
+        <div>
+          <!-- NEW POST -->
+          <div class="new-post-box">
+            <div class="avatar">VY</div>
+            <div style="flex:1">
+              <textarea class="new-post-input" placeholder="Co chcete sdílet se sousedy?" id="new-post-text"></textarea>
+              <div style="display:flex;gap:8px;margin-top:10px;align-items:center;flex-wrap:wrap">
+                <select style="flex:1;min-width:140px;font-size:13px" id="post-category">
+                  <option value="diskuse">💬 Diskuse</option>
+                  <option value="otazka">❓ Otázka</option>
+                  <option value="tip">💡 Tip</option>
+                  <option value="upozorneni">⚠️ Upozornění</option>
+                  <option value="pochvala">👏 Pochvala</option>
+                </select>
+                <button class="btn btn-green" onclick="submitPost()" style="padding:8px 18px;font-size:14px">Publikovat</button>
+              </div>
             </div>
+          </div>
+
+          <!-- FILTERS -->
+          <div class="chips">
+            <div class="chip active" onclick="filterChip(this,'all')">Vše</div>
+            <div class="chip" onclick="filterChip(this,'otazka')">❓ Otázky</div>
+            <div class="chip" onclick="filterChip(this,'tip')">💡 Tipy</div>
+            <div class="chip" onclick="filterChip(this,'upozorneni')">⚠️ Upozornění</div>
+            <div class="chip" onclick="filterChip(this,'pochvala')">👏 Pochvaly</div>
+            <div class="chip" onclick="filterChip(this,'diskuse')">💬 Diskuse</div>
+          </div>
+
+          <!-- FEED -->
+          <div id="community-feed">
+
+            <div class="post" data-cat="upozorneni">
+              <div class="post-header">
+                <div class="avatar" style="background:#E74C3C">PH</div>
+                <div class="post-meta">
+                  <div class="post-author">Petr Hovorka</div>
+                  <div class="post-time">před 35 min · Zdiměřice</div>
+                </div>
+                <span class="post-tag tag-warning">⚠️ Upozornění</span>
+              </div>
+              <div class="post-text">Na křižovatce u Alberta nefunguje semafor — bliká jen oranžově. Dejte pozor, hlavně s dětmi. Volal jsem na radnici, slíbili opravu dnes odpoledne.</div>
+              <div class="post-actions">
+                <button class="post-action" onclick="addLike(this)">👍 Díky za info (14)</button>
+                <button class="post-action" onclick="toast('Komentáře se otevírají...')">💬 3 komentáře</button>
+                <button class="post-action" onclick="toast('Příspěvek nahlášen')">⚑</button>
+              </div>
+            </div>
+
+            <div class="post" data-cat="otazka">
+              <div class="post-header">
+                <div class="avatar" style="background:var(--blue)">MK</div>
+                <div class="post-meta">
+                  <div class="post-author">Marie Kučerová</div>
+                  <div class="post-time">před 1 hodinou · Jesenice</div>
+                </div>
+                <span class="post-tag tag-question">❓ Otázka</span>
+              </div>
+              <div class="post-text">Ví někdo, kdy bude letos jarní svoz objemného odpadu? Na webu města jsem to nenašla. Díky za info!</div>
+              <div class="post-actions">
+                <button class="post-action" onclick="addLike(this)">👍 Zajímá mě taky (8)</button>
+                <button class="post-action" onclick="toast('Komentáře se otevírají...')">💬 6 odpovědí</button>
+                <button class="post-action" onclick="toast('Příspěvek nahlášen')">⚑</button>
+              </div>
+              <div class="post-answer">
+                <div style="display:flex;gap:8px;align-items:center;margin-bottom:6px">
+                  <div class="avatar" style="width:24px;height:24px;font-size:10px;background:var(--green)">JP</div>
+                  <span style="font-weight:600;font-size:13px">Jan Procházka</span>
+                  <span style="font-size:11px;color:var(--ink-light)">· před 40 min</span>
+                  <span class="post-best-answer">✅ Nejlepší odpověď</span>
+                </div>
+                <div style="font-size:13px;color:var(--ink-mid);line-height:1.6">Svoz bude 5.–6. dubna, viděl jsem to v Jesenickém zpravodaji. Kontejnery budou u hřbitova, u školy a na parkovišti u Alberta.</div>
+              </div>
+            </div>
+
+            <div class="post" data-cat="tip">
+              <div class="post-header">
+                <div class="avatar" style="background:var(--green-mid)">LK</div>
+                <div class="post-meta">
+                  <div class="post-author">Lucie Kratochvílová</div>
+                  <div class="post-time">před 3 hodinami · Horní Jirčany</div>
+                </div>
+                <span class="post-tag tag-tip">💡 Tip</span>
+              </div>
+              <div class="post-text">Objevila jsem super stezku pro kola s dětmi — od hasičárny v Jirčanech podél potoka až k rybníku. Cca 3 km, rovinaté, bez aut. Ideální na víkend! 🚴</div>
+              <div class="post-actions">
+                <button class="post-action" onclick="addLike(this)">👍 Super tip (22)</button>
+                <button class="post-action" onclick="toast('Komentáře se otevírají...')">💬 4 komentáře</button>
+                <button class="post-action" onclick="toast('Tip uložen!')">🔖 Uložit</button>
+              </div>
+            </div>
+
+            <div class="post" data-cat="pochvala">
+              <div class="post-header">
+                <div class="avatar" style="background:#9B59B6">TH</div>
+                <div class="post-meta">
+                  <div class="post-author">Tomáš Horáček</div>
+                  <div class="post-time">před 5 hodinami · Osnice</div>
+                </div>
+                <span class="post-tag tag-praise">👏 Pochvala</span>
+              </div>
+              <div class="post-text">Chtěl bych pochválit pana Horvátha z technických služeb — včera odpoledne přijel opravit spadlou větev na chodníku v Osnici do 30 minut od nahlášení. Paráda, takhle by to mělo fungovat! 💪</div>
+              <div class="post-actions">
+                <button class="post-action" onclick="addLike(this)">👍 Souhlasím (31)</button>
+                <button class="post-action" onclick="toast('Komentáře se otevírají...')">💬 7 komentářů</button>
+              </div>
+            </div>
+
+            <div class="post" data-cat="otazka">
+              <div class="post-header">
+                <div class="avatar" style="background:var(--orange)">PS</div>
+                <div class="post-meta">
+                  <div class="post-author">Petr Sládek</div>
+                  <div class="post-time">včera · Jesenice</div>
+                </div>
+                <span class="post-tag tag-question">❓ Otázka</span>
+              </div>
+              <div class="post-text">Jsme noví v Jesenici a hledáme dobrého zubaře, který bere dospělé i děti. Ideálně v dojezdové vzdálenosti. Máte tip? Díky! 🦷</div>
+              <div class="post-actions">
+                <button class="post-action" onclick="addLike(this)">👍 Zajímá mě taky (5)</button>
+                <button class="post-action" onclick="toast('Komentáře se otevírají...')">💬 9 odpovědí</button>
+              </div>
+            </div>
+
+            <div class="post" data-cat="diskuse">
+              <div class="post-header">
+                <div class="avatar" style="background:#888">VN</div>
+                <div class="post-meta">
+                  <div class="post-author">Václav Novák</div>
+                  <div class="post-time">včera · Jesenice</div>
+                </div>
+                <span class="post-tag tag-discuss">💬 Diskuse</span>
+              </div>
+              <div class="post-text">Co říkáte na plánovanou cyklostezku Jesenice–Vestec? Dle zastupitelstva by mohla být hotová do konce roku. Osobně si myslím, že by to hodně pomohlo hlavně dojíždějícím na kole do Prahy. Máte nějaké info?</div>
+              <div class="post-actions">
+                <button class="post-action" onclick="addLike(this)">👍 (17)</button>
+                <button class="post-action" onclick="toast('Komentáře se otevírají...')">💬 12 komentářů</button>
+                <button class="post-action" onclick="toast('Příspěvek nahlášen')">⚑</button>
+              </div>
+            </div>
+
+            <div class="post" data-cat="upozorneni">
+              <div class="post-header">
+                <div class="avatar" style="background:#C0392B">AK</div>
+                <div class="post-meta">
+                  <div class="post-author">Anna Králová</div>
+                  <div class="post-time">2 dny zpět · Zdiměřice</div>
+                </div>
+                <span class="post-tag tag-warning">⚠️ Upozornění</span>
+              </div>
+              <div class="post-text">Dnes ráno jsem viděla zbloudilého psa — středně velký, hnědý, bez obojku, okolí hřiště ve Zdiměřicích. Vypadal vystrašeně. Pokud je váš nebo víte čí je, ozvěte se prosím! 🐕</div>
+              <div class="post-actions">
+                <button class="post-action" onclick="addLike(this)">👍 Sdílet dál (9)</button>
+                <button class="post-action" onclick="toast('Komentáře se otevírají...')">💬 5 komentářů</button>
+              </div>
+            </div>
+
+            <div class="post" data-cat="tip">
+              <div class="post-header">
+                <div class="avatar" style="background:var(--green)">JR</div>
+                <div class="post-meta">
+                  <div class="post-author">Jakub Rys</div>
+                  <div class="post-time">3 dny zpět · Osnice</div>
+                </div>
+                <span class="post-tag tag-tip">💡 Tip</span>
+              </div>
+              <div class="post-text">Pro ty, co nevíte — v Osnici u potoka je skvělé místo na sběr medvědího česneku. Teď v březnu je nejlepší čas! Dejte pozor, ať to nespletete s konvalinkou. 🌿</div>
+              <div class="post-actions">
+                <button class="post-action" onclick="addLike(this)">👍 Super tip (28)</button>
+                <button class="post-action" onclick="toast('Komentáře se otevírají...')">💬 8 komentářů</button>
+                <button class="post-action" onclick="toast('Tip uložen!')">🔖 Uložit</button>
+              </div>
+            </div>
+
           </div>
         </div>
 
-        <div class="chips">
-          <div class="chip active" onclick="filterChip(this,'all')">Vše</div>
-          <div class="chip" onclick="filterChip(this,'help')">Pomoc</div>
-          <div class="chip" onclick="filterChip(this,'sell')">Daruji / Prodám</div>
-          <div class="chip" onclick="filterChip(this,'craftsman')">Řemeslníci</div>
-          <div class="chip" onclick="filterChip(this,'event')">Akce</div>
-        </div>
+        <!-- SIDEBAR -->
+        <div>
+          <!-- PARTS OF TOWN -->
+          <div class="sidebar-card">
+            <h4>🏙️ Části města</h4>
+            <div style="display:flex;flex-direction:column;gap:6px;font-size:13px">
+              <label style="cursor:pointer;display:flex;align-items:center;gap:8px;margin:0;color:var(--ink);font-weight:400">
+                <input type="checkbox" checked> Jesenice (centrum)
+              </label>
+              <label style="cursor:pointer;display:flex;align-items:center;gap:8px;margin:0;color:var(--ink);font-weight:400">
+                <input type="checkbox" checked> Osnice
+              </label>
+              <label style="cursor:pointer;display:flex;align-items:center;gap:8px;margin:0;color:var(--ink);font-weight:400">
+                <input type="checkbox" checked> Zdiměřice
+              </label>
+              <label style="cursor:pointer;display:flex;align-items:center;gap:8px;margin:0;color:var(--ink);font-weight:400">
+                <input type="checkbox" checked> Horní Jirčany
+              </label>
+            </div>
+          </div>
 
-        <div id="community-feed">
-          <div class="post">
-            <div class="post-header">
-              <div class="avatar">MN</div>
-              <div class="post-meta">
-                <div class="post-author">Martina Nováková</div>
-                <div class="post-time">před 2 hodinami · Zdiměřice</div>
+          <!-- NEJAKTIVNĚJŠÍ -->
+          <div class="sidebar-card" style="border-color:var(--green)">
+            <h4>🏅 Nejaktivnější sousedé</h4>
+            <div style="font-size:12px;color:var(--ink-light);margin-bottom:10px">Březen 2026</div>
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <div style="display:flex;align-items:center;gap:10px">
+                <span style="font-weight:700;color:gold;font-size:14px;width:18px">1.</span>
+                <div class="avatar" style="width:30px;height:30px;font-size:11px;background:var(--green)">JP</div>
+                <div style="flex:1"><div style="font-weight:600;font-size:13px">Jan P.</div><div style="font-size:11px;color:var(--ink-light)">42 příspěvků</div></div>
+                <span class="points-badge" style="font-size:10px;padding:2px 8px">⭐ 580</span>
               </div>
-              <span class="post-tag tag-sale">Daruji</span>
-            </div>
-            <div class="post-text">Daruji dětské kolo 20" pro cca 6letého, barva modrá. Nevejde se nám do garáže. Kdo dřív přijde. Osnice, ul. Lipová.</div>
-            <div class="post-actions">
-              <button class="post-action" onclick="toast('Zájem odeslán Martině!')">✋ Mám zájem (3)</button>
-              <button class="post-action" onclick="toast('Komentáře brzy k dispozici')">💬 Komentáře (1)</button>
-              <button class="post-action" onclick="toast('Nahlášeno')">⚑ Nahlásit</button>
+              <div style="display:flex;align-items:center;gap:10px">
+                <span style="font-weight:700;color:#95A5A6;font-size:14px;width:18px">2.</span>
+                <div class="avatar" style="width:30px;height:30px;font-size:11px;background:#9B59B6">LK</div>
+                <div style="flex:1"><div style="font-weight:600;font-size:13px">Lucie K.</div><div style="font-size:11px;color:var(--ink-light)">38 příspěvků</div></div>
+                <span class="points-badge" style="font-size:10px;padding:2px 8px">⭐ 420</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px">
+                <span style="font-weight:700;color:#E67E22;font-size:14px;width:18px">3.</span>
+                <div class="avatar" style="width:30px;height:30px;font-size:11px;background:var(--blue)">TH</div>
+                <div style="flex:1"><div style="font-weight:600;font-size:13px">Tomáš H.</div><div style="font-size:11px;color:var(--ink-light)">29 příspěvků</div></div>
+                <span class="points-badge" style="font-size:10px;padding:2px 8px">⭐ 390</span>
+              </div>
             </div>
           </div>
-          <div class="post">
-            <div class="post-header">
-              <div class="avatar">JP</div>
-              <div class="post-meta">
-                <div class="post-author">Jan Procházka</div>
-                <div class="post-time">před 4 hodinami · Jesenice</div>
-              </div>
-              <span class="post-tag tag-community">Hledám</span>
-            </div>
-            <div class="post-text">Hledám dobrého elektrikáře pro menší práce v domě. Má někdo ověřeného kontakt? Díky 🙏</div>
-            <div class="post-actions">
-              <button class="post-action" onclick="addLike(this)">👍 Doporučit (0)</button>
-              <button class="post-action" onclick="toast('5 sousedů doporučilo: Pavel Horák — 602 xxx xxx')">💬 Komentáře (5)</button>
-            </div>
-          </div>
-          <div class="post">
-            <div class="post-header">
-              <div class="avatar">TH</div>
-              <div class="post-meta">
-                <div class="post-author">Tomáš Horáček</div>
-                <div class="post-time">včera · Osnice</div>
-              </div>
-              <span class="post-tag tag-community">Půjčím</span>
-            </div>
-            <div class="post-text">Půjčím přívěs (1 náprava, do 750 kg) na víkend. Bydlím Osnice. Za symbolické nebo oplátkou. Pište do zpráv.</div>
-            <div class="post-actions">
-              <button class="post-action" onclick="toast('Zpráva Tomášovi odeslána!')">💬 Napsat zprávu</button>
-              <button class="post-action" onclick="addLike(this)">👍 (2)</button>
-            </div>
-          </div>
-          <div class="post">
-            <div class="post-header">
-              <div class="avatar">LK</div>
-              <div class="post-meta">
-                <div class="post-author">Lucie Kratochvílová</div>
-                <div class="post-time">2 dny zpět · Horní Jirčany</div>
-              </div>
-              <span class="post-tag tag-event">Akce</span>
-            </div>
-            <div class="post-text">V sobotu 15.3. pořádáme sousedský úklid okolí Horních Jirčan. Sraz v 9:00 u hasičárny. Přineste rukavice, pytle zajistíme. Všichni vítáni! 🌱</div>
-            <div class="post-actions">
-              <button class="post-action" onclick="toast('Přidáno do vašeho kalendáře!')">📅 Zúčastnit se (12)</button>
-              <button class="post-action">💬 Komentáře (4)</button>
-            </div>
-          </div>
-        </div>
-      </div>
 
-      <div>
-        <div class="sidebar-card">
-          <h4>🏙️ Části města</h4>
-          <div style="display:flex;flex-direction:column;gap:6px;font-size:13px">
-            <label style="cursor:pointer;display:flex;align-items:center;gap:8px;margin:0;color:var(--ink);font-weight:400">
-              <input type="checkbox" checked> Jesenice (centrum)
-            </label>
-            <label style="cursor:pointer;display:flex;align-items:center;gap:8px;margin:0;color:var(--ink);font-weight:400">
-              <input type="checkbox" checked> Osnice
-            </label>
-            <label style="cursor:pointer;display:flex;align-items:center;gap:8px;margin:0;color:var(--ink);font-weight:400">
-              <input type="checkbox" checked> Zdiměřice
-            </label>
-            <label style="cursor:pointer;display:flex;align-items:center;gap:8px;margin:0;color:var(--ink);font-weight:400">
-              <input type="checkbox" checked> Horní Jirčany
-            </label>
-          </div>
-        </div>
-        <div class="sidebar-card">
-          <h4>📋 Adresář řemeslníků</h4>
-          <p style="font-size:13px;color:var(--ink-mid);margin-bottom:12px">Ověřeni sousedy z Jesenice</p>
-          <div style="display:flex;flex-direction:column;gap:10px">
-            <div style="font-size:13px;padding-bottom:10px;border-bottom:1px solid var(--border)">
-              <strong>Pavel Horák</strong> — Elektro<br>
-              <span style="color:var(--ink-light)">⭐⭐⭐⭐⭐ · 18 doporučení</span>
-            </div>
-            <div style="font-size:13px;padding-bottom:10px;border-bottom:1px solid var(--border)">
-              <strong>Petr Vlček</strong> — Instalatér<br>
-              <span style="color:var(--ink-light)">⭐⭐⭐⭐ · 12 doporučení</span>
-            </div>
-            <div style="font-size:13px">
-              <strong>Eva Stárková</strong> — Zahradnice<br>
-              <span style="color:var(--ink-light)">⭐⭐⭐⭐⭐ · 9 doporučení</span>
+          <!-- STATS -->
+          <div class="sidebar-card" style="background:var(--green-xlight);border-color:var(--green-light)">
+            <h4>📊 Komunita v číslech</h4>
+            <div style="font-size:13px;display:flex;flex-direction:column;gap:8px">
+              <div style="display:flex;justify-content:space-between">
+                <span style="color:var(--ink-mid)">Registrovaných</span><strong style="color:var(--green)">347</strong>
+              </div>
+              <div style="display:flex;justify-content:space-between">
+                <span style="color:var(--ink-mid)">Příspěvků tento měsíc</span><strong>89</strong>
+              </div>
+              <div style="display:flex;justify-content:space-between">
+                <span style="color:var(--ink-mid)">Zodpovězených otázek</span><strong style="color:var(--green)">94 %</strong>
+              </div>
+              <div style="display:flex;justify-content:space-between">
+                <span style="color:var(--ink-mid)">Spojení přes portál</span><strong style="color:var(--green)">28</strong>
+              </div>
             </div>
           </div>
-          <button class="btn" style="width:100%;margin-top:14px;background:var(--green-light);color:var(--green);font-size:13px;padding:8px" onclick="toast('Přidání řemeslníka — brzy!')">+ Přidat řemeslníka</button>
+
+          <!-- ROZCESTNÍK -->
+          <div class="sidebar-card">
+            <h4>🔗 Rychlý rozcestník</h4>
+            <div style="display:flex;flex-direction:column;gap:6px">
+              <a onclick="showView('issues')" style="font-size:13px;color:var(--green);cursor:pointer;font-weight:500">💡 Zlepšováky — nahlaste problém</a>
+              <a onclick="showView('brigady')" style="font-size:13px;color:var(--green);cursor:pointer;font-weight:500">⚡ Brigády — najděte pomoc</a>
+              <a onclick="showView('spojeni')" style="font-size:13px;color:var(--green);cursor:pointer;font-weight:500">🤝 Parťák — najděte souseda</a>
+              <a onclick="showView('bazar')" style="font-size:13px;color:var(--green);cursor:pointer;font-weight:500">🛒 Bazar — prodejte / darujte</a>
+              <a onclick="showView('events')" style="font-size:13px;color:var(--green);cursor:pointer;font-weight:500">📅 Akce — co se děje</a>
+            </div>
+          </div>
         </div>
       </div>
     </div>
+
+    <!-- ═══ AKTIVITA TAB ═══ -->
+    <div id="com-tab-aktivita" class="tab-content">
+      <div style="max-width:680px">
+        <div style="font-size:14px;color:var(--ink-mid);margin-bottom:16px">Co se právě děje v Jesenici — živý přehled z celého portálu.</div>
+
+        <div class="activity-feed">
+          <div class="activity-item">
+            <div class="activity-icon" style="background:#FEF3EC;color:var(--orange)">⚡</div>
+            <div class="activity-body">
+              <div><strong>Kateřina M.</strong> přidala brigádu <a onclick="showView('brigady')" style="color:var(--green);cursor:pointer;font-weight:600">Hlídání po škole — pravidelně</a></div>
+              <div class="activity-time">před 12 min</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-icon" style="background:var(--green-light);color:var(--green)">💡</div>
+            <div class="activity-body">
+              <div><strong>5 sousedů</strong> hlasovalo pro zlepšovák <a onclick="showView('issues')" style="color:var(--green);cursor:pointer;font-weight:600">Rozbitý chodník u pošty</a></div>
+              <div class="activity-time">před 25 min</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-icon" style="background:#EBF3FC;color:var(--blue)">📅</div>
+            <div class="activity-body">
+              <div><strong>Radek P.</strong> se přihlásil na akci <a onclick="showView('events')" style="color:var(--green);cursor:pointer;font-weight:600">Sportovní den — 1 rok areálu</a></div>
+              <div class="activity-time">před 40 min</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-icon" style="background:var(--green-light);color:var(--green)">🤝</div>
+            <div class="activity-body">
+              <div><strong>Petr a Markéta S.</strong> přidali hledání v <a onclick="showView('spojeni')" style="color:var(--green);cursor:pointer;font-weight:600">Hledám parťáka</a> — Noví v Jesenici</div>
+              <div class="activity-time">před 1 hod</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-icon" style="background:#F5EEF8;color:#9B59B6">🛒</div>
+            <div class="activity-body">
+              <div><strong>Martina N.</strong> přidala inzerát do <a onclick="showView('bazar')" style="color:var(--green);cursor:pointer;font-weight:600">Bazaru</a> — Dětské kolo 20"</div>
+              <div class="activity-time">před 1 hod</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-icon" style="background:#FEF3EC;color:var(--orange)">⚡</div>
+            <div class="activity-body">
+              <div><strong>Jakub R.</strong> přijal brigádu <a onclick="showView('brigady')" style="color:var(--green);cursor:pointer;font-weight:600">Posečení trávníku — Zdiměřice</a></div>
+              <div class="activity-time">před 2 hod</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-icon" style="background:var(--green-light);color:var(--green)">💡</div>
+            <div class="activity-body">
+              <div>Zlepšovák <a onclick="showView('issues')" style="color:var(--green);cursor:pointer;font-weight:600">Chybějící osvětlení — Osnice</a> byl <strong style="color:var(--green)">vyřešen</strong> městem</div>
+              <div class="activity-time">před 3 hod</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-icon" style="background:#EBF3FC;color:var(--blue)">📅</div>
+            <div class="activity-body">
+              <div><strong>Nová akce:</strong> <a onclick="showView('events')" style="color:var(--green);cursor:pointer;font-weight:600">Zastupitelstvo — veřejné zasedání</a> — 13. března 18:00</div>
+              <div class="activity-time">před 4 hod</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-icon" style="background:var(--green-light);color:var(--green)">🤝</div>
+            <div class="activity-body">
+              <div><strong>Lucie M.</strong> a <strong>Radek P.</strong> se spojili přes <a onclick="showView('spojeni')" style="color:var(--green);cursor:pointer;font-weight:600">Hledám parťáka</a> — běžecká parta!</div>
+              <div class="activity-time">před 5 hod</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-icon" style="background:#FDEDEC;color:#E74C3C">🏆</div>
+            <div class="activity-body">
+              <div><strong>Klára H.</strong> získala odznak <strong style="color:#9B59B6">Na vlně</strong> — 3 výzvy v jednom měsíci!</div>
+              <div class="activity-time">před 6 hod</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-icon" style="background:#FEF3EC;color:var(--orange)">⚡</div>
+            <div class="activity-body">
+              <div><strong>Marie V.</strong> přidala brigádu <a onclick="showView('brigady')" style="color:var(--green);cursor:pointer;font-weight:600">Nastavení WiFi a počítače</a> — 300 Kč</div>
+              <div class="activity-time">před 8 hod</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ ANKETY TAB ═══ -->
+    <div id="com-tab-ankety" class="tab-content">
+      <div style="max-width:680px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:8px">
+          <div style="font-size:14px;color:var(--ink-mid)">Hlasujte o věcech, které hýbou Jesenicí. Výsledky předáváme zastupitelům.</div>
+          <button class="btn btn-green" style="font-size:13px;padding:8px 16px" onclick="toast('Vytvoření ankety — funkce bude brzy k dispozici!')">+ Nová anketa</button>
+        </div>
+
+        <!-- POLL 1 - ACTIVE -->
+        <div class="poll-card poll-active">
+          <div class="poll-header">
+            <span class="poll-status poll-status-active">🟢 Aktivní</span>
+            <span class="poll-deadline">Zbývá 5 dní</span>
+          </div>
+          <h4 class="poll-title">Měla by Jesenice vybudovat cyklostezku do Vestce?</h4>
+          <p class="poll-desc">Zastupitelstvo zvažuje investici ~8 mil. Kč do cyklostezky Jesenice–Vestec (3,2 km). Vaše hlasy pomohou při rozhodování.</p>
+          <div class="poll-author">Vyhlašuje: <strong>MÚ Jesenice</strong> · 🏛️ Oficiální</div>
+          <div class="poll-options" id="poll-1-options">
+            <button class="poll-option" onclick="votePoll(1, 0, this)">
+              <span class="poll-option-text">👍 Ano, rozhodně</span>
+              <span class="poll-option-bar" style="width:0"></span>
+            </button>
+            <button class="poll-option" onclick="votePoll(1, 1, this)">
+              <span class="poll-option-text">🤔 Ano, ale jiná trasa</span>
+              <span class="poll-option-bar" style="width:0"></span>
+            </button>
+            <button class="poll-option" onclick="votePoll(1, 2, this)">
+              <span class="poll-option-text">👎 Ne, peníze využít jinak</span>
+              <span class="poll-option-bar" style="width:0"></span>
+            </button>
+            <button class="poll-option" onclick="votePoll(1, 3, this)">
+              <span class="poll-option-text">🤷 Nevím / je mi to jedno</span>
+              <span class="poll-option-bar" style="width:0"></span>
+            </button>
+          </div>
+          <div class="poll-footer">
+            <span>👥 143 hlasů</span>
+            <span>💬 23 komentářů</span>
+          </div>
+        </div>
+
+        <!-- POLL 2 - ACTIVE -->
+        <div class="poll-card poll-active">
+          <div class="poll-header">
+            <span class="poll-status poll-status-active">🟢 Aktivní</span>
+            <span class="poll-deadline">Zbývá 12 dní</span>
+          </div>
+          <h4 class="poll-title">Co nejvíc chybí v centru Jesenice?</h4>
+          <p class="poll-desc">Plánujeme revitalizaci centra. Vyberte maximálně 2 věci, které vám nejvíc chybí.</p>
+          <div class="poll-author">Vyhlašuje: <strong>MÚ Jesenice</strong> · 🏛️ Oficiální</div>
+          <div class="poll-options" id="poll-2-options">
+            <button class="poll-option" onclick="votePoll(2, 0, this)">
+              <span class="poll-option-text">☕ Kavárna / restaurace</span>
+              <span class="poll-option-bar" style="width:0"></span>
+            </button>
+            <button class="poll-option" onclick="votePoll(2, 1, this)">
+              <span class="poll-option-text">🌳 Park s lavičkami</span>
+              <span class="poll-option-bar" style="width:0"></span>
+            </button>
+            <button class="poll-option" onclick="votePoll(2, 2, this)">
+              <span class="poll-option-text">🛝 Dětské hřiště</span>
+              <span class="poll-option-bar" style="width:0"></span>
+            </button>
+            <button class="poll-option" onclick="votePoll(2, 3, this)">
+              <span class="poll-option-text">🏪 Obchod / pekárna</span>
+              <span class="poll-option-bar" style="width:0"></span>
+            </button>
+            <button class="poll-option" onclick="votePoll(2, 4, this)">
+              <span class="poll-option-text">🚲 Stojany na kola</span>
+              <span class="poll-option-bar" style="width:0"></span>
+            </button>
+          </div>
+          <div class="poll-footer">
+            <span>👥 87 hlasů</span>
+            <span>💬 14 komentářů</span>
+          </div>
+        </div>
+
+        <!-- POLL 3 - ENDED -->
+        <div class="poll-card poll-ended">
+          <div class="poll-header">
+            <span class="poll-status poll-status-ended">🔴 Ukončená</span>
+            <span class="poll-deadline">Skončila 1. 3. 2026</span>
+          </div>
+          <h4 class="poll-title">Jste spokojeni s úklidem sněhu v zimě 2025/26?</h4>
+          <div class="poll-author">Vyhlašuje: <strong>MÚ Jesenice</strong> · 🏛️ Oficiální</div>
+          <div class="poll-options poll-results">
+            <div class="poll-result">
+              <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px">
+                <span>👍 Ano, v pohodě</span><strong>34 %</strong>
+              </div>
+              <div style="background:var(--border);border-radius:4px;height:8px;overflow:hidden"><div style="width:34%;height:100%;background:var(--green);border-radius:4px"></div></div>
+            </div>
+            <div class="poll-result">
+              <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px">
+                <span>😐 Průměr</span><strong>28 %</strong>
+              </div>
+              <div style="background:var(--border);border-radius:4px;height:8px;overflow:hidden"><div style="width:28%;height:100%;background:var(--orange);border-radius:4px"></div></div>
+            </div>
+            <div class="poll-result">
+              <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px">
+                <span>👎 Ne, špatné</span><strong style="color:var(--red)">38 %</strong>
+              </div>
+              <div style="background:var(--border);border-radius:4px;height:8px;overflow:hidden"><div style="width:38%;height:100%;background:var(--red);border-radius:4px"></div></div>
+            </div>
+          </div>
+          <div class="poll-footer">
+            <span>👥 198 hlasů</span>
+            <span>💬 41 komentářů</span>
+            <span style="color:var(--green);font-weight:600">📋 Výsledky předány zastupitelům</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
   </div>
 </div>
 
@@ -4069,10 +4473,24 @@ function switchTab(group, tab, el) {
   if (content) content.classList.add('active');
 }
 
-function filterChip(el, filter) {
-  document.querySelectorAll('.chips .chip').forEach(c => c.classList.remove('active'));
+/* ═══ COMMUNITY ═══ */
+function switchCommunityTab(tab, el) {
+  document.querySelectorAll('#community-tabs .tab').forEach(t => t.classList.remove('active'));
+  ['nastenka','aktivita','ankety'].forEach(t => {
+    const el2 = document.getElementById('com-tab-' + t);
+    if (el2) el2.classList.remove('active');
+  });
   el.classList.add('active');
-  toast(filter === 'all' ? 'Zobrazuji vše' : 'Filtr nastaven');
+  const target = document.getElementById('com-tab-' + tab);
+  if (target) target.classList.add('active');
+}
+
+function filterChip(el, filter) {
+  el.closest('.chips').querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('#community-feed .post').forEach(p => {
+    p.style.display = (filter === 'all' || p.dataset.cat === filter) ? '' : 'none';
+  });
 }
 
 function addLike(btn) {
@@ -4086,31 +4504,65 @@ function addLike(btn) {
 
 function submitPost() {
   const text = document.getElementById('new-post-text').value.trim();
-  const cat = document.getElementById('post-category').value;
+  const catVal = document.getElementById('post-category').value;
   if (!text) { toast('Napište prosím obsah příspěvku.'); return; }
+  const tagMap = {
+    otazka: { cls: 'tag-question', label: '❓ Otázka' },
+    tip: { cls: 'tag-tip', label: '💡 Tip' },
+    upozorneni: { cls: 'tag-warning', label: '⚠️ Upozornění' },
+    pochvala: { cls: 'tag-praise', label: '👏 Pochvala' },
+    diskuse: { cls: 'tag-discuss', label: '💬 Diskuse' }
+  };
+  const tag = tagMap[catVal] || tagMap.diskuse;
   const feed = document.getElementById('community-feed');
   const post = document.createElement('div');
   post.className = 'post';
-  const now = 'právě teď · Jesenice';
-  const catLabel = cat.includes('Kategorie') ? '' : `<span class="post-tag tag-community">${cat.split(' ').slice(1).join(' ')}</span>`;
+  post.dataset.cat = catVal || 'diskuse';
   post.innerHTML = `
     <div class="post-header">
       <div class="avatar">VY</div>
       <div class="post-meta">
         <div class="post-author">Vy</div>
-        <div class="post-time">${now}</div>
+        <div class="post-time">právě teď · Jesenice</div>
       </div>
-      ${catLabel}
+      <span class="post-tag ${tag.cls}">${tag.label}</span>
     </div>
     <div class="post-text">${text}</div>
     <div class="post-actions">
       <button class="post-action" onclick="addLike(this)">👍 (0)</button>
-      <button class="post-action">💬 Komentáře (0)</button>
+      <button class="post-action" onclick="toast('Komentáře se otevírají...')">💬 0 komentářů</button>
+      <button class="post-action" onclick="toast('Příspěvek nahlášen')">⚑</button>
     </div>`;
   feed.insertBefore(post, feed.firstChild);
   document.getElementById('new-post-text').value = '';
-  document.getElementById('post-category').value = '';
+  document.getElementById('post-category').value = 'diskuse';
   toast('Příspěvek publikován!');
+}
+
+function votePoll(pollId, optionIdx, btn) {
+  const container = document.getElementById('poll-' + pollId + '-options');
+  if (container.dataset.voted) { toast('Už jste hlasoval/a.'); return; }
+  container.dataset.voted = '1';
+  const options = container.querySelectorAll('.poll-option');
+  const votes = {
+    1: [62, 18, 14, 6],
+    2: [31, 24, 19, 18, 8]
+  };
+  const pcts = votes[pollId] || [25, 25, 25, 25];
+  pcts[optionIdx] += 1; // add user vote
+  const total = pcts.reduce((a, b) => a + b, 0);
+  options.forEach((opt, i) => {
+    const pct = Math.round(pcts[i] / total * 100);
+    const bar = opt.querySelector('.poll-option-bar');
+    bar.style.width = pct + '%';
+    const pctSpan = document.createElement('span');
+    pctSpan.className = 'poll-option-pct';
+    pctSpan.textContent = pct + '%';
+    opt.appendChild(pctSpan);
+    opt.style.cursor = 'default';
+    if (i === optionIdx) opt.classList.add('voted');
+  });
+  toast('Hlas zaznamenán! Děkujeme za váš názor.');
 }
 
 // Make nav logo clickable
