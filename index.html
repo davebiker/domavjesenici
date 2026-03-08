@@ -1038,6 +1038,46 @@
   ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
   ::-webkit-scrollbar-thumb:hover { background: var(--green-mid); }
 
+  /* PROJECTS ENHANCED */
+  .proj-card {
+    background: white; border: 1px solid var(--border); border-radius: var(--r);
+    padding: 20px; margin-bottom: 12px; cursor: pointer; transition: all .15s;
+  }
+  .proj-card:hover { box-shadow: var(--shadow); transform: translateY(-1px); }
+  .proj-card-header { display: flex; gap: 16px; align-items: flex-start; }
+  .proj-icon { width: 52px; height: 52px; border-radius: var(--r-sm); display: flex; align-items: center; justify-content: center; font-size: 28px; flex-shrink: 0; }
+  .proj-status { display: inline-block; padding: 2px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+  .proj-status-priprava { background: #FEF3EC; color: var(--orange); }
+  .proj-status-realizace { background: #E8F4EE; color: var(--green); }
+  .proj-status-dokonceno { background: #E8F4EE; color: #1a7a3a; }
+  .proj-detail { display: none; background: var(--cream); border: 1px solid var(--border); border-top: none; border-radius: 0 0 var(--r) var(--r); padding: 24px; margin-top: -12px; margin-bottom: 12px; }
+  .proj-detail.open { display: block; }
+  .proj-timeline { position: relative; padding-left: 24px; }
+  .proj-timeline::before { content: ''; position: absolute; left: 8px; top: 0; bottom: 0; width: 2px; background: var(--border); }
+  .proj-milestone { position: relative; padding-bottom: 16px; font-size: 13px; }
+  .proj-milestone::before { content: ''; position: absolute; left: -20px; top: 4px; width: 12px; height: 12px; border-radius: 50%; background: var(--border); border: 2px solid white; }
+  .proj-milestone.done::before { background: var(--green); }
+  .proj-milestone.current::before { background: var(--orange); }
+  .proj-comment { background: white; border-radius: var(--r-sm); padding: 12px; margin-bottom: 8px; font-size: 13px; }
+  .proj-map-area { background: white; border: 1.5px solid var(--border); border-radius: var(--r); padding: 20px; text-align: center; transition: all .15s; }
+  .proj-map-area:hover { border-color: var(--green); box-shadow: var(--shadow); }
+
+  /* BUDGET */
+  .budget-stat { background: white; border: 1px solid var(--border); border-radius: var(--r); padding: 24px; text-align: center; }
+  .budget-stat-num { font-family: 'Fraunces', serif; font-size: 28px; font-weight: 700; color: var(--green); }
+  .budget-stat-label { font-size: 13px; color: var(--ink-mid); margin-top: 4px; }
+  .budget-stat-change { font-size: 12px; font-weight: 600; margin-top: 4px; }
+  .budget-treemap { display: grid; grid-template-columns: repeat(12, 1fr); grid-template-rows: auto auto auto; gap: 4px; }
+  .budget-block { border-radius: var(--r-sm); padding: 16px 12px; color: white; display: flex; flex-direction: column; justify-content: center; min-height: 80px; }
+  .budget-block-label { font-size: 13px; font-weight: 600; }
+  .budget-block-pct { font-size: 22px; font-weight: 700; margin-top: 4px; }
+  .budget-proposal { background: white; border: 1px solid var(--border); border-radius: var(--r); padding: 20px; margin-bottom: 12px; transition: all .15s; }
+  .budget-proposal:hover { box-shadow: var(--shadow); }
+  .budget-vote-btn { background: none; border: 1.5px solid #E74C3C; color: #E74C3C; border-radius: 20px; padding: 6px 16px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all .15s; display: flex; align-items: center; gap: 4px; }
+  .budget-vote-btn:hover, .budget-vote-btn.voted { background: #E74C3C; color: white; }
+  .budget-income-row { display: flex; justify-content: space-between; align-items: center; padding: 14px 0; border-bottom: 1px solid var(--border); font-size: 14px; }
+  .budget-income-row:last-child { border-bottom: none; }
+
   .pill {
     display: inline-block; padding: 2px 10px;
     border-radius: 20px; font-size: 12px; font-weight: 600;
@@ -1117,6 +1157,7 @@
     <a onclick="showView('community')" id="nav-community">Komunita</a>
     <a onclick="showView('issues')" id="nav-issues">Zlepšováky</a>
     <a onclick="showView('projects')" id="nav-projects">Projekty</a>
+    <a onclick="showView('budget')" id="nav-budget">Rozpočet</a>
     <a onclick="showView('events')" id="nav-events">Akce</a>
     <a onclick="showView('bazar')" id="nav-bazar">Bazar</a>
     <a onclick="showView('spojeni')" id="nav-spojeni">Hledám parťáka</a>
@@ -1202,7 +1243,7 @@
           <div class="icon">💰</div>
           <h3>Participativní rozpočet</h3>
           <p>Navrhněte projekt a hlasujte o tom, kam půjdou peníze města. Vaše nápady, vaše Jesenice.</p>
-          <div class="count pill pill-orange">Brzy spuštění</div>
+          <div class="count pill pill-green">6 návrhů k hlasování</div>
         </div>
         <div class="module-card" onclick="showView('bazar')">
           <div class="icon">🛍️</div>
@@ -2182,75 +2223,815 @@
     <h2>🏗️ Projekty města</h2>
     <p>Co se v Jesenici staví, plánuje a financuje. Transparentně.</p>
   </div>
+
   <div class="container" style="padding-top:24px">
-    <div class="grid-3" style="margin-bottom:24px">
-      <div class="project">
-        <div class="project-img">🏙️</div>
-        <div class="project-body">
-          <div class="project-title">Nové centrum Jesenice</div>
-          <div class="project-desc">Vytvoření skutečného náměstí. Studie vypracována, jednání s vlastníky pozemků probíhá.</div>
-          <div class="progress-bar"><div class="progress-fill" style="width:35%"></div></div>
-          <div class="progress-meta"><span>Příprava</span><span>35 %</span></div>
-          <div style="margin-top:10px;font-size:12px;color:var(--ink-light)">Budget: 85 mil. Kč · 2024–2028</div>
+    <!-- Filtr -->
+    <div class="chips" id="proj-filters">
+      <div class="chip active" onclick="filterProjects('vse',this)">Vše</div>
+      <div class="chip" onclick="filterProjects('priprava',this)">Příprava</div>
+      <div class="chip" onclick="filterProjects('realizace',this)">Realizace</div>
+      <div class="chip" onclick="filterProjects('dokonceno',this)">Dokončeno</div>
+    </div>
+
+    <!-- Souhrn -->
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px">
+      <div style="background:white;border:1px solid var(--border);border-radius:var(--r);padding:16px;text-align:center">
+        <div class="serif" style="font-size:24px;font-weight:700;color:var(--green)">8</div>
+        <div style="font-size:13px;color:var(--ink-mid)">projektů</div>
+      </div>
+      <div style="background:white;border:1px solid var(--border);border-radius:var(--r);padding:16px;text-align:center">
+        <div class="serif" style="font-size:24px;font-weight:700;color:var(--green)">254,4 mil. Kč</div>
+        <div style="font-size:13px;color:var(--ink-mid)">celkem</div>
+      </div>
+      <div style="background:white;border:1px solid var(--border);border-radius:var(--r);padding:16px;text-align:center">
+        <div class="serif" style="font-size:24px;font-weight:700;color:var(--green)">2</div>
+        <div style="font-size:13px;color:var(--ink-mid)">dokončeny letos</div>
+      </div>
+    </div>
+
+    <!-- Hlavní obsah + sidebar -->
+    <div style="display:grid;grid-template-columns:1fr 320px;gap:24px">
+      <!-- Projektové karty -->
+      <div>
+        <!-- 1. Nové centrum Jesenice -->
+        <div class="proj-card" data-status="priprava" onclick="toggleProjectDetail(1)">
+          <div class="proj-card-header">
+            <div class="proj-icon" style="background:var(--cream)">🏙️</div>
+            <div style="flex:1">
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+                <span class="proj-status proj-status-priprava">Příprava</span>
+              </div>
+              <div class="serif" style="font-size:18px;font-weight:700;margin-bottom:4px">Nové centrum Jesenice</div>
+              <div style="font-size:13px;color:var(--ink-mid);margin-bottom:10px">Vytvoření skutečného náměstí. Studie vypracována, jednání s vlastníky pozemků probíhá.</div>
+              <div class="progress-bar"><div class="progress-fill" style="width:35%"></div></div>
+              <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--ink-light);margin-top:4px">
+                <span>35 %</span><span>85 mil. Kč · 2024–2028</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:12px;margin-top:10px">
+                <button class="btn" style="font-size:12px;padding:4px 12px" onclick="event.stopPropagation();followProject(this)">🔔 Sledovat</button>
+                <span style="font-size:12px;color:var(--ink-light)">💬 12 komentářů</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="proj-detail" id="proj-detail-1">
+          <h4 class="serif" style="margin-bottom:12px">Časová osa</h4>
+          <div class="proj-timeline">
+            <div class="proj-milestone done">✅ Studie proveditelnosti (2023)</div>
+            <div class="proj-milestone done">✅ Architektonická soutěž (2024)</div>
+            <div class="proj-milestone current">🔄 Jednání s vlastníky pozemků (2025)</div>
+            <div class="proj-milestone">⏳ Územní řízení (2026)</div>
+          </div>
+          <h4 class="serif" style="margin:16px 0 8px">Dokumenty</h4>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <a href="#" onclick="event.preventDefault();toast('Dokument bude stažen.')" style="font-size:13px;color:var(--blue)">📄 Studie</a>
+            <a href="#" onclick="event.preventDefault();toast('Dokument bude stažen.')" style="font-size:13px;color:var(--blue)">📐 Vizualizace</a>
+            <a href="#" onclick="event.preventDefault();toast('Dokument bude stažen.')" style="font-size:13px;color:var(--blue)">📋 Územní rozhodnutí</a>
+          </div>
+          <h4 class="serif" style="margin:16px 0 8px">Komentáře občanů</h4>
+          <div class="proj-comment"><strong>Petr M.</strong> — Konečně se centrum dočká proměny! Držím palce.</div>
+          <div class="proj-comment"><strong>Jana K.</strong> — Bylo by skvělé, kdyby tam vznikl i prostor pro trhy.</div>
+          <div class="proj-comment"><strong>Martin H.</strong> — Kdy bude známý výsledek architektonické soutěže?</div>
+          <button class="btn btn-green" style="margin-top:12px;font-size:13px" onclick="event.stopPropagation();followProject(this)">🔔 Sledovat projekt</button>
+        </div>
+
+        <!-- 2. Chodníky -->
+        <div class="proj-card" data-status="realizace" onclick="toggleProjectDetail(2)">
+          <div class="proj-card-header">
+            <div class="proj-icon" style="background:var(--green-light)">🚶</div>
+            <div style="flex:1">
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+                <span class="proj-status proj-status-realizace">Realizace</span>
+              </div>
+              <div class="serif" style="font-size:18px;font-weight:700;margin-bottom:4px">Chodníky a pěší infrastruktura</div>
+              <div style="font-size:13px;color:var(--ink-mid);margin-bottom:10px">Výstavba bezpečných chodníků v Osnici, Zdiměřicích a podél Budějovické. Rok 2025 rekordní investice.</div>
+              <div class="progress-bar"><div class="progress-fill" style="width:72%"></div></div>
+              <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--ink-light);margin-top:4px">
+                <span>72 %</span><span>12 mil. Kč · 2025</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:12px;margin-top:10px">
+                <button class="btn" style="font-size:12px;padding:4px 12px" onclick="event.stopPropagation();followProject(this)">🔔 Sledovat</button>
+                <span style="font-size:12px;color:var(--ink-light)">💬 8 komentářů</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="proj-detail" id="proj-detail-2">
+          <h4 class="serif" style="margin-bottom:12px">Časová osa</h4>
+          <div class="proj-timeline">
+            <div class="proj-milestone done">✅ Projektová dokumentace (2024)</div>
+            <div class="proj-milestone done">✅ Výběrové řízení (2024)</div>
+            <div class="proj-milestone current">🔄 Stavba úseku Osnice (2025)</div>
+            <div class="proj-milestone">⏳ Stavba úseku Zdiměřice (2025)</div>
+          </div>
+          <h4 class="serif" style="margin:16px 0 8px">Dokumenty</h4>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <a href="#" onclick="event.preventDefault();toast('Dokument bude stažen.')" style="font-size:13px;color:var(--blue)">📄 Studie</a>
+            <a href="#" onclick="event.preventDefault();toast('Dokument bude stažen.')" style="font-size:13px;color:var(--blue)">📐 Vizualizace</a>
+          </div>
+          <h4 class="serif" style="margin:16px 0 8px">Komentáře občanů</h4>
+          <div class="proj-comment"><strong>Eva S.</strong> — Super, že se konečně řeší chodník podél Budějovické!</div>
+          <div class="proj-comment"><strong>Tomáš R.</strong> — Prosím nezapomeňte na bezbariérovost.</div>
+          <button class="btn btn-green" style="margin-top:12px;font-size:13px" onclick="event.stopPropagation();followProject(this)">🔔 Sledovat projekt</button>
+        </div>
+
+        <!-- 3. Park u sv. Prokopa -->
+        <div class="proj-card" data-status="priprava" onclick="toggleProjectDetail(3)">
+          <div class="proj-card-header">
+            <div class="proj-icon" style="background:#E8F8E0">🌳</div>
+            <div style="flex:1">
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+                <span class="proj-status" style="background:#E0ECFF;color:var(--blue)">Projektová příprava</span>
+              </div>
+              <div class="serif" style="font-size:18px;font-weight:700;margin-bottom:4px">Revitalizace parku u sv. Prokopa</div>
+              <div style="font-size:13px;color:var(--ink-mid);margin-bottom:10px">Nové lavičky, výsadba stromů, dětský koutek. Součást projektu Universum Jesenice.</div>
+              <div class="progress-bar"><div class="progress-fill" style="width:20%"></div></div>
+              <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--ink-light);margin-top:4px">
+                <span>20 %</span><span>6 mil. Kč · 2026</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:12px;margin-top:10px">
+                <button class="btn" style="font-size:12px;padding:4px 12px" onclick="event.stopPropagation();followProject(this)">🔔 Sledovat</button>
+                <span style="font-size:12px;color:var(--ink-light)">💬 5 komentářů</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="proj-detail" id="proj-detail-3">
+          <h4 class="serif" style="margin-bottom:12px">Časová osa</h4>
+          <div class="proj-timeline">
+            <div class="proj-milestone done">✅ Záměr schválen zastupitelstvem (2024)</div>
+            <div class="proj-milestone current">🔄 Projektová dokumentace (2025)</div>
+            <div class="proj-milestone">⏳ Stavební povolení (2025)</div>
+            <div class="proj-milestone">⏳ Realizace (2026)</div>
+          </div>
+          <h4 class="serif" style="margin:16px 0 8px">Dokumenty</h4>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <a href="#" onclick="event.preventDefault();toast('Dokument bude stažen.')" style="font-size:13px;color:var(--blue)">📄 Studie</a>
+            <a href="#" onclick="event.preventDefault();toast('Dokument bude stažen.')" style="font-size:13px;color:var(--blue)">📐 Vizualizace</a>
+          </div>
+          <h4 class="serif" style="margin:16px 0 8px">Komentáře občanů</h4>
+          <div class="proj-comment"><strong>Lucie V.</strong> — Park je krásný, ale potřebuje osvětlení a lavičky.</div>
+          <div class="proj-comment"><strong>Karel D.</strong> — Prosím zachovejte staré stromy!</div>
+          <button class="btn btn-green" style="margin-top:12px;font-size:13px" onclick="event.stopPropagation();followProject(this)">🔔 Sledovat projekt</button>
+        </div>
+
+        <!-- 4. ZŠ Zdiměřice -->
+        <div class="proj-card" data-status="priprava" onclick="toggleProjectDetail(4)">
+          <div class="proj-card-header">
+            <div class="proj-icon" style="background:#FFF3E0">🏫</div>
+            <div style="flex:1">
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+                <span class="proj-status proj-status-priprava">Výběrové řízení</span>
+              </div>
+              <div class="serif" style="font-size:18px;font-weight:700;margin-bottom:4px">ZŠ Zdiměřice</div>
+              <div style="font-size:13px;color:var(--ink-mid);margin-bottom:10px">Nová škola v pasivním standardu pro rostoucí Zdiměřice. Stavební povolení vydáno.</div>
+              <div class="progress-bar"><div class="progress-fill" style="width:55%"></div></div>
+              <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--ink-light);margin-top:4px">
+                <span>55 %</span><span>145 mil. Kč · 2025–2027</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:12px;margin-top:10px">
+                <button class="btn" style="font-size:12px;padding:4px 12px" onclick="event.stopPropagation();followProject(this)">🔔 Sledovat</button>
+                <span style="font-size:12px;color:var(--ink-light)">💬 24 komentářů</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="proj-detail" id="proj-detail-4">
+          <h4 class="serif" style="margin-bottom:12px">Časová osa</h4>
+          <div class="proj-timeline">
+            <div class="proj-milestone done">✅ Architektonická soutěž (2023)</div>
+            <div class="proj-milestone done">✅ Stavební povolení (2024)</div>
+            <div class="proj-milestone current">🔄 Výběrové řízení na dodavatele (2025)</div>
+            <div class="proj-milestone">⏳ Stavba (2025–2027)</div>
+          </div>
+          <h4 class="serif" style="margin:16px 0 8px">Dokumenty</h4>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <a href="#" onclick="event.preventDefault();toast('Dokument bude stažen.')" style="font-size:13px;color:var(--blue)">📄 Studie</a>
+            <a href="#" onclick="event.preventDefault();toast('Dokument bude stažen.')" style="font-size:13px;color:var(--blue)">📐 Vizualizace</a>
+            <a href="#" onclick="event.preventDefault();toast('Dokument bude stažen.')" style="font-size:13px;color:var(--blue)">📋 Územní rozhodnutí</a>
+          </div>
+          <h4 class="serif" style="margin:16px 0 8px">Komentáře občanů</h4>
+          <div class="proj-comment"><strong>Alena P.</strong> — Konečně! Zdiměřice školu zoufale potřebují.</div>
+          <div class="proj-comment"><strong>Ondřej H.</strong> — Bude součástí i školní jídelna?</div>
+          <div class="proj-comment"><strong>Marie T.</strong> — Doufám, že se nezpozdí jako minulé projekty.</div>
+          <button class="btn btn-green" style="margin-top:12px;font-size:13px" onclick="event.stopPropagation();followProject(this)">🔔 Sledovat projekt</button>
+        </div>
+
+        <!-- 5. Tramvaj -->
+        <div class="proj-card" data-status="priprava" onclick="toggleProjectDetail(5)">
+          <div class="proj-card-header">
+            <div class="proj-icon" style="background:#E8F0FE">🚌</div>
+            <div style="flex:1">
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+                <span class="proj-status" style="background:#F0F0F0;color:var(--ink-mid)">Příprava EIA</span>
+              </div>
+              <div class="serif" style="font-size:18px;font-weight:700;margin-bottom:4px">Tramvaj Písnice–Jesenice</div>
+              <div style="font-size:13px;color:var(--ink-mid);margin-bottom:10px">Prodloužení tramvajové tratě z Depa Písnice. Studie proveditelnosti schválena.</div>
+              <div class="progress-bar"><div class="progress-fill" style="width:15%"></div></div>
+              <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--ink-light);margin-top:4px">
+                <span>15 %</span><span>2,6 mld. Kč · 2027–2030</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:12px;margin-top:10px">
+                <button class="btn" style="font-size:12px;padding:4px 12px" onclick="event.stopPropagation();followProject(this)">🔔 Sledovat</button>
+                <span style="font-size:12px;color:var(--ink-light)">💬 31 komentářů</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="proj-detail" id="proj-detail-5">
+          <h4 class="serif" style="margin-bottom:12px">Časová osa</h4>
+          <div class="proj-timeline">
+            <div class="proj-milestone done">✅ Studie proveditelnosti (2024)</div>
+            <div class="proj-milestone current">🔄 Příprava EIA dokumentace (2025)</div>
+            <div class="proj-milestone">⏳ Územní řízení (2026–2027)</div>
+            <div class="proj-milestone">⏳ Stavba (2028–2030)</div>
+          </div>
+          <h4 class="serif" style="margin:16px 0 8px">Dokumenty</h4>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <a href="#" onclick="event.preventDefault();toast('Dokument bude stažen.')" style="font-size:13px;color:var(--blue)">📄 Studie</a>
+            <a href="#" onclick="event.preventDefault();toast('Dokument bude stažen.')" style="font-size:13px;color:var(--blue)">📐 Vizualizace</a>
+          </div>
+          <h4 class="serif" style="margin:16px 0 8px">Komentáře občanů</h4>
+          <div class="proj-comment"><strong>David B.</strong> — To by byla revoluce v dopravě! Tramvaj do Jesenice je sen.</div>
+          <div class="proj-comment"><strong>Tereza N.</strong> — Snad to nezabije nějaká politická změna.</div>
+          <div class="proj-comment"><strong>Jiří K.</strong> — Kolik let reálně? Trolejbus by nebyl rychlejší?</div>
+          <button class="btn btn-green" style="margin-top:12px;font-size:13px" onclick="event.stopPropagation();followProject(this)">🔔 Sledovat projekt</button>
+        </div>
+
+        <!-- 6. Fotovoltaika -->
+        <div class="proj-card" data-status="realizace" onclick="toggleProjectDetail(6)">
+          <div class="proj-card-header">
+            <div class="proj-icon" style="background:#FFF9E6">☀️</div>
+            <div style="flex:1">
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+                <span class="proj-status proj-status-realizace">Realizace</span>
+              </div>
+              <div class="serif" style="font-size:18px;font-weight:700;margin-bottom:4px">Fotovoltaika na obecních budovách</div>
+              <div style="font-size:13px;color:var(--ink-mid);margin-bottom:10px">Instalace FV systémů na MÚ, škole a sportovním areálu. Spolufinancování z EU.</div>
+              <div class="progress-bar"><div class="progress-fill" style="width:90%"></div></div>
+              <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--ink-light);margin-top:4px">
+                <span>90 %</span><span>3,8 mil. Kč · 2025–2026</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:12px;margin-top:10px">
+                <button class="btn" style="font-size:12px;padding:4px 12px" onclick="event.stopPropagation();followProject(this)">🔔 Sledovat</button>
+                <span style="font-size:12px;color:var(--ink-light)">💬 6 komentářů</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="proj-detail" id="proj-detail-6">
+          <h4 class="serif" style="margin-bottom:12px">Časová osa</h4>
+          <div class="proj-timeline">
+            <div class="proj-milestone done">✅ Energetický audit (2024)</div>
+            <div class="proj-milestone done">✅ Dotace schválena (2024)</div>
+            <div class="proj-milestone done">✅ Instalace na MÚ a škole (2025)</div>
+            <div class="proj-milestone current">🔄 Instalace na sportovním areálu (2026)</div>
+          </div>
+          <h4 class="serif" style="margin:16px 0 8px">Dokumenty</h4>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <a href="#" onclick="event.preventDefault();toast('Dokument bude stažen.')" style="font-size:13px;color:var(--blue)">📄 Studie</a>
+            <a href="#" onclick="event.preventDefault();toast('Dokument bude stažen.')" style="font-size:13px;color:var(--blue)">📐 Vizualizace</a>
+          </div>
+          <h4 class="serif" style="margin:16px 0 8px">Komentáře občanů</h4>
+          <div class="proj-comment"><strong>Radka M.</strong> — Skvělý krok pro životní prostředí!</div>
+          <div class="proj-comment"><strong>Pavel J.</strong> — Kolik to ušetří ročně na energiích?</div>
+          <button class="btn btn-green" style="margin-top:12px;font-size:13px" onclick="event.stopPropagation();followProject(this)">🔔 Sledovat projekt</button>
+        </div>
+
+        <!-- 7. Kanalizace Osnice -->
+        <div class="proj-card" data-status="dokonceno" onclick="toggleProjectDetail(7)">
+          <div class="proj-card-header">
+            <div class="proj-icon" style="background:var(--green-light)">🚰</div>
+            <div style="flex:1">
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+                <span class="proj-status proj-status-dokonceno">Dokončeno</span>
+              </div>
+              <div class="serif" style="font-size:18px;font-weight:700;margin-bottom:4px">Kanalizace Osnice-jih</div>
+              <div style="font-size:13px;color:var(--ink-mid);margin-bottom:10px">Napojení jižní části Osnice na veřejnou kanalizaci. Konec septiků a ekologická zátěž.</div>
+              <div class="progress-bar"><div class="progress-fill" style="width:100%"></div></div>
+              <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--ink-light);margin-top:4px">
+                <span>100 %</span><span>8,2 mil. Kč · 2024–2025</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:12px;margin-top:10px">
+                <button class="btn" style="font-size:12px;padding:4px 12px" onclick="event.stopPropagation();followProject(this)">🔔 Sledovat</button>
+                <span style="font-size:12px;color:var(--ink-light)">💬 4 komentáře</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="proj-detail" id="proj-detail-7">
+          <h4 class="serif" style="margin-bottom:12px">Časová osa</h4>
+          <div class="proj-timeline">
+            <div class="proj-milestone done">✅ Projektová dokumentace (2023)</div>
+            <div class="proj-milestone done">✅ Stavební povolení (2024)</div>
+            <div class="proj-milestone done">✅ Realizace stavby (2024–2025)</div>
+            <div class="proj-milestone done">✅ Kolaudace (2025)</div>
+          </div>
+          <h4 class="serif" style="margin:16px 0 8px">Dokumenty</h4>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <a href="#" onclick="event.preventDefault();toast('Dokument bude stažen.')" style="font-size:13px;color:var(--blue)">📄 Studie</a>
+            <a href="#" onclick="event.preventDefault();toast('Dokument bude stažen.')" style="font-size:13px;color:var(--blue)">📋 Územní rozhodnutí</a>
+          </div>
+          <h4 class="serif" style="margin:16px 0 8px">Komentáře občanů</h4>
+          <div class="proj-comment"><strong>Hana F.</strong> — Konečně! Děkujeme za realizaci.</div>
+          <div class="proj-comment"><strong>Vladimír S.</strong> — Zbavili jsme se septiku, velká úleva.</div>
+          <button class="btn btn-green" style="margin-top:12px;font-size:13px" onclick="event.stopPropagation();followProject(this)">🔔 Sledovat projekt</button>
+        </div>
+
+        <!-- 8. Dětské hřiště Zdiměřice -->
+        <div class="proj-card" data-status="dokonceno" onclick="toggleProjectDetail(8)">
+          <div class="proj-card-header">
+            <div class="proj-icon" style="background:#FFF0F5">🛝</div>
+            <div style="flex:1">
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+                <span class="proj-status proj-status-dokonceno">Dokončeno</span>
+              </div>
+              <div class="serif" style="font-size:18px;font-weight:700;margin-bottom:4px">Dětské hřiště Zdiměřice</div>
+              <div style="font-size:13px;color:var(--ink-mid);margin-bottom:10px">Moderní dětské hřiště s přírodními prvky a workout zónou pro rodiče.</div>
+              <div class="progress-bar"><div class="progress-fill" style="width:100%"></div></div>
+              <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--ink-light);margin-top:4px">
+                <span>100 %</span><span>1,4 mil. Kč · 2025</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:12px;margin-top:10px">
+                <button class="btn" style="font-size:12px;padding:4px 12px" onclick="event.stopPropagation();followProject(this)">🔔 Sledovat</button>
+                <span style="font-size:12px;color:var(--ink-light)">💬 9 komentářů</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="proj-detail" id="proj-detail-8">
+          <h4 class="serif" style="margin-bottom:12px">Časová osa</h4>
+          <div class="proj-timeline">
+            <div class="proj-milestone done">✅ Návrh z participativního rozpočtu (2024)</div>
+            <div class="proj-milestone done">✅ Projektová dokumentace (2024)</div>
+            <div class="proj-milestone done">✅ Realizace (2025)</div>
+            <div class="proj-milestone done">✅ Slavnostní otevření (2025)</div>
+          </div>
+          <h4 class="serif" style="margin:16px 0 8px">Dokumenty</h4>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <a href="#" onclick="event.preventDefault();toast('Dokument bude stažen.')" style="font-size:13px;color:var(--blue)">📄 Studie</a>
+            <a href="#" onclick="event.preventDefault();toast('Dokument bude stažen.')" style="font-size:13px;color:var(--blue)">📐 Vizualizace</a>
+          </div>
+          <h4 class="serif" style="margin:16px 0 8px">Komentáře občanů</h4>
+          <div class="proj-comment"><strong>Markéta L.</strong> — Děti jsou nadšené, chodíme tam každý den!</div>
+          <div class="proj-comment"><strong>Petr K.</strong> — Workout zóna je bonus. Díky!</div>
+          <button class="btn btn-green" style="margin-top:12px;font-size:13px" onclick="event.stopPropagation();followProject(this)">🔔 Sledovat projekt</button>
         </div>
       </div>
-      <div class="project">
-        <div class="project-img">🚶</div>
-        <div class="project-body">
-          <div class="project-title">Chodníky a pěší infrastruktura</div>
-          <div class="project-desc">Výstavba bezpečných chodníků v Osnici, Zdiměřicích a podél Budějovické. Rok 2025 rekordní investice.</div>
-          <div class="progress-bar"><div class="progress-fill" style="width:72%"></div></div>
-          <div class="progress-meta"><span>Realizace</span><span>72 %</span></div>
-          <div style="margin-top:10px;font-size:12px;color:var(--ink-light)">Budget: 12 mil. Kč · 2025</div>
+
+      <!-- Sidebar -->
+      <div>
+        <!-- Statistiky -->
+        <div style="background:white;border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-bottom:16px">
+          <h4 class="serif" style="margin-bottom:12px">📊 Investice města</h4>
+          <div style="font-size:13px;color:var(--ink-mid);margin-bottom:8px">Celkový rozpočet investic</div>
+          <div class="serif" style="font-size:22px;font-weight:700;color:var(--green);margin-bottom:12px">254,4 mil. Kč</div>
+          <div style="display:flex;justify-content:space-between;font-size:13px;padding:8px 0;border-top:1px solid var(--border)">
+            <span style="color:var(--ink-mid)">Dokončeno letos</span><span style="font-weight:600">2 projekty</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:13px;padding:8px 0;border-top:1px solid var(--border)">
+            <span style="color:var(--ink-mid)">V realizaci</span><span style="font-weight:600">2 projekty</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:13px;padding:8px 0;border-top:1px solid var(--border)">
+            <span style="color:var(--ink-mid)">V přípravě</span><span style="font-weight:600">4 projekty</span>
+          </div>
         </div>
-      </div>
-      <div class="project">
-        <div class="project-img">🌳</div>
-        <div class="project-body">
-          <div class="project-title">Revitalizace parku u sv. Prokopa</div>
-          <div class="project-desc">Nové lavičky, výsadba stromů, dětský koutek. Součást projektu Universum Jesenice.</div>
-          <div class="progress-bar"><div class="progress-fill" style="width:20%"></div></div>
-          <div class="progress-meta"><span>Projektová příprava</span><span>20 %</span></div>
-          <div style="margin-top:10px;font-size:12px;color:var(--ink-light)">Budget: 6 mil. Kč · 2026</div>
+
+        <!-- Navrhni projekt -->
+        <div style="background:white;border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-bottom:16px">
+          <h4 class="serif" style="margin-bottom:12px">💡 Navrhni projekt</h4>
+          <p style="font-size:13px;color:var(--ink-mid);margin-bottom:12px">Máte nápad, co by měla Jesenice realizovat?</p>
+          <label style="font-size:13px;font-weight:600;display:block;margin-bottom:4px">Název projektu</label>
+          <input id="proj-idea-name" type="text" placeholder="např. Cyklostezka k Vltavě" style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:var(--r-sm);font-size:14px;margin-bottom:10px">
+          <label style="font-size:13px;font-weight:600;display:block;margin-bottom:4px">Popis</label>
+          <textarea id="proj-idea-desc" rows="3" placeholder="Popište svůj nápad..." style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:var(--r-sm);font-size:14px;resize:vertical;margin-bottom:10px"></textarea>
+          <label style="font-size:13px;font-weight:600;display:block;margin-bottom:4px">Lokalita</label>
+          <select style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:var(--r-sm);font-size:14px;margin-bottom:12px">
+            <option>Jesenice</option>
+            <option>Zdiměřice</option>
+            <option>Osnice</option>
+            <option>Horní Jirčany</option>
+          </select>
+          <button class="btn btn-green" style="width:100%;padding:10px;font-size:14px" onclick="submitProjectIdea()">Odeslat návrh</button>
         </div>
-      </div>
-      <div class="project">
-        <div class="project-img">🏫</div>
-        <div class="project-body">
-          <div class="project-title">Základní škola Zdiměřice</div>
-          <div class="project-desc">Nová škola v pasivním standardu pro rostoucí Zdiměřice. Stavební povolení vydáno.</div>
-          <div class="progress-bar"><div class="progress-fill" style="width:55%"></div></div>
-          <div class="progress-meta"><span>Výběrové řízení</span><span>55 %</span></div>
-          <div style="margin-top:10px;font-size:12px;color:var(--ink-light)">Budget: 145 mil. Kč · 2025–2027</div>
-        </div>
-      </div>
-      <div class="project">
-        <div class="project-img">🚌</div>
-        <div class="project-body">
-          <div class="project-title">Tramvaj Písnice – Jesenice</div>
-          <div class="project-desc">Prodloužení tramvajové tratě z Depa Písnice. Studie proveditelnosti schválena.</div>
-          <div class="progress-bar"><div class="progress-fill" style="width:15%"></div></div>
-          <div class="progress-meta"><span>Příprava EIA</span><span>15 %</span></div>
-          <div style="margin-top:10px;font-size:12px;color:var(--ink-light)">Budget: 2,6 mld. Kč · 2027–2030</div>
-        </div>
-      </div>
-      <div class="project">
-        <div class="project-img">☀️</div>
-        <div class="project-body">
-          <div class="project-title">Fotovoltaika na obecních budovách</div>
-          <div class="project-desc">Instalace FV systémů na MÚ, škole a sportovním areálu. Spolufinancování z EU.</div>
-          <div class="progress-bar"><div class="progress-fill" style="width:90%"></div></div>
-          <div class="progress-meta"><span>Realizace</span><span>90 %</span></div>
-          <div style="margin-top:10px;font-size:12px;color:var(--ink-light)">Budget: 3,8 mil. Kč · 2025–2026</div>
+
+        <!-- Odkaz na rozpočet -->
+        <div style="background:var(--green-xlight);border:1px solid var(--green-light);border-radius:var(--r);padding:20px;text-align:center;cursor:pointer" onclick="showView('budget')">
+          <div style="font-size:24px;margin-bottom:4px">💰</div>
+          <div class="serif" style="font-size:16px;font-weight:700;color:var(--green)">Rozpočet města</div>
+          <div style="font-size:13px;color:var(--ink-mid);margin-top:4px">Podívejte se, kam tečou peníze →</div>
         </div>
       </div>
     </div>
 
-    <div style="background:var(--green-xlight);border:1px solid var(--green-light);border-radius:var(--r);padding:24px;text-align:center">
-      <div style="font-size:28px;margin-bottom:8px">💰</div>
-      <div class="serif" style="font-size:20px;font-weight:700;margin-bottom:4px">Participativní rozpočet 2026</div>
-      <p style="color:var(--ink-mid);font-size:14px;margin-bottom:16px">2 000 000 Kč čeká na vaše nápady. Co by Jesenici prospělo nejvíc?</p>
-      <button class="btn btn-green" onclick="toast('Participativní rozpočet se spustí v dubnu 2026. Přihlaste se k odběru notifikací!')">Chci se zapojit →</button>
+    <!-- Mapa projektů -->
+    <div style="margin-top:24px">
+      <h3 class="serif" style="font-size:20px;font-weight:700;margin-bottom:12px">🗺️ Mapa projektů</h3>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px">
+        <div class="proj-map-area">
+          <div style="font-size:28px;margin-bottom:8px">📍</div>
+          <div style="font-weight:600;margin-bottom:4px">Jesenice</div>
+          <div style="display:flex;gap:4px;justify-content:center;margin-bottom:4px">
+            <span style="width:8px;height:8px;border-radius:50%;background:var(--orange);display:inline-block" title="Příprava"></span>
+            <span style="width:8px;height:8px;border-radius:50%;background:var(--orange);display:inline-block" title="Příprava"></span>
+          </div>
+          <div style="font-size:11px;color:var(--ink-light)">2 aktivní projekty</div>
+        </div>
+        <div class="proj-map-area">
+          <div style="font-size:28px;margin-bottom:8px">📍</div>
+          <div style="font-weight:600;margin-bottom:4px">Zdiměřice</div>
+          <div style="display:flex;gap:4px;justify-content:center;margin-bottom:4px">
+            <span style="width:8px;height:8px;border-radius:50%;background:var(--orange);display:inline-block" title="Příprava"></span>
+            <span style="width:8px;height:8px;border-radius:50%;background:#1a7a3a;display:inline-block" title="Dokončeno"></span>
+          </div>
+          <div style="font-size:11px;color:var(--ink-light)">2 aktivní projekty</div>
+        </div>
+        <div class="proj-map-area">
+          <div style="font-size:28px;margin-bottom:8px">📍</div>
+          <div style="font-weight:600;margin-bottom:4px">Osnice</div>
+          <div style="display:flex;gap:4px;justify-content:center;margin-bottom:4px">
+            <span style="width:8px;height:8px;border-radius:50%;background:var(--green);display:inline-block" title="Realizace"></span>
+            <span style="width:8px;height:8px;border-radius:50%;background:#1a7a3a;display:inline-block" title="Dokončeno"></span>
+          </div>
+          <div style="font-size:11px;color:var(--ink-light)">2 aktivní projekty</div>
+        </div>
+        <div class="proj-map-area">
+          <div style="font-size:28px;margin-bottom:8px">📍</div>
+          <div style="font-weight:600;margin-bottom:4px">Horní Jirčany</div>
+          <div style="display:flex;gap:4px;justify-content:center;margin-bottom:4px">
+            <span style="width:8px;height:8px;border-radius:50%;background:var(--green);display:inline-block" title="Realizace"></span>
+            <span style="width:8px;height:8px;border-radius:50%;background:var(--orange);display:inline-block" title="Příprava"></span>
+          </div>
+          <div style="font-size:11px;color:var(--ink-light)">2 aktivní projekty</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ BUDGET ═══════════════════════════════ -->
+<div id="view-budget" class="view">
+  <div class="page-header container" style="border-radius:0;margin-bottom:0">
+    <h2>💰 Rozpočet města</h2>
+    <p>Transparentní přehled financí Jesenice. Kam tečou vaše peníze?</p>
+  </div>
+
+  <div class="container" style="padding-top:24px">
+    <!-- Záložky -->
+    <div class="tabs" id="budget-tabs">
+      <button class="tab active" onclick="switchBudgetTab('prehled',this)">📊 Přehled</button>
+      <button class="tab" onclick="switchBudgetTab('participativni',this)">🗳️ Participativní rozpočet</button>
+      <button class="tab" onclick="switchBudgetTab('hospodareni',this)">📋 Hospodaření</button>
+    </div>
+
+    <!-- TAB 1: Přehled -->
+    <div id="bud-tab-prehled" class="tab-content active">
+      <!-- Velká čísla -->
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px">
+        <div class="budget-stat">
+          <div class="budget-stat-num">462 mil. Kč</div>
+          <div class="budget-stat-label">Příjmy 2026</div>
+          <div class="budget-stat-change" style="color:var(--green)">↑ 8 %</div>
+        </div>
+        <div class="budget-stat">
+          <div class="budget-stat-num" style="color:var(--orange)">438 mil. Kč</div>
+          <div class="budget-stat-label">Výdaje 2026</div>
+          <div class="budget-stat-change" style="color:var(--orange)">↑ 12 %</div>
+        </div>
+        <div class="budget-stat">
+          <div class="budget-stat-num">+24 mil. Kč</div>
+          <div class="budget-stat-label">Saldo</div>
+          <div class="budget-stat-change" style="color:var(--green)">přebytkový rozpočet</div>
+        </div>
+      </div>
+
+      <!-- Treemapa výdajů -->
+      <h3 class="serif" style="font-size:20px;font-weight:700;margin-bottom:12px">Kam jdou peníze?</h3>
+      <div class="budget-treemap" style="margin-bottom:24px">
+        <div class="budget-block" style="grid-column:span 4;background:#3498DB">
+          <div class="budget-block-label">Školství</div>
+          <div class="budget-block-pct">35 %</div>
+        </div>
+        <div class="budget-block" style="grid-column:span 3;background:#E67E22">
+          <div class="budget-block-label">Doprava</div>
+          <div class="budget-block-pct">20 %</div>
+        </div>
+        <div class="budget-block" style="grid-column:span 2;background:#95A5A6">
+          <div class="budget-block-label">Správa obce</div>
+          <div class="budget-block-pct">15 %</div>
+        </div>
+        <div class="budget-block" style="grid-column:span 3;background:#27AE60">
+          <div class="budget-block-label">Sport & kultura</div>
+          <div class="budget-block-pct">10 %</div>
+        </div>
+        <div class="budget-block" style="grid-column:span 3;background:#16A085">
+          <div class="budget-block-label">Životní prostředí</div>
+          <div class="budget-block-pct">8 %</div>
+        </div>
+        <div class="budget-block" style="grid-column:span 3;background:#8E44AD">
+          <div class="budget-block-label">Sociální služby</div>
+          <div class="budget-block-pct">7 %</div>
+        </div>
+        <div class="budget-block" style="grid-column:span 3;background:#E74C3C">
+          <div class="budget-block-label">Bezpečnost</div>
+          <div class="budget-block-pct">5 %</div>
+        </div>
+      </div>
+
+      <!-- Na jednoho Jeseničáka -->
+      <div style="display:grid;grid-template-columns:1fr 320px;gap:24px">
+        <div style="background:white;border:1px solid var(--border);border-radius:var(--r);padding:24px">
+          <h4 class="serif" style="margin-bottom:4px">💡 Kolik stojí na jednoho Jeseničáka?</h4>
+          <p style="font-size:13px;color:var(--ink-mid);margin-bottom:16px">Přepočet ročních výdajů na jednoho obyvatele</p>
+          <div class="serif" style="font-size:36px;font-weight:700;color:var(--green);margin-bottom:16px">42 000 Kč/rok</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+            <div style="font-size:13px;padding:8px;background:var(--cream);border-radius:var(--r-sm)"><strong>Školství:</strong> 14 700 Kč</div>
+            <div style="font-size:13px;padding:8px;background:var(--cream);border-radius:var(--r-sm)"><strong>Doprava:</strong> 8 400 Kč</div>
+            <div style="font-size:13px;padding:8px;background:var(--cream);border-radius:var(--r-sm)"><strong>Správa:</strong> 6 300 Kč</div>
+            <div style="font-size:13px;padding:8px;background:var(--cream);border-radius:var(--r-sm)"><strong>Sport:</strong> 4 200 Kč</div>
+            <div style="font-size:13px;padding:8px;background:var(--cream);border-radius:var(--r-sm)"><strong>Prostředí:</strong> 3 360 Kč</div>
+            <div style="font-size:13px;padding:8px;background:var(--cream);border-radius:var(--r-sm)"><strong>Sociální:</strong> 2 940 Kč</div>
+          </div>
+        </div>
+
+        <!-- Sidebar: Dokumenty -->
+        <div>
+          <div style="background:white;border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-bottom:16px">
+            <h4 class="serif" style="margin-bottom:12px">📄 Klíčové dokumenty</h4>
+            <a href="#" onclick="event.preventDefault();toast('Dokument bude stažen.')" style="display:block;font-size:14px;color:var(--blue);padding:8px 0;border-bottom:1px solid var(--border)">📋 Závěrečný účet 2025</a>
+            <a href="#" onclick="event.preventDefault();toast('Dokument bude stažen.')" style="display:block;font-size:14px;color:var(--blue);padding:8px 0;border-bottom:1px solid var(--border)">📊 Rozpočtový výhled 2026–2028</a>
+            <a href="#" onclick="event.preventDefault();toast('Dokument bude stažen.')" style="display:block;font-size:14px;color:var(--blue);padding:8px 0">📄 Rozpočet 2026</a>
+          </div>
+          <div style="background:var(--green-xlight);border:1px solid var(--green-light);border-radius:var(--r);padding:16px;text-align:center">
+            <div style="font-size:13px;color:var(--ink-mid)">Další dokumenty na</div>
+            <a href="#" onclick="event.preventDefault();toast('Odkaz na úřední desku.')" style="font-size:14px;font-weight:600;color:var(--green)">Úřední deska →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 2: Participativní rozpočet -->
+    <div id="bud-tab-participativni" class="tab-content">
+      <!-- Info banner -->
+      <div style="background:var(--green-xlight);border:1px solid var(--green-light);border-radius:var(--r);padding:24px;margin-bottom:24px">
+        <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+          <div>
+            <div class="serif" style="font-size:22px;font-weight:700;color:var(--green)">Ročník 2026 — 2 000 000 Kč</div>
+            <p style="font-size:14px;color:var(--ink-mid);margin-top:4px">Rozhodněte, kam půjdou 2 miliony z městského rozpočtu!</p>
+          </div>
+        </div>
+        <div style="display:flex;gap:24px;margin-top:16px;font-size:13px;color:var(--ink-mid)">
+          <span>📝 <strong>Podávání návrhů:</strong> březen–květen</span>
+          <span>🗳️ <strong>Hlasování:</strong> červen</span>
+          <span>🔨 <strong>Realizace:</strong> 2026–2027</span>
+        </div>
+      </div>
+
+      <!-- Filtry kategorií -->
+      <div class="chips" id="budcat-filters">
+        <div class="chip active" onclick="filterBudgetProposals('vse',this)">Vše</div>
+        <div class="chip" onclick="filterBudgetProposals('zelen',this)">🌳 Zeleň</div>
+        <div class="chip" onclick="filterBudgetProposals('sport',this)">⚽ Sport</div>
+        <div class="chip" onclick="filterBudgetProposals('deti',this)">🧒 Děti</div>
+        <div class="chip" onclick="filterBudgetProposals('doprava',this)">🚲 Doprava</div>
+        <div class="chip" onclick="filterBudgetProposals('kultura',this)">📚 Kultura</div>
+      </div>
+
+      <!-- Návrhy -->
+      <div class="budget-proposal" data-budcat="zelen">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:16px">
+          <div style="flex:1">
+            <div class="serif" style="font-size:17px;font-weight:700;margin-bottom:4px">🌳 Komunitní zahrada Osnice</div>
+            <div style="font-size:13px;color:var(--ink-mid);margin-bottom:8px">Sdílená zahrada s vyvýšenými záhony, kompostérem a altánem pro sousedská setkání.</div>
+            <div style="display:flex;gap:16px;font-size:13px;align-items:center">
+              <span style="font-weight:600;color:var(--green)">180 000 Kč</span>
+              <span style="color:var(--ink-light)">Autor: <strong>Jana K.</strong></span>
+            </div>
+          </div>
+          <button class="budget-vote-btn" onclick="event.stopPropagation();voteBudget(1,this)">❤️ <span class="bvote-count">47</span></button>
+        </div>
+        <div style="margin-top:10px">
+          <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--ink-light);margin-bottom:2px"><span>47/100 hlasů</span></div>
+          <div class="progress-bar"><div class="progress-fill bvote-bar" style="width:47%"></div></div>
+        </div>
+      </div>
+
+      <div class="budget-proposal" data-budcat="sport">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:16px">
+          <div style="flex:1">
+            <div class="serif" style="font-size:17px;font-weight:700;margin-bottom:4px">🏓 Ping-pongové stoly do parku</div>
+            <div style="font-size:13px;color:var(--ink-mid);margin-bottom:8px">Tři venkovní betonové stoly na ping-pong do parku u rybníku.</div>
+            <div style="display:flex;gap:16px;font-size:13px;align-items:center">
+              <span style="font-weight:600;color:var(--green)">95 000 Kč</span>
+              <span style="color:var(--ink-light)">Autor: <strong>Tomáš R.</strong></span>
+            </div>
+          </div>
+          <button class="budget-vote-btn" onclick="event.stopPropagation();voteBudget(2,this)">❤️ <span class="bvote-count">38</span></button>
+        </div>
+        <div style="margin-top:10px">
+          <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--ink-light);margin-bottom:2px"><span>38/100 hlasů</span></div>
+          <div class="progress-bar"><div class="progress-fill bvote-bar" style="width:38%"></div></div>
+        </div>
+      </div>
+
+      <div class="budget-proposal" data-budcat="deti">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:16px">
+          <div style="flex:1">
+            <div class="serif" style="font-size:17px;font-weight:700;margin-bottom:4px">🛝 Vodní prvek na hřiště Zdiměřice</div>
+            <div style="font-size:13px;color:var(--ink-mid);margin-bottom:8px">Interaktivní vodní prvek na dětské hřiště — čerpadla, koryto, mlýnek.</div>
+            <div style="display:flex;gap:16px;font-size:13px;align-items:center">
+              <span style="font-weight:600;color:var(--green)">420 000 Kč</span>
+              <span style="color:var(--ink-light)">Autor: <strong>Markéta L.</strong></span>
+            </div>
+          </div>
+          <button class="budget-vote-btn" onclick="event.stopPropagation();voteBudget(3,this)">❤️ <span class="bvote-count">62</span></button>
+        </div>
+        <div style="margin-top:10px">
+          <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--ink-light);margin-bottom:2px"><span>62/100 hlasů</span></div>
+          <div class="progress-bar"><div class="progress-fill bvote-bar" style="width:62%"></div></div>
+        </div>
+      </div>
+
+      <div class="budget-proposal" data-budcat="doprava">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:16px">
+          <div style="flex:1">
+            <div class="serif" style="font-size:17px;font-weight:700;margin-bottom:4px">🚲 Cyklostojany u škol</div>
+            <div style="font-size:13px;color:var(--ink-mid);margin-bottom:8px">Kryté cyklostojany u obou základních škol a před MÚ.</div>
+            <div style="display:flex;gap:16px;font-size:13px;align-items:center">
+              <span style="font-weight:600;color:var(--green)">120 000 Kč</span>
+              <span style="color:var(--ink-light)">Autor: <strong>Pavel J.</strong></span>
+            </div>
+          </div>
+          <button class="budget-vote-btn" onclick="event.stopPropagation();voteBudget(4,this)">❤️ <span class="bvote-count">29</span></button>
+        </div>
+        <div style="margin-top:10px">
+          <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--ink-light);margin-bottom:2px"><span>29/100 hlasů</span></div>
+          <div class="progress-bar"><div class="progress-fill bvote-bar" style="width:29%"></div></div>
+        </div>
+      </div>
+
+      <div class="budget-proposal" data-budcat="kultura">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:16px">
+          <div style="flex:1">
+            <div class="serif" style="font-size:17px;font-weight:700;margin-bottom:4px">📚 Venkovní knihobudka</div>
+            <div style="font-size:13px;color:var(--ink-mid);margin-bottom:8px">Dvě knihobudky — u pošty a v parku. Sdílení knih mezi sousedy.</div>
+            <div style="display:flex;gap:16px;font-size:13px;align-items:center">
+              <span style="font-weight:600;color:var(--green)">45 000 Kč</span>
+              <span style="color:var(--ink-light)">Autor: <strong>Lucie V.</strong></span>
+            </div>
+          </div>
+          <button class="budget-vote-btn" onclick="event.stopPropagation();voteBudget(5,this)">❤️ <span class="bvote-count">54</span></button>
+        </div>
+        <div style="margin-top:10px">
+          <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--ink-light);margin-bottom:2px"><span>54/100 hlasů</span></div>
+          <div class="progress-bar"><div class="progress-fill bvote-bar" style="width:54%"></div></div>
+        </div>
+      </div>
+
+      <div class="budget-proposal" data-budcat="zelen">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:16px">
+          <div style="flex:1">
+            <div class="serif" style="font-size:17px;font-weight:700;margin-bottom:4px">🌿 Alej podél Budějovické</div>
+            <div style="font-size:13px;color:var(--ink-mid);margin-bottom:8px">Výsadba 40 lip a javorů podél hlavní ulice. Stín, čistší vzduch, krásnější obec.</div>
+            <div style="display:flex;gap:16px;font-size:13px;align-items:center">
+              <span style="font-weight:600;color:var(--green)">350 000 Kč</span>
+              <span style="color:var(--ink-light)">Autor: <strong>Karel D.</strong></span>
+            </div>
+          </div>
+          <button class="budget-vote-btn" onclick="event.stopPropagation();voteBudget(6,this)">❤️ <span class="bvote-count">41</span></button>
+        </div>
+        <div style="margin-top:10px">
+          <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--ink-light);margin-bottom:2px"><span>41/100 hlasů</span></div>
+          <div class="progress-bar"><div class="progress-fill bvote-bar" style="width:41%"></div></div>
+        </div>
+      </div>
+
+      <!-- Podat návrh -->
+      <div style="background:white;border:1px solid var(--border);border-radius:var(--r);padding:24px;margin-top:24px">
+        <h4 class="serif" style="margin-bottom:12px">✍️ Podat vlastní návrh</h4>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+          <div>
+            <label style="font-size:13px;font-weight:600;display:block;margin-bottom:4px">Název návrhu *</label>
+            <input id="bud-prop-name" type="text" placeholder="např. Lavičky u rybníka" style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:var(--r-sm);font-size:14px">
+          </div>
+          <div>
+            <label style="font-size:13px;font-weight:600;display:block;margin-bottom:4px">Odhadované náklady *</label>
+            <input id="bud-prop-cost" type="text" placeholder="např. 150 000 Kč" style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:var(--r-sm);font-size:14px">
+          </div>
+        </div>
+        <label style="font-size:13px;font-weight:600;display:block;margin-bottom:4px">Popis *</label>
+        <textarea id="bud-prop-desc" rows="3" placeholder="Popište svůj návrh..." style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:var(--r-sm);font-size:14px;resize:vertical;margin-bottom:12px"></textarea>
+        <div style="display:flex;gap:12px;align-items:end">
+          <div>
+            <label style="font-size:13px;font-weight:600;display:block;margin-bottom:4px">Kategorie</label>
+            <select style="padding:8px 12px;border:1px solid var(--border);border-radius:var(--r-sm);font-size:14px">
+              <option>Zeleň</option>
+              <option>Sport</option>
+              <option>Děti</option>
+              <option>Doprava</option>
+              <option>Kultura</option>
+            </select>
+          </div>
+          <button class="btn btn-green" style="padding:10px 24px;font-size:14px" onclick="submitBudgetProposal()">Odeslat návrh</button>
+        </div>
+      </div>
+
+      <!-- Předchozí ročníky -->
+      <div style="background:var(--cream);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-top:16px">
+        <h4 class="serif" style="margin-bottom:8px">📌 Ročník 2025 — realizováno</h4>
+        <div style="font-size:14px;color:var(--ink-mid)">
+          ✅ Workoutové hřiště (380 000 Kč) &nbsp;·&nbsp; ✅ Lavičky v parku (120 000 Kč)
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: Hospodaření -->
+    <div id="bud-tab-hospodareni" class="tab-content">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:24px">
+        <!-- Příjmy -->
+        <div style="background:white;border:1px solid var(--border);border-radius:var(--r);padding:24px">
+          <h4 class="serif" style="margin-bottom:16px;color:var(--green)">📥 Příjmy</h4>
+          <div class="budget-income-row">
+            <span>Daňové příjmy</span>
+            <span style="font-weight:700;color:var(--green)">312 mil. Kč</span>
+          </div>
+          <div class="budget-income-row">
+            <span>Dotace</span>
+            <span style="font-weight:700;color:var(--green)">89 mil. Kč</span>
+          </div>
+          <div class="budget-income-row">
+            <span>Poplatky</span>
+            <span style="font-weight:700;color:var(--green)">42 mil. Kč</span>
+          </div>
+          <div class="budget-income-row">
+            <span>Ostatní</span>
+            <span style="font-weight:700;color:var(--green)">19 mil. Kč</span>
+          </div>
+          <div style="margin-top:12px;padding-top:12px;border-top:2px solid var(--green);display:flex;justify-content:space-between;font-weight:700">
+            <span>Celkem</span><span style="color:var(--green)">462 mil. Kč</span>
+          </div>
+        </div>
+
+        <!-- Výdaje -->
+        <div style="background:white;border:1px solid var(--border);border-radius:var(--r);padding:24px">
+          <h4 class="serif" style="margin-bottom:16px;color:var(--orange)">📤 Výdaje</h4>
+          <div style="margin-bottom:12px">
+            <div style="display:flex;justify-content:space-between;font-size:14px;margin-bottom:4px"><span>Školství</span><span style="font-weight:600">153 mil. Kč</span></div>
+            <div class="progress-bar"><div class="progress-fill" style="width:82%;background:#3498DB"></div></div>
+            <div style="font-size:11px;color:var(--ink-light);margin-top:2px">Čerpáno 82 % (Q1–Q3)</div>
+          </div>
+          <div style="margin-bottom:12px">
+            <div style="display:flex;justify-content:space-between;font-size:14px;margin-bottom:4px"><span>Doprava</span><span style="font-weight:600">88 mil. Kč</span></div>
+            <div class="progress-bar"><div class="progress-fill" style="width:65%;background:#E67E22"></div></div>
+            <div style="font-size:11px;color:var(--ink-light);margin-top:2px">Čerpáno 65 % (Q1–Q3)</div>
+          </div>
+          <div style="margin-bottom:12px">
+            <div style="display:flex;justify-content:space-between;font-size:14px;margin-bottom:4px"><span>Správa obce</span><span style="font-weight:600">66 mil. Kč</span></div>
+            <div class="progress-bar"><div class="progress-fill" style="width:74%;background:#95A5A6"></div></div>
+            <div style="font-size:11px;color:var(--ink-light);margin-top:2px">Čerpáno 74 % (Q1–Q3)</div>
+          </div>
+          <div style="margin-bottom:12px">
+            <div style="display:flex;justify-content:space-between;font-size:14px;margin-bottom:4px"><span>Sport & kultura</span><span style="font-weight:600">44 mil. Kč</span></div>
+            <div class="progress-bar"><div class="progress-fill" style="width:58%;background:#27AE60"></div></div>
+            <div style="font-size:11px;color:var(--ink-light);margin-top:2px">Čerpáno 58 % (Q1–Q3)</div>
+          </div>
+          <div style="margin-top:12px;padding-top:12px;border-top:2px solid var(--orange);display:flex;justify-content:space-between;font-weight:700">
+            <span>Celkem</span><span style="color:var(--orange)">438 mil. Kč</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- FAQ -->
+      <h3 class="serif" style="font-size:20px;font-weight:700;margin-bottom:12px">❓ Časté dotazy</h3>
+      <div class="wel-accordion">
+        <div class="wel-acc-item">
+          <button class="wel-acc-header" onclick="this.parentElement.classList.toggle('open');const b=this.nextElementSibling;b.style.maxHeight=b.style.maxHeight?'':b.scrollHeight+'px'">
+            Kde najdu detailní rozpočet?
+            <span class="wel-acc-arrow">▼</span>
+          </button>
+          <div class="wel-acc-body">
+            <p style="padding:12px 0;font-size:14px;color:var(--ink-mid)">Kompletní rozpočet je zveřejněn na úřední desce města a na webu v sekci Dokumenty. Rozpočet schvaluje zastupitelstvo města obvykle v prosinci předchozího roku.</p>
+          </div>
+        </div>
+        <div class="wel-acc-item">
+          <button class="wel-acc-header" onclick="this.parentElement.classList.toggle('open');const b=this.nextElementSibling;b.style.maxHeight=b.style.maxHeight?'':b.scrollHeight+'px'">
+            Jak mohu ovlivnit, kam jdou peníze?
+            <span class="wel-acc-arrow">▼</span>
+          </button>
+          <div class="wel-acc-body">
+            <p style="padding:12px 0;font-size:14px;color:var(--ink-mid)">Zapojte se do participativního rozpočtu, navrhujte projekty a hlasujte. Můžete také přijít na zasedání zastupitelstva a vyjádřit se k rozpočtu v rámci veřejné diskuse.</p>
+          </div>
+        </div>
+        <div class="wel-acc-item">
+          <button class="wel-acc-header" onclick="this.parentElement.classList.toggle('open');const b=this.nextElementSibling;b.style.maxHeight=b.style.maxHeight?'':b.scrollHeight+'px'">
+            Co je participativní rozpočet?
+            <span class="wel-acc-arrow">▼</span>
+          </button>
+          <div class="wel-acc-body">
+            <p style="padding:12px 0;font-size:14px;color:var(--ink-mid)">Participativní rozpočet je nástroj přímé demokracie. Občané navrhují projekty a hlasují o nich. Vítězné projekty jsou financovány z vyčleněné části městského rozpočtu (pro rok 2026 je to 2 mil. Kč).</p>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -4720,7 +5501,7 @@
 
 <script>
 const views = ['home','community','issues','projects','events','welcome','login','register','budget','bazar','spojeni','podniky','brigady','challenge'];
-const navMap = { community:'nav-community', issues:'nav-issues', projects:'nav-projects', events:'nav-events', welcome:'nav-welcome', login:'nav-login', bazar:'nav-bazar', spojeni:'nav-spojeni', podniky:'nav-podniky', brigady:'nav-brigady', challenge:'nav-challenge' };
+const navMap = { community:'nav-community', issues:'nav-issues', projects:'nav-projects', budget:'nav-budget', events:'nav-events', welcome:'nav-welcome', login:'nav-login', bazar:'nav-bazar', spojeni:'nav-spojeni', podniky:'nav-podniky', brigady:'nav-brigady', challenge:'nav-challenge' };
 
 function showView(id) {
   views.forEach(v => {
@@ -5816,6 +6597,100 @@ function submitEvent() {
   evtSelectedCat = '';
   document.querySelectorAll('#evt-form-cats .zlep-cat').forEach(c => c.classList.remove('active'));
   toast('Akce přidána! Sousedé ji uvidí ihned 🎉');
+}
+
+/* ═══ PROJECTS ═══ */
+function filterProjects(status, el) {
+  document.querySelectorAll('#proj-filters .chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('.proj-card').forEach(c => {
+    c.style.display = (status === 'vse' || c.dataset.status === status) ? '' : 'none';
+    const detail = c.nextElementSibling;
+    if (detail && detail.classList.contains('proj-detail')) detail.classList.remove('open');
+  });
+}
+
+function toggleProjectDetail(id) {
+  const detail = document.getElementById('proj-detail-' + id);
+  if (!detail) return;
+  const wasOpen = detail.classList.contains('open');
+  document.querySelectorAll('.proj-detail').forEach(d => d.classList.remove('open'));
+  if (!wasOpen) {
+    detail.classList.add('open');
+    detail.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+}
+
+function followProject(btn) {
+  if (btn.classList.contains('following')) {
+    btn.classList.remove('following');
+    btn.textContent = '🔔 Sledovat';
+    btn.style.background = '';
+    btn.style.color = '';
+    toast('Sledování projektu zrušeno.');
+  } else {
+    btn.classList.add('following');
+    btn.textContent = '✓ Sledujete';
+    btn.style.background = 'var(--green)';
+    btn.style.color = 'white';
+    toast('Projekt sledujete! Budete informováni o změnách.');
+  }
+}
+
+function submitProjectIdea() {
+  const name = document.getElementById('proj-idea-name').value.trim();
+  const desc = document.getElementById('proj-idea-desc').value.trim();
+  if (!name || !desc) { toast('Vyplňte název a popis projektu.'); return; }
+  document.getElementById('proj-idea-name').value = '';
+  document.getElementById('proj-idea-desc').value = '';
+  toast('🎉 Váš návrh projektu byl odeslán! Děkujeme za aktivní přístup.');
+}
+
+/* ═══ BUDGET ═══ */
+function switchBudgetTab(tab, el) {
+  document.querySelectorAll('#budget-tabs .tab').forEach(t => t.classList.remove('active'));
+  ['prehled','participativni','hospodareni'].forEach(t => {
+    const el2 = document.getElementById('bud-tab-' + t);
+    if (el2) el2.classList.remove('active');
+  });
+  el.classList.add('active');
+  const target = document.getElementById('bud-tab-' + tab);
+  if (target) target.classList.add('active');
+}
+
+function filterBudgetProposals(cat, el) {
+  document.querySelectorAll('#budcat-filters .chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('.budget-proposal').forEach(c => {
+    c.style.display = (cat === 'vse' || c.dataset.budcat === cat) ? '' : 'none';
+  });
+}
+
+function voteBudget(id, btn) {
+  if (btn.classList.contains('voted')) {
+    toast('Již jste hlasoval/a pro tento návrh.');
+    return;
+  }
+  btn.classList.add('voted');
+  const countEl = btn.querySelector('.bvote-count');
+  if (countEl) {
+    const n = parseInt(countEl.textContent) + 1;
+    countEl.textContent = n;
+    const bar = btn.closest('.budget-proposal').querySelector('.bvote-bar');
+    if (bar) bar.style.width = Math.min(n, 100) + '%';
+  }
+  toast('❤️ Hlas udělen! Děkujeme za účast v participativním rozpočtu.');
+}
+
+function submitBudgetProposal() {
+  const name = document.getElementById('bud-prop-name').value.trim();
+  const desc = document.getElementById('bud-prop-desc').value.trim();
+  const cost = document.getElementById('bud-prop-cost').value.trim();
+  if (!name || !desc || !cost) { toast('Vyplňte všechna povinná pole.'); return; }
+  document.getElementById('bud-prop-name').value = '';
+  document.getElementById('bud-prop-desc').value = '';
+  document.getElementById('bud-prop-cost').value = '';
+  toast('🎉 Návrh odeslán! Po schválení se objeví v seznamu k hlasování.');
 }
 </script>
 </body>
