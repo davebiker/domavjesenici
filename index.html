@@ -1544,7 +1544,7 @@
             <div class="step-content">
               <h4>Zaregistrujte se na portál</h4>
               <p>Stačí email nebo přihlášení přes bankovní identitu. Ověříme vaše bydliště v Jesenici.</p>
-              <button class="btn btn-green" style="margin-top:8px;font-size:13px;padding:7px 16px" onclick="toast('Registrace — brzy k dispozici!')">Registrovat se →</button>
+              <button class="btn btn-green" style="margin-top:8px;font-size:13px;padding:7px 16px" onclick="showView('register')">Registrovat se →</button>
             </div>
           </div>
           <div class="onboard-step">
@@ -1656,7 +1656,64 @@
       <div style="text-align:center;font-size:13px;color:var(--ink-light)">nebo</div>
       <button class="btn" style="width:100%;padding:13px;font-size:14px;margin-top:12px;background:var(--green-light);color:var(--green)" onclick="toast('Přesměrování na BankID...')">🏦 Přihlásit přes BankID</button>
       <div style="text-align:center;font-size:13px;color:var(--ink-light);margin-top:20px">
-        Ještě nemáte účet? <a href="#" style="color:var(--green);font-weight:600" onclick="toast('Registrace — brzy!')">Zaregistrujte se</a>
+        Ještě nemáte účet? <a href="#" style="color:var(--green);font-weight:600" onclick="event.preventDefault();showView('register')">Zaregistrujte se</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ REGISTRACE ═══════════════════════════════ -->
+<div id="view-register" class="view">
+  <div style="max-width:480px;margin:40px auto;padding:0 24px">
+    <div style="background:white;border:1px solid var(--border);border-radius:var(--r);padding:32px">
+      <div style="text-align:center;margin-bottom:28px">
+        <div style="font-size:36px;margin-bottom:12px">🌱</div>
+        <div class="serif" style="font-size:24px;font-weight:700;color:var(--ink);margin-bottom:4px">Registrace</div>
+        <div style="font-size:14px;color:var(--ink-mid)">Připojte se k jesenické komunitě</div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div class="form-group">
+          <label>Jméno</label>
+          <input type="text" id="reg-fname" placeholder="Jan">
+        </div>
+        <div class="form-group">
+          <label>Příjmení</label>
+          <input type="text" id="reg-lname" placeholder="Novák">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" id="reg-email" placeholder="vas@email.cz">
+      </div>
+      <div class="form-group">
+        <label>Heslo</label>
+        <input type="password" id="reg-pass" placeholder="Minimálně 8 znaků">
+      </div>
+      <div class="form-group">
+        <label>Heslo znovu</label>
+        <input type="password" id="reg-pass2" placeholder="Zopakujte heslo">
+      </div>
+      <div class="form-group">
+        <label>Kde v Jesenici bydlíte?</label>
+        <select id="reg-location">
+          <option value="">Vyberte lokalitu…</option>
+          <option value="jesenice-centrum">Jesenice – centrum</option>
+          <option value="zdiměřice">Zdiměřice</option>
+          <option value="osnice">Osnice</option>
+          <option value="horní-jirčany">Horní Jirčany</option>
+          <option value="kocanda">Kocanda</option>
+          <option value="říčany-okolí">Okolí (Říčany, Vestec…)</option>
+        </select>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:20px">
+        <input type="checkbox" id="reg-terms" style="width:auto;margin-top:3px;accent-color:var(--green)">
+        <label for="reg-terms" style="font-weight:400;font-size:13px;color:var(--ink-mid);margin-bottom:0;cursor:pointer">Souhlasím se <a href="#" style="color:var(--green);font-weight:600" onclick="event.preventDefault();toast('Podmínky používání — brzy k dispozici')">zpracováním osobních údajů</a> a <a href="#" style="color:var(--green);font-weight:600" onclick="event.preventDefault();toast('Pravidla komunity — brzy k dispozici')">pravidly komunity</a></label>
+      </div>
+      <button class="btn btn-green" style="width:100%;padding:13px;font-size:15px;margin-bottom:16px" onclick="registerUser()">Vytvořit účet</button>
+      <div style="text-align:center;font-size:13px;color:var(--ink-light)">nebo</div>
+      <button class="btn" style="width:100%;padding:13px;font-size:14px;margin-top:12px;background:var(--green-light);color:var(--green)" onclick="toast('Přesměrování na BankID…')">🏦 Registrace přes BankID</button>
+      <div style="text-align:center;font-size:13px;color:var(--ink-light);margin-top:20px">
+        Už máte účet? <a href="#" style="color:var(--green);font-weight:600" onclick="event.preventDefault();showView('login')">Přihlaste se</a>
       </div>
     </div>
   </div>
@@ -3685,6 +3742,24 @@ function bazarFilter(el, filter) {
   el.classList.add('active');
   toast(filter === 'vse' ? 'Zobrazuji vše' : 'Filtrováno: ' + el.textContent.split(' (')[0]);
 }
+function registerUser() {
+  const fname = document.getElementById('reg-fname').value.trim();
+  const lname = document.getElementById('reg-lname').value.trim();
+  const email = document.getElementById('reg-email').value.trim();
+  const pass = document.getElementById('reg-pass').value;
+  const pass2 = document.getElementById('reg-pass2').value;
+  const location = document.getElementById('reg-location').value;
+  const terms = document.getElementById('reg-terms').checked;
+  if (!fname || !lname) { toast('Vyplňte jméno a příjmení.'); return; }
+  if (!email || !email.includes('@')) { toast('Zadejte platný email.'); return; }
+  if (pass.length < 8) { toast('Heslo musí mít alespoň 8 znaků.'); return; }
+  if (pass !== pass2) { toast('Hesla se neshodují.'); return; }
+  if (!location) { toast('Vyberte svou lokalitu.'); return; }
+  if (!terms) { toast('Musíte souhlasit s podmínkami.'); return; }
+  toast('Registrace úspěšná! Vítejte v komunitě, ' + fname + '!');
+  setTimeout(() => showView('home'), 1500);
+}
+
 function addBazarItem() {
   const title = document.getElementById('sell-title').value.trim();
   const isFree = document.getElementById('sell-free').checked;
