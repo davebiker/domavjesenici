@@ -2327,384 +2327,30 @@
 <div id="view-podniky" class="view">
   <div class="page-header container" style="border-radius:0;margin-bottom:0">
     <h2>🏪 Místní podniky</h2>
-    <p>Restaurace, servisy, obchody, řemeslníci. Nakupujte v Jesenici — podpořte sousedy.</p>
+    <p>Kompletní katalog firem v Jesenici — data z <a href="https://mujesenice.cz/firmy-v-jesenici/ms-10849/p1=10849" target="_blank" style="color:var(--green);font-weight:600">webu obce</a>. Celkem <strong id="firmy-total">0</strong> podniků.</p>
   </div>
   <div class="container" style="padding-top:24px">
 
     <!-- CATEGORY FILTER -->
-    <div class="biz-cat-grid" id="biz-cat-grid">
-      <div class="biz-cat-card active" onclick="filterBiz('vse',this)">
-        <div class="bcc-icon">🏪</div>
-        <h5>Vše</h5>
-        <span>38 podniků</span>
-      </div>
-      <div class="biz-cat-card" onclick="filterBiz('restaurace',this)">
-        <div class="bcc-icon">🍽️</div>
-        <h5>Restaurace</h5>
-        <span>8 podniků</span>
-      </div>
-      <div class="biz-cat-card" onclick="filterBiz('automoto',this)">
-        <div class="bcc-icon">🚗</div>
-        <h5>Automoto</h5>
-        <span>5 podniků</span>
-      </div>
-      <div class="biz-cat-card" onclick="filterBiz('krasa',this)">
-        <div class="bcc-icon">💇</div>
-        <h5>Krása & péče</h5>
-        <span>6 podniků</span>
-      </div>
-      <div class="biz-cat-card" onclick="filterBiz('remesla',this)">
-        <div class="bcc-icon">🔧</div>
-        <h5>Řemesla</h5>
-        <span>7 podniků</span>
-      </div>
-      <div class="biz-cat-card" onclick="filterBiz('zdravi',this)">
-        <div class="bcc-icon">🏥</div>
-        <h5>Zdraví</h5>
-        <span>4 podniky</span>
-      </div>
-      <div class="biz-cat-card" onclick="filterBiz('obchody',this)">
-        <div class="bcc-icon">🛒</div>
-        <h5>Obchody</h5>
-        <span>5 podniků</span>
-      </div>
-      <div class="biz-cat-card" onclick="showJobsTab()">
-        <div class="bcc-icon">💼</div>
-        <h5>Volná místa</h5>
-        <span style="color:var(--orange);font-weight:600">7 nabídek</span>
-      </div>
+    <div class="biz-cat-grid" id="biz-cat-grid"></div>
+
+    <!-- SEARCH + FILTER BAR -->
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px">
+      <div style="font-size:14px;color:var(--ink-mid)">Zobrazeno <strong id="biz-count">0</strong> podniků</div>
+      <input type="text" id="firmy-search" placeholder="🔍 Hledat podnik…" style="font-size:13px;padding:7px 12px;border:1px solid var(--border);border-radius:8px;width:240px" oninput="renderFirmy()">
     </div>
 
-    <!-- TABS: Podniky / Volná místa -->
-    <div class="tabs" id="biz-tabs">
-      <button class="tab active" onclick="switchBizTab('listings',this)" id="tab-listings">Podniky (38)</button>
-      <button class="tab" onclick="switchBizTab('jobs',this)" id="tab-jobs">💼 Volná místa & brigády (7)</button>
+    <!-- LISTINGS -->
+    <div class="grid-2" id="biz-grid"></div>
+
+    <!-- CTA pro podnikatele -->
+    <div style="margin-top:28px;background:linear-gradient(135deg,var(--green) 0%,#1a4d30 100%);border-radius:var(--r);padding:28px 32px;display:flex;gap:20px;align-items:center;flex-wrap:wrap">
+      <div style="flex:1;min-width:220px">
+        <div style="font-family:'Fraunces',serif;font-size:20px;font-weight:700;color:white;margin-bottom:6px">Máte podnik v Jesenici?</div>
+        <p style="color:rgba(255,255,255,0.8);font-size:14px">Základní profil je <strong style="color:white">zcela zdarma</strong>. Dostanete se před 1 800+ registrovaných sousedů.</p>
+      </div>
+      <button class="btn btn-white" onclick="toast('Registrace podniku — formulář se otevírá!')">Přidat podnik →</button>
     </div>
-
-    <!-- LISTINGS TAB -->
-    <div id="biz-tab-listings" class="tab-content active">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px">
-        <div style="font-size:14px;color:var(--ink-mid)">Zobrazeno <strong id="biz-count">6</strong> podniků</div>
-        <div style="display:flex;gap:8px;align-items:center">
-          <input type="text" placeholder="🔍 Hledat podnik…" style="font-size:13px;padding:7px 12px;border:1px solid var(--border);border-radius:8px;width:180px" oninput="toast('Hledání — brzy!')">
-          <label style="font-size:13px;cursor:pointer;display:flex;align-items:center;gap:5px;color:var(--ink-mid);margin:0;font-weight:400">
-            <input type="checkbox" onchange="toast(this.checked?'Zobrazuji jen aktivní':'Zobrazuji vše')"> Jen aktivní dnes
-          </label>
-        </div>
-      </div>
-
-      <div class="grid-2" id="biz-grid">
-
-        <!-- RESTAURACE -->
-        <div class="biz-card" data-cat="restaurace" onclick="openBizDetail('restaurant')">
-          <div class="biz-header">
-            <div class="biz-logo">🍺</div>
-            <div class="biz-info">
-              <div class="biz-category">🍽️ Restaurace & hospoda</div>
-              <div class="biz-name">Hospoda U Jesenické lípy <span class="biz-verified">✓ Ověřeno</span></div>
-              <div class="biz-tagline">Tradiční česká kuchyně, čepované Kozel · od 1998</div>
-            </div>
-          </div>
-          <div class="biz-today">
-            <span class="biz-today-label">🌤️ Dnes:</span>
-            <span>Polévka: Kulajda 45 Kč · Hlavní: Svíčková na smetaně 189 Kč · Otevřeno 11:00–22:00</span>
-          </div>
-          <div class="biz-body">
-            <div class="biz-meta"><span>📍 Jesenice centrum</span><span>⭐ 4.6 (87 hodnocení)</span><span>🕐 Otevřeno</span></div>
-            <div class="biz-tags">
-              <span class="biz-tag">Česká kuchyně</span><span class="biz-tag">Rodinné obědy</span><span class="biz-tag">Zahrádka</span><span class="biz-tag">Firemní akce</span>
-            </div>
-            <div class="biz-actions">
-              <button class="biz-btn biz-btn-primary" onclick="event.stopPropagation();toast('Rezervace — volejte 776 123 456')">📞 Rezervovat stůl</button>
-              <button class="biz-btn biz-btn-sec" onclick="event.stopPropagation();openBizDetail('restaurant')">🍽️ Celé menu</button>
-            </div>
-          </div>
-        </div>
-
-        <div class="biz-card" data-cat="restaurace" onclick="openBizDetail('pizzeria')">
-          <div class="biz-header">
-            <div class="biz-logo">🍕</div>
-            <div class="biz-info">
-              <div class="biz-category">🍕 Pizzerie & italská kuchyně</div>
-              <div class="biz-name">Pizzeria Da Marco <span class="biz-verified">✓ Ověřeno</span></div>
-              <div class="biz-tagline">Pravá neapolská pizza z kamenné pece · rozvoz Jesenice</div>
-            </div>
-          </div>
-          <div class="biz-today">
-            <span class="biz-today-label">🔥 Dnes:</span>
-            <span>Pizza dne: Prosciutto e funghi 179 Kč · Rozvoz od 11:00 do 21:30</span>
-          </div>
-          <div class="biz-body">
-            <div class="biz-meta"><span>📍 Osnice</span><span>⭐ 4.8 (124 hodnocení)</span><span>🕐 Otevřeno</span></div>
-            <div class="biz-tags">
-              <span class="biz-tag">Rozvoz Jesenice</span><span class="biz-tag">Kamenná pec</span><span class="biz-tag">Bezlepkové těsto</span>
-            </div>
-            <div class="biz-actions">
-              <button class="biz-btn biz-btn-primary" onclick="event.stopPropagation();toast('Objednávka — otevírám web...')">🛵 Objednat online</button>
-              <button class="biz-btn biz-btn-sec" onclick="event.stopPropagation();openBizDetail('pizzeria')">📋 Menu</button>
-              <span class="hiring-badge" onclick="event.stopPropagation();switchBizTab('jobs',document.getElementById('tab-jobs'))">🔴 Hledáme</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- AUTOMOTO -->
-        <div class="biz-card" data-cat="automoto" onclick="openBizDetail('autoservis')">
-          <div class="biz-header">
-            <div class="biz-logo">🔧</div>
-            <div class="biz-info">
-              <div class="biz-category">🚗 Autoservis</div>
-              <div class="biz-name">Autoservis Novák & syn <span class="biz-verified">✓ Ověřeno</span></div>
-              <div class="biz-tagline">Kompletní servis osobních vozidel · STK poradenství</div>
-            </div>
-          </div>
-          <div class="biz-today">
-            <span class="biz-today-label">🗓️ Nyní:</span>
-            <span>Výměna oleje od 790 Kč · Přezouvání pneu 450 Kč/kolo · Termíny volné od středy</span>
-          </div>
-          <div class="biz-body">
-            <div class="biz-meta"><span>📍 Zdiměřice, Průmyslová 5</span><span>⭐ 4.9 (63 hodnocení)</span><span>🕐 Po–Pá 8–17</span></div>
-            <div class="biz-tags">
-              <span class="biz-tag">Všechny značky</span><span class="biz-tag">Pneumatiky</span><span class="biz-tag">Klimatizace</span><span class="biz-tag">Diagnostika</span>
-            </div>
-            <div class="biz-actions">
-              <button class="biz-btn biz-btn-primary" onclick="event.stopPropagation();toast('Termín: volejte 603 456 789')">📅 Objednat termín</button>
-              <button class="biz-btn biz-btn-sec" onclick="event.stopPropagation();openBizDetail('autoservis')">🔧 Ceník služeb</button>
-              <span class="hiring-badge" onclick="event.stopPropagation();switchBizTab('jobs',document.getElementById('tab-jobs'))">🔴 Hledáme</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- KRASA -->
-        <div class="biz-card" data-cat="krasa" onclick="openBizDetail('kadernictvi')">
-          <div class="biz-header">
-            <div class="biz-logo">💇</div>
-            <div class="biz-info">
-              <div class="biz-category">💇 Kadeřnictví & kosmetika</div>
-              <div class="biz-name">Salon Lucie <span class="biz-verified">✓ Ověřeno</span></div>
-              <div class="biz-tagline">Kadeřnictví, barvení, manikúra, pedikúra · Jesenice</div>
-            </div>
-          </div>
-          <div class="biz-today">
-            <span class="biz-today-label">✂️ Dnes:</span>
-            <span>Volný termín dnes 14:00 a 16:30 · Barvení + střih v akci: 890 Kč (normálně 1 100 Kč)</span>
-          </div>
-          <div class="biz-body">
-            <div class="biz-meta"><span>📍 Jesenice centrum</span><span>⭐ 4.7 (98 hodnocení)</span><span>🕐 Otevřeno do 18:00</span></div>
-            <div class="biz-tags">
-              <span class="biz-tag">Dámské stříhání</span><span class="biz-tag">Barvení</span><span class="biz-tag">Manikúra</span><span class="biz-tag">Prodlužování řas</span>
-            </div>
-            <div class="biz-actions">
-              <button class="biz-btn biz-btn-primary" onclick="event.stopPropagation();toast('Online rezervace — otevírám...')">📅 Rezervovat online</button>
-              <button class="biz-btn biz-btn-sec" onclick="event.stopPropagation();openBizDetail('kadernictvi')">💅 Ceník</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- REMESLA -->
-        <div class="biz-card" data-cat="remesla" onclick="openBizDetail('instalater')">
-          <div class="biz-header">
-            <div class="biz-logo">🚿</div>
-            <div class="biz-info">
-              <div class="biz-category">🔧 Instalatér & topenář</div>
-              <div class="biz-name">Vlček Instalace s.r.o. <span class="biz-verified">✓ Ověřeno</span></div>
-              <div class="biz-tagline">Voda, topení, plyn · rychlé havarijní zásahy 24/7</div>
-            </div>
-          </div>
-          <div class="biz-today">
-            <span class="biz-today-label">⚡ Aktuálně:</span>
-            <span>Havarijní servis dostupný · Pravidelná údržba kotlů: termíny na jaro k dispozici</span>
-          </div>
-          <div class="biz-body">
-            <div class="biz-meta"><span>📍 Osnice</span><span>⭐ 4.8 (41 hodnocení)</span><span>🕐 Havarijní 24/7</span></div>
-            <div class="biz-tags">
-              <span class="biz-tag">Havárie 24/7</span><span class="biz-tag">Rekonstrukce koupelen</span><span class="biz-tag">Plynové kotle</span>
-            </div>
-            <div class="biz-actions">
-              <button class="biz-btn biz-btn-primary" onclick="event.stopPropagation();toast('Volám havárii: 725 234 567')">📞 Zavolat</button>
-              <button class="biz-btn biz-btn-sec" onclick="event.stopPropagation();openBizDetail('instalater')">📋 Služby & ceník</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- OBCHOD -->
-        <div class="biz-card" data-cat="obchody" onclick="toast('Detail podniku — brzy!')">
-          <div class="biz-header">
-            <div class="biz-logo">🌿</div>
-            <div class="biz-info">
-              <div class="biz-category">🛒 Zdravá výživa & bio</div>
-              <div class="biz-name">Bio Jesenice <span class="biz-verified">✓ Ověřeno</span></div>
-              <div class="biz-tagline">Lokální zelenina, mléčné výrobky, pekárenské zboží</div>
-            </div>
-          </div>
-          <div class="biz-today">
-            <span class="biz-today-label">🥕 Dnes:</span>
-            <span>Čerstvá dodávka zeleniny · Nové: Čerstvý chléb z Průhonic od 8:00</span>
-          </div>
-          <div class="biz-body">
-            <div class="biz-meta"><span>📍 Zdiměřice</span><span>⭐ 4.9 (56 hodnocení)</span><span>🕐 8:00–19:00</span></div>
-            <div class="biz-tags">
-              <span class="biz-tag">Bio</span><span class="biz-tag">Lokální výrobci</span><span class="biz-tag">Bez zbytečných obalů</span>
-            </div>
-            <div class="biz-actions">
-              <button class="biz-btn biz-btn-primary" onclick="event.stopPropagation();toast('Webový obchod — otevírám...')">🛒 Online obchod</button>
-              <button class="biz-btn biz-btn-sec" onclick="event.stopPropagation();toast('Sledování novinky nastaveno!')">🔔 Sledovat novinky</button>
-            </div>
-          </div>
-        </div>
-
-      </div><!-- /biz-grid -->
-
-      <!-- CTA pro podnikatele -->
-      <div style="margin-top:28px;background:linear-gradient(135deg,var(--green) 0%,#1a4d30 100%);border-radius:var(--r);padding:28px 32px;display:flex;gap:20px;align-items:center;flex-wrap:wrap">
-        <div style="flex:1;min-width:220px">
-          <div style="font-family:'Fraunces',serif;font-size:20px;font-weight:700;color:white;margin-bottom:6px">Máte podnik v Jesenici?</div>
-          <p style="color:rgba(255,255,255,0.8);font-size:14px">Základní profil je <strong style="color:white">zcela zdarma</strong>. Dostanete se před 1 800+ registrovaných sousedů.</p>
-        </div>
-        <button class="btn btn-white" onclick="toast('Registrace podniku — formulář se otevírá!')">Přidat podnik →</button>
-      </div>
-    </div><!-- /biz-tab-listings -->
-
-    <!-- JOBS TAB -->
-    <div id="biz-tab-jobs" class="tab-content">
-      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px">
-        <div class="chip active" onclick="filterJobType(this,'vse')">Vše (7)</div>
-        <div class="chip" onclick="filterJobType(this,'hpp')">HPP</div>
-        <div class="chip" onclick="filterJobType(this,'cast')">Částečný úvazek</div>
-        <div class="chip" onclick="filterJobType(this,'brigada')">Brigáda</div>
-        <div class="chip" onclick="filterJobType(this,'zkusebni')">Zkušební spolupráce</div>
-      </div>
-      <div class="jobs-grid">
-
-        <div class="jobs-card" onclick="toast('Formulář žádosti — brzy!')">
-          <div class="jobs-biz-logo">🚗</div>
-          <div class="jobs-info">
-            <div class="jobs-title">Automechanik / mechanik osobních vozidel</div>
-            <div class="jobs-biz">Autoservis Novák & syn · Zdiměřice</div>
-            <div class="jobs-meta">
-              <span>📍 Jesenice (on-site)</span>
-              <span>💰 55 000–75 000 Kč/měs.</span>
-              <span>🕐 Přidáno 3. 3. 2026</span>
-            </div>
-          </div>
-          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex-shrink:0">
-            <span class="job-type job-type-full">HPP</span>
-            <button class="biz-btn biz-btn-primary" onclick="event.stopPropagation();toast('Žádost o zaslání CV odeslána!')">Reagovat</button>
-          </div>
-        </div>
-
-        <div class="jobs-card" onclick="toast('Formulář žádosti — brzy!')">
-          <div class="jobs-biz-logo">🍕</div>
-          <div class="jobs-info">
-            <div class="jobs-title">Pizzař / kuchař</div>
-            <div class="jobs-biz">Pizzeria Da Marco · Osnice</div>
-            <div class="jobs-meta">
-              <span>📍 Jesenice (on-site)</span>
-              <span>💰 40 000–50 000 Kč/měs.</span>
-              <span>🕐 Přidáno 5. 3. 2026</span>
-            </div>
-          </div>
-          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex-shrink:0">
-            <span class="job-type job-type-full">HPP</span>
-            <button class="biz-btn biz-btn-primary" onclick="event.stopPropagation();toast('Reagovat — formulář se otevírá!')">Reagovat</button>
-          </div>
-        </div>
-
-        <div class="jobs-card" onclick="toast('Formulář žádosti — brzy!')">
-          <div class="jobs-biz-logo">🍕</div>
-          <div class="jobs-info">
-            <div class="jobs-title">Rozvozce — pizza & jídlo (vlastní kolo nebo skútr výhodou)</div>
-            <div class="jobs-biz">Pizzeria Da Marco · Osnice</div>
-            <div class="jobs-meta">
-              <span>📍 Jesenice (rozvoz)</span>
-              <span>💰 150–180 Kč/hod. + spropitné</span>
-              <span>🕐 Přidáno 5. 3. 2026</span>
-            </div>
-          </div>
-          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex-shrink:0">
-            <span class="job-type job-type-brigade">Brigáda</span>
-            <button class="biz-btn biz-btn-primary" onclick="event.stopPropagation();toast('Reagovat — formulář se otevírá!')">Reagovat</button>
-          </div>
-        </div>
-
-        <div class="jobs-card" onclick="toast('Formulář žádosti — brzy!')">
-          <div class="jobs-biz-logo">💇</div>
-          <div class="jobs-info">
-            <div class="jobs-title">Kadeřnice / kadeřník — zkušení vítáni</div>
-            <div class="jobs-biz">Salon Lucie · Jesenice centrum</div>
-            <div class="jobs-meta">
-              <span>📍 Jesenice (on-site)</span>
-              <span>💰 35 000 Kč + provize</span>
-              <span>🕐 Přidáno 1. 3. 2026</span>
-            </div>
-          </div>
-          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex-shrink:0">
-            <span class="job-type job-type-part">Část. úvazek</span>
-            <button class="biz-btn biz-btn-primary" onclick="event.stopPropagation();toast('Reagovat — formulář se otevírá!')">Reagovat</button>
-          </div>
-        </div>
-
-        <div class="jobs-card" onclick="toast('Formulář žádosti — brzy!')">
-          <div class="jobs-biz-logo">🌿</div>
-          <div class="jobs-info">
-            <div class="jobs-title">Brigáda — výdej a obsluha v bio prodejně (Zdiměřice)</div>
-            <div class="jobs-biz">Bio Jesenice · Zdiměřice</div>
-            <div class="jobs-meta">
-              <span>📍 Zdiměřice (on-site)</span>
-              <span>💰 130 Kč/hod.</span>
-              <span>🕐 Přidáno 7. 3. 2026</span>
-            </div>
-          </div>
-          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex-shrink:0">
-            <span class="job-type job-type-brigade">Brigáda</span>
-            <button class="biz-btn biz-btn-primary" onclick="event.stopPropagation();toast('Reagovat — formulář se otevírá!')">Reagovat</button>
-          </div>
-        </div>
-
-        <div class="jobs-card" onclick="toast('Formulář žádosti — brzy!')">
-          <div class="jobs-biz-logo">🍺</div>
-          <div class="jobs-info">
-            <div class="jobs-title">Číšník / servírka — víkendy a večerní</div>
-            <div class="jobs-biz">Hospoda U Jesenické lípy · Jesenice centrum</div>
-            <div class="jobs-meta">
-              <span>📍 Jesenice (on-site)</span>
-              <span>💰 Dohoda + spropitné</span>
-              <span>🕐 Přidáno 6. 3. 2026</span>
-            </div>
-          </div>
-          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex-shrink:0">
-            <span class="job-type job-type-brigade">Brigáda</span>
-            <button class="biz-btn biz-btn-primary" onclick="event.stopPropagation();toast('Reagovat — formulář se otevírá!')">Reagovat</button>
-          </div>
-        </div>
-
-        <div class="jobs-card" onclick="toast('Formulář žádosti — brzy!')">
-          <div class="jobs-biz-logo">🔧</div>
-          <div class="jobs-info">
-            <div class="jobs-title">Instalatér — hledáme zkušeného nebo učně</div>
-            <div class="jobs-biz">Vlček Instalace s.r.o. · Osnice</div>
-            <div class="jobs-meta">
-              <span>📍 Jesenice okolí</span>
-              <span>💰 50 000–65 000 Kč/měs.</span>
-              <span>🕐 Přidáno 2. 3. 2026</span>
-            </div>
-          </div>
-          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex-shrink:0">
-            <span class="job-type job-type-full">HPP</span>
-            <button class="biz-btn biz-btn-primary" onclick="event.stopPropagation();toast('Reagovat — formulář se otevírá!')">Reagovat</button>
-          </div>
-        </div>
-
-      </div><!-- /jobs-grid -->
-
-      <div style="margin-top:24px;background:var(--green-xlight);border:1px solid var(--green-light);border-radius:var(--r);padding:20px;display:flex;gap:16px;align-items:center;flex-wrap:wrap">
-        <div>
-          <strong>Hledáte zaměstnance v Jesenici?</strong>
-          <p style="font-size:13px;color:var(--ink-mid);margin-top:2px">Inzerát vidí 1 800+ místních registrovaných obyvatel. Základní inzerce zdarma.</p>
-        </div>
-        <button class="btn btn-green" style="white-space:nowrap" onclick="toast('Přidat pracovní nabídku — formulář se otevírá!')">+ Přidat nabídku</button>
-      </div>
-    </div><!-- /biz-tab-jobs -->
-
   </div>
 </div>
 
@@ -3833,39 +3479,267 @@ function voteEntry(btn, current) {
   }
 }
 
+// === FIRMY DATA ===
+const FIRMY_CATS = {restaurace:{icon:'🍽️',label:'Restaurace & jídlo'},automoto:{icon:'🚗',label:'Auto & moto'},krasa:{icon:'💇',label:'Krása & péče'},remesla:{icon:'🔧',label:'Řemesla'},zdravi:{icon:'🏥',label:'Zdraví'},obchody:{icon:'🛒',label:'Obchody'},sport:{icon:'💪',label:'Sport & fitness'},vzdelavani:{icon:'🎓',label:'Vzdělávání'},stavby:{icon:'🏗️',label:'Stavby'},doprava:{icon:'🚛',label:'Doprava'},sluzby:{icon:'💼',label:'Služby'}};
+const FIRMY=[
+{n:'All Autoservis CZ',c:'automoto',i:'🚗',a:'Říčanská 431',t:'603 441 024',e:'info@all-servis.cz',w:'www.all-servis.cz',d:'Autoservis Audi, VW, Škoda, chip tuning, STK'},
+{n:'Autoservis Jiří Šula',c:'automoto',i:'🚗',a:'Drážďecká 41, Zdiměřice',t:'605 254 703',e:'autoservis-js@seznam.cz',w:'',d:'Opravy vozidel, STK příprava, karoserie, pneu'},
+{n:'Auto-Pneuservis Jesenice',c:'automoto',i:'🛞',a:'Říčanská 486',t:'608 039 608',e:'pneujesenice@seznam.cz',w:'www.pneuservis-jesenice.cz',d:'Pneuservis a autoservis, pohotovost 24/7'},
+{n:'Auto MK Servis',c:'automoto',i:'🚗',a:'Vestecká 66, Zdiměřice',t:'732 222 655',e:'info@automk-servis.cz',w:'www.automk-servis.cz',d:'Mechanika, klempířství, lakování, geometrie'},
+{n:'Autoservis Krása',c:'automoto',i:'🚗',a:'Botičská 50, Osnice',t:'777 332 342',e:'autoserviskrasa@seznam.cz',w:'',d:'Multibrand servis, diagnostika, klimatizace'},
+{n:'FullFix.cz',c:'automoto',i:'🔧',a:'Vestecká 66, Zdiměřice',t:'732 222 655',e:'',w:'',d:'Opravy vozidel, express servis, veterány'},
+{n:'Gajer Autorepair',c:'automoto',i:'🚗',a:'Vestecká 66, Zdiměřice',t:'608 854 648',e:'gajerauto@gmail.com',w:'www.gajerautoservis.cz',d:'Autoservis, pneuservis, klempířství, pronájem dodávek'},
+{n:'Group Wagen',c:'automoto',i:'🚗',a:'Budějovická 825',t:'604 797 811',e:'groupwagen@seznam.cz',w:'www.groupwagen.cz',d:'Prodej ojetých vozů, SUV, financování'},
+{n:'Jaroslav Pašek',c:'automoto',i:'🎨',a:'V Uličce 280',t:'241 931 907',e:'jarda-pasek@seznam.cz',w:'',d:'Klempířství a lakování karoserií'},
+{n:'Josef Lorenc',c:'automoto',i:'🚗',a:'Za Rozkoší 135, Zdiměřice',t:'',e:'autolorenc@centrum.cz',w:'www.autolorenc.cz',d:'Prodej a výkup vozidel'},
+{n:'JET 1',c:'automoto',i:'🚜',a:'Heřmánková 331, Osnice',t:'776 000 005',e:'jan.triska@jet1.cz',w:'www.jet1.cz',d:'Prodej traktorů a zemědělské techniky'},
+{n:'L72',c:'automoto',i:'🚗',a:'V Zátiší 71, Zdiměřice',t:'722 222 922',e:'',w:'www.l72.cz',d:'Prodej a import vozidel, americká auta'},
+{n:'Neruda Servis',c:'automoto',i:'🚗',a:'Budějovická 111',t:'241 932 475',e:'',w:'www.neruda-servis.cz',d:'Multibrand servis Citroën/Peugeot, emise, veterány'},
+{n:'Petr Koranda – CNG',c:'automoto',i:'🔋',a:'Na Vysoké 1185, H. Jirčany',t:'607 577 950',e:'info@opravycng.cz',w:'www.opravycng.cz',d:'Specialista na CNG vozidla'},
+{n:'Pneuservis Kabeláč',c:'automoto',i:'🛞',a:'Na Ladech 330, H. Jirčany',t:'241 940 531',e:'',w:'www.pneuserviskabelac.cz',d:'Rodinný pneuservis od roku 1995'},
+{n:'Tesla Servis Clinic',c:'automoto',i:'⚡',a:'Vestecká 66, Zdiměřice',t:'774 587 777',e:'info@teslaservice.cz',w:'www.tesla-clinic.eu',d:'Opravy Tesla, MCU, diagnostika Model S/X/3'},
+{n:'Avia Jesenice',c:'automoto',i:'⛽',a:'Pražská 1347',t:'246 083 594',e:'',w:'www.avia-czech.cz',d:'Čerpací stanice s LPG'},
+{n:'Benzina',c:'automoto',i:'⛽',a:'Budějovická 1007',t:'241 401 591',e:'',w:'www.benzina.cz',d:'Aditivovaná paliva, mycí linka'},
+{n:'ČS Vestec',c:'automoto',i:'⛽',a:'Zdiměřice 66',t:'703 143 538',e:'',w:'www.vestec-cerpaci-stanice.cz',d:'Nafta a Natural 95, bistro'},
+{n:'MOL',c:'automoto',i:'⛽',a:'Budějovická',t:'724 634 011',e:'',w:'www.molcesko.cz',d:'Paliva, oleje, TIR parking'},
+{n:'Alvako',c:'doprava',i:'🚛',a:'V Uličce, Jesenice',t:'777 313 705',e:'alvako@seznam.cz',w:'',d:'Zemní práce, jeřáby, prodej písku a štěrku'},
+{n:'Autodoprava Moravec',c:'doprava',i:'🚛',a:'Říčanská 321',t:'602 205 945',e:'',w:'www.autodoprava-moravec.cz',d:'Stavební doprava, odvoz odpadů, kontejnery'},
+{n:'Babak.cze',c:'doprava',i:'🚕',a:'Zdiměřická',t:'775 696 789',e:'',w:'www.babakcze.cz',d:'Osobní přeprava, letiště, cestování po EU'},
+{n:'Benzcar',c:'doprava',i:'🚕',a:'Matova 279, Osnice',t:'603 927 516',e:'',w:'www.benzcar.cz',d:'Luxusní přeprava, limuzíny, svatby'},
+{n:'Comfort Taxi',c:'doprava',i:'🚕',a:'Sportovní 138, Osnice',t:'774 457 301',e:'',w:'',d:'Taxi, letiště, bodyguard služby'},
+{n:'Eduard Krása – autobusy',c:'doprava',i:'🚌',a:'',t:'727 800 668',e:'',w:'www.krasabus.cz',d:'Autobusová doprava od roku 1994'},
+{n:'Grande Transport',c:'doprava',i:'🚛',a:'Vavřínová 227, Osnice',t:'777 239 650',e:'',w:'www.grande-transport.cz',d:'Přeprava materiálu a strojů do 30 tun'},
+{n:'Jaroslav Štajner',c:'doprava',i:'🚛',a:'Ke Studni 351, H. Jirčany',t:'602 132 153',e:'',w:'www.zemniprace-stajner.cz',d:'Nákladní doprava, stavební materiály'},
+{n:'Jiří Pěkný',c:'doprava',i:'🚛',a:'V Lázních 372',t:'603 258 111',e:'',w:'www.autodoprava-praha.net',d:'Nákladní doprava do 4,3 t'},
+{n:'Lukys – doprava',c:'doprava',i:'🚛',a:'Budějovická 82',t:'602 260 268',e:'',w:'www.lukys.cz',d:'Nákladní doprava do 3,5 t, autoškola sk. B'},
+{n:'Milktrans',c:'doprava',i:'🚛',a:'Krajní 680',t:'241 021 156',e:'',w:'www.madeta-logistic.cz',d:'Chladírenská distribuce mléčných výrobků'},
+{n:'R.S. Service',c:'doprava',i:'🚛',a:'Na Kocandě 45, Osnice',t:'210 320 659',e:'',w:'',d:'Mezinárodní doprava, celní služby'},
+{n:'Řidičák.net',c:'doprava',i:'🎓',a:'Sadová 8, Zdiměřice',t:'733 150 989',e:'',w:'www.autoskola-praha.info',d:'Autoškola skupiny A, B, C, D, E, T'},
+{n:'Školící a výcvikové středisko',c:'doprava',i:'🎓',a:'Sadová 8',t:'733 150 989',e:'',w:'www.svs-as.cz',d:'Profesní školení řidičů'},
+{n:'Česká pošta Jesenice',c:'doprava',i:'📮',a:'Budějovická 130',t:'954 225 242',e:'',w:'www.ceskaposta.cz',d:'Poštovní, finanční a kurýrní služby, CzechPOINT'},
+{n:'Cukrárna Andy',c:'restaurace',i:'🍰',a:'Cedrová 1462',t:'605 817 395',e:'cukrarnaandy@seznam.cz',w:'',d:'Dorty, zmrzlina, sendviče, káva'},
+{n:'Cukrárna Anna Bella',c:'restaurace',i:'🍰',a:'Budějovická 95',t:'722 298 024',e:'',w:'www.cukrarna-anna-bella.cz',d:'Vlastní výroba dortů, svatební dorty'},
+{n:'Poctivá jesenická pekárna',c:'restaurace',i:'🥖',a:'Budějovická 1008',t:'',e:'',w:'',d:'Pečivo, slané a sladké pečení'},
+{n:'Šabátovo zmrzlinářství',c:'restaurace',i:'🍦',a:'Ke Mlýnu 42, Osnice',t:'777 913 191',e:'',w:'www.sabatovozmrzlinarstvi.cz',d:'Domácí zmrzlina, 16+ příchutí denně'},
+{n:'AZZA Hotel & Restaurant',c:'restaurace',i:'🏨',a:'Budějovická 1500, H. Jirčany',t:'722 555 222',e:'recepce@azzapraha.cz',w:'www.azzapraha.cz',d:'Hotelová restaurace, zážitková gastronomie'},
+{n:'Čínská restaurace',c:'restaurace',i:'🥢',a:'Budějovická 2',t:'773 188 882',e:'',w:'',d:'Čínská kuchyně, jídlo s sebou'},
+{n:'Dallmayr',c:'restaurace',i:'☕',a:'V Areálu 1183',t:'222 262 155',e:'',w:'www.dallmayr.cz',d:'Kávovary, nápojové automaty, catering'},
+{n:'Party Bar Chupito',c:'restaurace',i:'🍸',a:'Budějovická 657',t:'602 326 667',e:'',w:'',d:'Bar s mixovanými nápoji'},
+{n:'Presto Pizza',c:'restaurace',i:'🍕',a:'Budějovická 63',t:'',e:'',w:'www.prestopizza.eu',d:'Pizzerie s rozvozem, těstoviny, saláty'},
+{n:'Restaurace Na Kocandě',c:'restaurace',i:'🍽️',a:'Pražská 134, Osnice',t:'602 136 172',e:'',w:'www.restauracenakocande.cz',d:'Česká kuchyně, pizza, burgery, letní zahrádka'},
+{n:'Restaurace U Císaříků',c:'restaurace',i:'🍺',a:'Budějovická 73, H. Jirčany',t:'777 237 309',e:'',w:'',d:'Hospoda s venkovním posezením'},
+{n:'Jesenická jídelna',c:'restaurace',i:'🥘',a:'Na Ochoze 432',t:'',e:'',w:'',d:'Česká kuchyně, obědy s sebou'},
+{n:'Restaurace Na Hřišti',c:'restaurace',i:'🍽️',a:'Budějovická 643',t:'602 693 923',e:'',w:'',d:'Teplá a studená jídla, letní zahrádka'},
+{n:'Tutti Pizza',c:'restaurace',i:'🍕',a:'Jesenice 1436',t:'736 144 999',e:'',w:'www.tuttipizza.cz',d:'Italská kuchyně, rozvoz, stravenky'},
+{n:'Restaurace U Dolejších',c:'restaurace',i:'🍽️',a:'K Sportovnímu areálu 1600',t:'725 817 679',e:'',w:'www.restaurantudolejsich.cz',d:'Sportovní restaurace, zdravé denní menu'},
+{n:'Arte Pizza',c:'restaurace',i:'🍕',a:'Budějovická 192',t:'602 978 900',e:'',w:'https://arte-pizza.cz/',d:'Autentická neapolská pizza, italská pec'},
+{n:'Aneta Salon Krásy',c:'krasa',i:'💄',a:'Hrnčířská 354, Zdiměřice',t:'605 291 988',e:'',w:'www.aneta-salon.cz',d:'Kosmetika, manikúra, pedikúra, gelové nehty'},
+{n:'BB-Studio',c:'krasa',i:'💄',a:'Říčanská 16',t:'737 278 278',e:'',w:'www.bb-studio.cz',d:'Mikrojehličkování, chemický peeling, mezoterapie'},
+{n:'Janah Studio',c:'krasa',i:'💇',a:'Nákupní 1127',t:'246 083 660',e:'',w:'www.janahstudio.cz',d:'Kadeřnictví, solárium, nehty, pedikúra'},
+{n:'Jana Zlámálová',c:'krasa',i:'💇',a:'U Parku 411',t:'604 263 333',e:'',w:'',d:'Kadeřnictví pro muže, ženy i děti'},
+{n:'Linda Beauty Salon',c:'krasa',i:'💇',a:'Budějovická 118',t:'775 668 496',e:'',w:'',d:'Brazilský keratin, péče o vousy'},
+{n:'Kadeřnický ateliér Klomínková',c:'krasa',i:'💇',a:'Nákupní 1127',t:'603 466 393',e:'',w:'',d:'Péče o pleť, peeling, lash lifting, akné'},
+{n:'Kosmetika Markéta',c:'krasa',i:'💄',a:'Budějovická 1155',t:'724 700 476',e:'',w:'www.kosmetikamarketa.cz',d:'Ultrazvuková kosmetika, kyselina hyaluronová'},
+{n:'Moje koření života',c:'krasa',i:'💆',a:'U Parku 492',t:'774 069 053',e:'',w:'www.mojekorenizivota.com',d:'Masáže, manuální terapie, reflexologie'},
+{n:'Salon Scarlet',c:'krasa',i:'💄',a:'Lázeňská 403',t:'603 421 370',e:'',w:'',d:'Galvanické ošetření, ultrazvuková špachtle, řasy'},
+{n:'Salon ISIS',c:'krasa',i:'💇',a:'Botičská 411, Osnice',t:'608 042 914',e:'',w:'www.salonisis-kocanda.cz',d:'Kadeřnictví, manikúra, pedikúra, balayage'},
+{n:'Salon Perfect',c:'krasa',i:'💇',a:'Jablonová 1142',t:'725 572 766',e:'',w:'www.salonperfect.cz',d:'Střihy, melíry, řasy, modeláž nehtů'},
+{n:'Studio Regenerace',c:'krasa',i:'💆',a:'Sadová 9, Zdiměřice',t:'607 873 742',e:'',w:'',d:'Mezoterapie, elektrostimulace, fototerapie'},
+{n:'Studio Ella – Branišová',c:'krasa',i:'💅',a:'Budějovická 1155',t:'602 203 432',e:'',w:'www.studioella.cz',d:'Pedikúra, manikúra, depilace voskem'},
+{n:'Šárka Tesařová',c:'krasa',i:'💇',a:'Budějovická 1155',t:'732 246 132',e:'',w:'',d:'Kadeřnictví, kosmetika Wella'},
+{n:'Duben – truhlářství',c:'remesla',i:'🪚',a:'Budějovická 236, H. Jirčany',t:'606 250 501',e:'',w:'www.truhlar-duben.cz',d:'Kuchyně, šatny, kancelářský nábytek na míru'},
+{n:'Manák Stavební',c:'remesla',i:'🏗️',a:'Papoušková 1365',t:'723 598 780',e:'',w:'www.manakstavebni.cz',d:'Zdění, tesařství, malování, instalatérství'},
+{n:'Martin Chrudimský',c:'remesla',i:'🪚',a:'V Úvoze 156',t:'737 629 550',e:'',w:'',d:'Vestavěné skříně, kancelářský nábytek'},
+{n:'Martin Trávníček',c:'remesla',i:'🔑',a:'Budějovická 312',t:'605 252 712',e:'',w:'',d:'Otevírání dveří, zabezpečení, zámky'},
+{n:'Michal Cirkovský',c:'remesla',i:'🏗️',a:'Horní 543, Osnice',t:'737 333 737',e:'',w:'www.tesarstvimc.cz',d:'Tesařství, klempířství, střechy, pergoly, nonstop'},
+{n:'Michal Kulík',c:'remesla',i:'🪚',a:'Cedrová 1039',t:'777 017 210',e:'',w:'',d:'Truhlářství, podlahářství'},
+{n:'Ondřej Lunáček',c:'remesla',i:'🔧',a:'Kalínová 388, Osnice',t:'737 566 933',e:'',w:'',d:'Údržba nemovitostí, terasy, dřevěné podlahy'},
+{n:'Otevřeme.cz',c:'remesla',i:'🔑',a:'Čápová 384, Zdiměřice',t:'773 292 477',e:'',w:'',d:'Zámečník 24/7, otevírání dveří, aut, trezorů'},
+{n:'Petr Hanzlík',c:'remesla',i:'🖌️',a:'Šeříková 456',t:'607 514 332',e:'',w:'',d:'Malířské a natěračské práce'},
+{n:'Renata Chrpová',c:'remesla',i:'🧵',a:'Spojovací 335',t:'777 664 658',e:'',w:'www.zehleni-siti.cz',d:'Šití na míru, opravy, kostýmy'},
+{n:'RESTR Jesenice',c:'remesla',i:'🏗️',a:'Budějovická 644',t:'603 263 444',e:'',w:'',d:'Střechy, okapy, komíny'},
+{n:'Střechy-AZ.cz',c:'remesla',i:'🏗️',a:'Na Spojce 58',t:'602 298 078',e:'',w:'www.strechy-az.cz',d:'Střechy, okapy, zateplení, fasády'},
+{n:'Váš zámečník.cz',c:'remesla',i:'🔑',a:'Ve Dvoře 19',t:'704 216 701',e:'',w:'',d:'Klíče, zámky, kování, trezory'},
+{n:'Vohanka & Holeček',c:'remesla',i:'🏗️',a:'Do Polí 1077',t:'607 637 486',e:'',w:'www.vh-strechy.cz',d:'Rekonstrukce střech, VELUX okna'},
+{n:'Zámečnictví Key Non Stop',c:'remesla',i:'🔑',a:'Průhonická 259',t:'602 202 470',e:'',w:'www.zamecnictvi-keynonstop.cz',d:'Zámečník 24/7, klíče, programování autoklíčů'},
+{n:'Zámečnictví Otradovec',c:'remesla',i:'🔧',a:'Svornosti 178',t:'777 595 836',e:'',w:'www.nerez-otradovec.cz',d:'Nerezová výroba pro potravinářství'},
+{n:'Lékárna Cedr',c:'zdravi',i:'💊',a:'Budějovická 59',t:'241 931 198',e:'',w:'www.lekarnacedr.cz',d:'Lékárna'},
+{n:'Lékárna Zamzam',c:'zdravi',i:'💊',a:'Cedrová 1462',t:'725 738 333',e:'',w:'',d:'Lékárna'},
+{n:'Lékárna Jesenice',c:'zdravi',i:'💊',a:'Budějovická 371',t:'724 584 825',e:'',w:'www.lekarnypraha.cz',d:'Lékárna'},
+{n:'Ferring Léčiva',c:'zdravi',i:'🏥',a:'K Rybníku 475',t:'241 041 111',e:'',w:'www.ferring.cz',d:'Farmaceutický výrobce'},
+{n:'inPHARM',c:'zdravi',i:'💊',a:'V Areálu 1243',t:'241 432 133',e:'',w:'www.inpharm.cz',d:'Vitamíny, probiotika, fytoterapie'},
+{n:'IonicKiss.cz',c:'zdravi',i:'🦷',a:'Nad Oborou 514, Osnice',t:'774 642 350',e:'',w:'www.ionickiss.cz',d:'Ionizační zubní kartáčky'},
+{n:'NutriAdapt',c:'zdravi',i:'🏥',a:'Na Ochoze 474',t:'774 791 174',e:'',w:'www.nutriadapt.cz',d:'Řízení váhy, individuální programy'},
+{n:'Esthetic Dentistry Clinic',c:'zdravi',i:'🦷',a:'Nákupní 1462',t:'606 776 067',e:'',w:'www.edclinic.cz',d:'Zubní a estetická medicína, nový příjem pacientů'},
+{n:'Papoušci ráj',c:'zdravi',i:'🦜',a:'Dolní, Osnice',t:'601 015 015',e:'',w:'www.papousci-raj.cz',d:'Záchranná stanice zvířat, adopce papoušků'},
+{n:'MyVet – MVDr. Jan Šimr',c:'zdravi',i:'🐾',a:'Budějovická 81',t:'604 451 977',e:'',w:'www.veterinajecenice.cz',d:'Veterinární péče 24/7, neurologie, čipování'},
+{n:'Veterinární klinika Jesenice',c:'zdravi',i:'🐾',a:'Budějovická 1116',t:'241 734 559',e:'',w:'www.veterina-jesenice.cz',d:'Kompletní vet. péče, operativa, agility'},
+{n:'Albert',c:'obchody',i:'🛒',a:'Budějovická 371',t:'800 402 402',e:'',w:'www.albert.cz',d:'Supermarket'},
+{n:'Billa',c:'obchody',i:'🛒',a:'Cedrová 1463',t:'317 741 771',e:'',w:'www.billa.cz',d:'Supermarket'},
+{n:'Lidl',c:'obchody',i:'🛒',a:'Budějovická 1143',t:'800 115 435',e:'',w:'www.lidl.cz',d:'Diskontní supermarket'},
+{n:'Tesco',c:'obchody',i:'🛒',a:'Zbraslavská 68',t:'724 531 910',e:'',w:'www.itesco.cz',d:'Hypermarket'},
+{n:'Žabka',c:'obchody',i:'🛒',a:'Budějovická 1155',t:'731 672 019',e:'',w:'www.izabka.cz',d:'Samoobslužná prodejna'},
+{n:'Jesenická vinotéka a sýrárna',c:'obchody',i:'🍷',a:'Budějovická 192',t:'608 608 724',e:'',w:'',d:'Víno, sýry, farmářské produkty'},
+{n:'Alsance & Bourgogne',c:'obchody',i:'🍷',a:'Budějovická 59',t:'606 768 437',e:'',w:'www.ab-vino.cz',d:'Francouzská, italská, španělská vína'},
+{n:'VitaRaj – zdravá výživa',c:'obchody',i:'🥗',a:'Na Ochoze 474',t:'739 539 111',e:'',w:'www.vitaraj.cz',d:'Zdravá výživa, bezlepkové, bio, vegan'},
+{n:'Nekton',c:'obchody',i:'🐟',a:'Plavecká 382',t:'241 714 015',e:'',w:'www.nekton.cz',d:'Velkoobchod ryb, olivové oleje, kaviár'},
+{n:'AbsintheOriginal.cz',c:'obchody',i:'🍸',a:'U Parku 1081',t:'777 966 300',e:'',w:'www.absintheoriginal.cz',d:'Online prodej absintu a příslušenství'},
+{n:'Nejlevnější oříšky',c:'obchody',i:'🥜',a:'Hrnčířská 156',t:'605 254 238',e:'',w:'www.nejlevnejsiorisky.cz',d:'Online ořechy a sušené ovoce'},
+{n:'Řeznictví Třebovle',c:'obchody',i:'🥩',a:'Budějovická 1008',t:'241 406 444',e:'',w:'www.maso-trebovle.cz',d:'Vepřové, hovězí, drůbeží, uzeniny, dárkové koše'},
+{n:'LE & CO',c:'obchody',i:'🥩',a:'Na Ochoze 432',t:'225 391 280',e:'',w:'www.prodejnaleco.cz',d:'Výrobce šunky a masa, prémiové produkty'},
+{n:'Liberské lahůdky',c:'obchody',i:'🥩',a:'Na Ochoze 474',t:'731 151 311',e:'',w:'www.liberskelahudky.cz',d:'Rodinný podnik 25+ let, chlebíčky, catering'},
+{n:'Cattleya',c:'obchody',i:'💐',a:'Budějovická 134',t:'602 272 607',e:'',w:'www.cattleya.cz',d:'Velkoobchod květin, smuteční vazba'},
+{n:'Klára Květiny',c:'obchody',i:'💐',a:'Budějovická 371',t:'241 404 787',e:'',w:'',d:'Řezané, hrnkové, sušené květiny, svatební kytice'},
+{n:'Květinářství Victoria',c:'obchody',i:'💐',a:'Budějovická 143',t:'606 463 694',e:'',w:'',d:'Čerstvé květiny, vazby, dekorace'},
+{n:'La Fantazia',c:'obchody',i:'💐',a:'Vestecká 903',t:'774 724 295',e:'',w:'www.lafantazia.cz',d:'Svatební a smuteční vazby, rozvoz květin'},
+{n:'Talpa Flowers',c:'obchody',i:'💐',a:'Mladíkov 694',t:'732 416 139',e:'',w:'www.talpaflowers.cz',d:'Svatební kytice, adventní věnce'},
+{n:'DM Drogerie Markt',c:'obchody',i:'🧴',a:'Na Ochoze 1270',t:'241 412 269',e:'',w:'www.dm.cz',d:'Péče o tělo, kosmetika, bio potraviny'},
+{n:'Teta Drogerie',c:'obchody',i:'🧴',a:'Budějovická 371',t:'734 176 492',e:'',w:'www.tetadrogerie.cz',d:'Kosmetika, parfémy, čistící prostředky'},
+{n:'Barevný ráj',c:'obchody',i:'🎨',a:'Budějovická 637',t:'605 255 448',e:'',w:'www.balshop.cz',d:'Barvy, laky, nátěry na dřevo a kov'},
+{n:'Dům barev',c:'obchody',i:'🎨',a:'Budějovická 371',t:'241 930 505',e:'',w:'www.dumbarev.cz',d:'Výroba a prodej barev, fasádní barvy'},
+{n:'SIKO',c:'obchody',i:'🚿',a:'Budějovická 825',t:'222 300 400',e:'',w:'www.siko.cz',d:'Koupelny, kuchyně, dlažby, 3D návrhy'},
+{n:'Nábytek Kocanda – NAKO',c:'obchody',i:'🪑',a:'Ke Mlýnu 19, Osnice',t:'241 931 563',e:'',w:'www.nakonabytek.cz',d:'Nábytek, truhlářství, matrace, podlahy'},
+{n:'OfficeOutlet.cz',c:'obchody',i:'🪑',a:'V Uličce 49',t:'727 936 607',e:'',w:'www.officeoutlet.cz',d:'Značkový kancelářský nábytek'},
+{n:'CNC Zakázky',c:'obchody',i:'🪑',a:'Budějovická 1266',t:'605 253 039',e:'',w:'www.cnc-zakazky.cz',d:'5osý CNC, nábytek, kuchyně, skříně na míru'},
+{n:'Stegu',c:'obchody',i:'🧱',a:'K Rybníku 401',t:'736 117 250',e:'',w:'www.stegu.cz',d:'Obklady, kamenné a cihlové pásky'},
+{n:'Battery.cz',c:'obchody',i:'🔋',a:'K Rybníku 378',t:'222 560 338',e:'',w:'www.battery.cz',d:'Prodej a servis baterií, diagnostika'},
+{n:'Cibet – nářadí',c:'obchody',i:'🔧',a:'Budějovická 899',t:'272 660 700',e:'',w:'www.cibet.cz',d:'Nářadí a přístroje pro stavebnictví'},
+{n:'Frigocom',c:'obchody',i:'❄️',a:'Budějovická 1030',t:'605 297 179',e:'',w:'www.frigocom.cz',d:'Chlazení, klimatizace, tepelná čerpadla'},
+{n:'Telvis – Petr Menda',c:'obchody',i:'📺',a:'Budějovická 143',t:'241 931 846',e:'',w:'www.pcjesenice.cz',d:'Elektronika, antény, satelity, výpočetní technika'},
+{n:'The Bike',c:'obchody',i:'🚲',a:'Nákupní 1462',t:'606 039 889',e:'',w:'www.thebike.cz',d:'Kola SCOTT/GIANT, e-biky, servis'},
+{n:'Specialized',c:'obchody',i:'🚲',a:'V Areálu 1171',t:'317 070 066',e:'',w:'www.specialized.com',d:'Distributor jízdních kol a cyklovybavení'},
+{n:'Bambule Partner',c:'obchody',i:'🧸',a:'Na Ochoze 1270',t:'241 407 361',e:'',w:'www.bambule.cz',d:'Hračky, LEGO, Barbie, potřeby pro miminka'},
+{n:'KiK',c:'obchody',i:'👕',a:'Cedrová 1463',t:'',e:'',w:'www.kik.cz',d:'Oblečení, bytový textil, hračky'},
+{n:'Orion',c:'obchody',i:'🏠',a:'Cedrová 1462',t:'603 342 417',e:'',w:'www.oriondomacipotreby.cz',d:'Domácí potřeby, 4000+ položek'},
+{n:'Železářství Myslivec',c:'obchody',i:'🔧',a:'V Lukách 126',t:'602 649 936',e:'',w:'',d:'Železářství'},
+{n:'Zlatnictví K+K',c:'obchody',i:'💎',a:'Říčanská 16',t:'774 441 011',e:'',w:'www.zlatnictvi-k-k.cz',d:'Výroba a opravy šperků, zlato, stříbro'},
+{n:'Koh-i-noor Hardtmuth Trade',c:'obchody',i:'✏️',a:'Bělnická 813',t:'241 404 966',e:'',w:'www.koh-i-noor.cz',d:'Velkoobchod výtvarných a školních potřeb'},
+{n:'JAPA – papírnictví & rybaření',c:'obchody',i:'🎣',a:'Budějovická 2',t:'602 826 169',e:'',w:'',d:'Papírnictví + rybářské potřeby'},
+{n:'Adventure Centrum',c:'obchody',i:'🛶',a:'Budějovická 1146',t:'603 415 419',e:'',w:'www.adventurecentrum.cz',d:'Kajaky, SUP paddleboardy, solární vaření'},
+{n:'MDC – potápění',c:'obchody',i:'🤿',a:'Budějovická 1146',t:'603 448 520',e:'',w:'www.potapko.cz',d:'Potápěčské vybavení a kurzy'},
+{n:'Bychl Yacht Centrum',c:'obchody',i:'🚤',a:'Hodkovická 1379',t:'241 007 111',e:'',w:'www.bychlyacht.cz',d:'Prodej a pronájem motorových jachet'},
+{n:'Studio Ella – fitness',c:'sport',i:'💪',a:'Budějovická 1155',t:'775 159 565',e:'',w:'www.studioella.cz',d:'BOSU, jóga, pilates, TRX, jumping'},
+{n:'Pole Dance Wonderland',c:'sport',i:'💪',a:'Budějovická 1155',t:'774 289 271',e:'',w:'www.poledance-wonderland.cz',d:'Pole fitness, stretching'},
+{n:'Svět plavání',c:'sport',i:'🏊',a:'Budějovická 922',t:'734 453 221',e:'',w:'www.svetplavani.cz',d:'Bazén se slanou vodou, plavání pro děti i dospělé'},
+{n:'Adams Family Gym',c:'sport',i:'🏋️',a:'Zbraslavská 68',t:'702 065 588',e:'',w:'https://adamsfamilygym.cz',d:'Rodinné fitness centrum'},
+{n:'For Padel – Sport Park',c:'sport',i:'🎾',a:'U Geofyzikálního ústavu, Zdiměřice',t:'777 129 066',e:'',w:'https://forpadel.cz/',d:'4 padel, 2 pickleball, 2 beach volejbal, tenis'},
+{n:'Best Decision',c:'vzdelavani',i:'🎓',a:'Příčná II. 888',t:'604 889 143',e:'',w:'www.bestdecision.cz',d:'Školení BOZP, MBA programy, první pomoc'},
+{n:'Core Questions',c:'vzdelavani',i:'🎓',a:'Do Polí 1075',t:'608 014 686',e:'',w:'www.corequestions.cz',d:'Komunikační trénink, mentoring, koučink'},
+{n:'Carrick Stables',c:'vzdelavani',i:'🐴',a:'Ke Mlýnu 19, Osnice',t:'722 960 400',e:'',w:'www.jezdecky-skokovy-klub.cz',d:'Parkurová škola, ustájení, tábory, hipoterapie'},
+{n:'Jazyková škola Perfect',c:'vzdelavani',i:'🗣️',a:'K Rybníku 800',t:'603 908 606',e:'',w:'www.jsperfect.cz',d:'Angličtina, němčina, španělština, francouzština'},
+{n:'Jezdecký klub Rangers',c:'vzdelavani',i:'🐴',a:'Budějovická 203, H. Jirčany',t:'775 927 032',e:'',w:'',d:'Jezdectví, tábory, soutěže'},
+{n:'Jezdecká škola Kocanda',c:'vzdelavani',i:'🐴',a:'K Cihelně 9, Osnice',t:'607 757 100',e:'',w:'www.jskocanda.cz',d:'Ježdění děti/dospělí, ustájení, haly'},
+{n:'Krav Maga Point',c:'vzdelavani',i:'🥋',a:'ZŠ Jesenice a Zdiměřice',t:'777 633 755',e:'',w:'www.krav-maga-point.cz',d:'Sebeobrana pro děti a dospělé'},
+{n:'Krav Maga Jesenice IKMF',c:'vzdelavani',i:'🥋',a:'ZŠ Jesenice a Zdiměřice',t:'737 259 991',e:'',w:'www.kravmagajesenice.cz',d:'Izraelská sebeobrana IKMF, všechny věkové kategorie'},
+{n:'Lean Fabrika',c:'vzdelavani',i:'🎓',a:'Bělnická 603',t:'602 168 905',e:'',w:'www.lean-fabrika.cz',d:'Lean výroba, workshopy, automatizace'},
+{n:'Lingua Nova',c:'vzdelavani',i:'🗣️',a:'Labutí 116, Zdiměřice',t:'608 903 009',e:'',w:'www.linguanova.cz',d:'Angličtina pro děti'},
+{n:'Mommy Time',c:'vzdelavani',i:'👶',a:'Budějovická 922',t:'775 188 594',e:'',w:'www.mommytime.cz',d:'Cvičení maminek s dětmi, plavání, miniškolka'},
+{n:'Taneční kurzy Jesenice',c:'vzdelavani',i:'💃',a:'Budějovická 303',t:'603 232 116',e:'',w:'www.tanecnikurzyjesenice.cz',d:'Standardní a latinské tance'},
+{n:'Taneční škola In Dance',c:'vzdelavani',i:'💃',a:'K Rybníku 800',t:'602 121 000',e:'',w:'www.indance.cz',d:'Jazz, contemporary, hip hop, balet, all ages'},
+{n:'Veronika Kmochová',c:'vzdelavani',i:'🧘',a:'Zdiměřická 652',t:'604 550 863',e:'',w:'www.veronikakmochova.cz',d:'Jóga, dýchání, firemní workshopy, masáže'},
+{n:'ProfiSushi',c:'vzdelavani',i:'🍣',a:'Za Rybníkem 666',t:'606 915 700',e:'',w:'www.profisushi.cz',d:'Kurzy japonské kuchyně a sushi'},
+{n:'Petr Maroušek – Satema',c:'vzdelavani',i:'💆',a:'Říčanská 1177',t:'721 820 646',e:'',w:'www.satema.cz',d:'Škola alternativní terapie, tejpování, masáže'},
+{n:'Child\'s Way',c:'vzdelavani',i:'👶',a:'Na Vrbici 598, Osnice',t:'725 828 287',e:'',w:'www.janahrkalova.cz',d:'Baby znakování, Montessori kurzy 1–3 roky'},
+{n:'Kristýna Ferág',c:'vzdelavani',i:'🎵',a:'Vilová 118, Zdiměřice',t:'728 027 677',e:'',w:'www.radostzhudby.com',d:'Soukromé hodiny flétny'},
+{n:'Mgr. Petr Šimek – fotograf',c:'vzdelavani',i:'📸',a:'Sokolí 180, Zdiměřice',t:'736 757 595',e:'',w:'www.fotosimek.cz',d:'Svatební a event fotografie'},
+{n:'Oldřich Švirk – potápění',c:'vzdelavani',i:'🤿',a:'Budějovická 1146',t:'777 949 420',e:'',w:'',d:'Potápěčská škola, zahraniční exkurze'},
+{n:'RK Stavba',c:'stavby',i:'🏗️',a:'Navětrná 1386',t:'602 262 455',e:'',w:'www.rkstavba.cz',d:'Rodinné domy na klíč, 25+ let zkušeností'},
+{n:'Jesenická stavební',c:'stavby',i:'🏗️',a:'Budějovická 701',t:'727 980 366',e:'',w:'www.jesenickastavebni.cz',d:'Hliněné/dřevostavby, renovace, zateplení'},
+{n:'J.L.T.',c:'stavby',i:'🏗️',a:'Budějovická 701',t:'',e:'',w:'www.jlt.cz',d:'Inženýrské sítě: voda, kanalizace, plyn, silnice'},
+{n:'SARK Engineering',c:'stavby',i:'🏗️',a:'Cedrová 1042',t:'607 065 440',e:'',w:'www.sark-eng.cz',d:'Stavby, renovace, historické objekty, fasády'},
+{n:'SpeedDrill',c:'stavby',i:'🏗️',a:'Okružní, Osnice',t:'602 222 760',e:'',w:'www.speeddrill.cz',d:'Bezvýkopové technologie, pokládka kabelů'},
+{n:'Agro Jesenice',c:'stavby',i:'🚜',a:'Vestecká 2',t:'241 932 112',e:'',w:'www.agro-jesenice.cz',d:'Zemní stroje, písek, štěrk, recyklace betonu'},
+{n:'MHZ Praha',c:'stavby',i:'🧯',a:'Budějovická 6',t:'241 932 173',e:'',w:'www.mhz.cz',d:'Hasičská technika, hasicí přístroje, ochranné oděvy'},
+{n:'TESTA',c:'stavby',i:'🏗️',a:'Budějovická 1538',t:'241 930 156',e:'',w:'www.testa-jesenice.cz',d:'Pažicí systémy, stavební stroje prodej/pronájem'},
+{n:'Alzábradlí.cz',c:'stavby',i:'🧱',a:'Azalkové 518, H. Jirčany',t:'212 240 379',e:'',w:'www.alzabradli.cz',d:'Hliníkové zábradlí, EU certifikace'},
+{n:'Artisan Dřevoprodej',c:'stavby',i:'🪵',a:'Na Spojce 121',t:'777 221 809',e:'',w:'www.artisan.cz/jesenice-praha-zapad',d:'Dřevěné podlahy, obklady, terasy, řezivo'},
+{n:'Grate.cz',c:'stavby',i:'🌿',a:'Jablonová 1142',t:'241 409 132',e:'',w:'www.grate.cz',d:'Zahradní lemování, závlahy, skleníky, ploty'},
+{n:'Hawle Armatury',c:'stavby',i:'🔧',a:'Říčanská 375',t:'241 003 111',e:'',w:'www.hawle.cz',d:'Výroba armatur pro vodu, kanalizaci a plyn'},
+{n:'Izomat stavebniny',c:'stavby',i:'🧱',a:'K Seberovu 42, Zdiměřice',t:'602 305 788',e:'',w:'www.izomat.cz',d:'Stavebniny, izolace, střechy, okna, dveře'},
+{n:'Kámen Osnice',c:'stavby',i:'🪨',a:'Komerční 254, Osnice',t:'241 932 334',e:'',w:'www.trimona.cz',d:'Kamenické práce, kuchyňské desky z kamene'},
+{n:'PERI',c:'stavby',i:'🏗️',a:'Průmyslová 392',t:'222 359 311',e:'',w:'www.peri.cz',d:'Bednění a lešení, prodej/pronájem, projekce'},
+{n:'PRO-DOMA stavebniny',c:'stavby',i:'🧱',a:'Hlavní 1, Osnice',t:'778 735 811',e:'',w:'www.pro-doma.cz',d:'Síť stavebnin, odborné poradenství, dovoz'},
+{n:'WoodCollection.cz',c:'stavby',i:'🪵',a:'K Rybníku 401',t:'720 320 996',e:'',w:'www.woodcollection.cz',d:'Dekorativní dřevěné interiérové obklady'},
+{n:'Špína pryč',c:'sluzby',i:'👔',a:'Budějovická 371 (Albert)',t:'773 007 006',e:'',w:'www.spinapryc.cz',d:'Čistírna oděvů, praní, žehlení, koberce'},
+{n:'Čistírna peří Anička',c:'sluzby',i:'🪶',a:'Budějovická 341',t:'775 251 997',e:'',w:'www.perianicka.cz',d:'Čištění peří, přikrývky a polštáře na míru'},
+{n:'UVT – internet',c:'sluzby',i:'🌐',a:'Hrnčířská 383, Zdiměřice',t:'227 023 023',e:'',w:'www.uvtnet.cz',d:'Vysokorychlostní internet, optické sítě'},
+{n:'AVE CZ – odpady',c:'sluzby',i:'♻️',a:'',t:'800 118 800',e:'',w:'www.ave.cz',d:'Svoz komunálního a tříděného odpadu'},
+{n:'Technické služby Jesenice',c:'sluzby',i:'🧹',a:'Budějovická 303',t:'604 164 077',e:'',w:'www.tsjesenice.cz',d:'Údržba ploch, zeleň, osvětlení, sběrný dvůr'},
+{n:'Petra Bartáková – pohřební sl.',c:'sluzby',i:'⚱️',a:'Budějovická 1116',t:'602 156 595',e:'',w:'www.pohrebjelinek.cz',d:'Kompletní pohřební služby, nonstop'},
+{n:'Pohřební ústav hl. m. Prahy',c:'sluzby',i:'⚱️',a:'Průběžná 284',t:'241 932 161',e:'',w:'www.pohrustav.cz',d:'Kremace, obřady, kolumbária'},
+{n:'JUDr. Kamila Steinbachová',c:'sluzby',i:'⚖️',a:'Skřivánová 392, Zdiměřice',t:'602 434 020',e:'',w:'',d:'Občanské, obchodní právo, ČJ + NJ'},
+{n:'Mgr. Zdeněk Kahoun',c:'sluzby',i:'⚖️',a:'Budějovická 1155',t:'605 516 079',e:'',w:'www.kahoun-advokat.cz',d:'Reality, cenné papíry, obchodní právo'},
+{n:'JUDr. Helena Rejholcová',c:'sluzby',i:'⚖️',a:'Vrbová 820',t:'602 333 175',e:'',w:'',d:'Civilní, obchodní, trestní, rodinné právo'},
+{n:'RE/MAX G8 Reality',c:'sluzby',i:'🏠',a:'Šalvějová 502, Osnice',t:'777 173 726',e:'',w:'www.remaxg8reality.cz',d:'Realitní makléřství'},
+{n:'RE/MAX Scopus',c:'sluzby',i:'🏠',a:'Jablonová 1142',t:'733 746 846',e:'',w:'www.remaxscopus.cz',d:'Prodej a pronájem nemovitostí'},
+{n:'Reality 11',c:'sluzby',i:'🏠',a:'Cedrová 1462',t:'777 098 218',e:'',w:'www.realityjesenice.cz',d:'Pronájem, prodej, hypotéky'},
+{n:'Pirogov & Sons',c:'sluzby',i:'🏠',a:'Cedrová 1462',t:'775 985 946',e:'',w:'www.pirogovsons.cz',d:'Prodej, pronájem, hypotéky, videoprohlídky'},
+{n:'New Life Reality',c:'sluzby',i:'🏠',a:'Cedrová 1040',t:'725 801 440',e:'',w:'www.nlreality.cz',d:'Nákup, prodej, pronájem, odhady'},
+{n:'Star Home',c:'sluzby',i:'🏠',a:'Kormoránová 268, Zdiměřice',t:'773 533 364',e:'',w:'www.starhome.cz',d:'Reality, solární panely, OZE'},
+{n:'A1 Ubytování.cz',c:'sluzby',i:'🛏️',a:'Budějovická 922',t:'774 906 206',e:'',w:'www.a1ubytovani.cz',d:'Ubytovny, levné hotely, penziony'},
+{n:'Apartmány u Bendlů',c:'sluzby',i:'🛏️',a:'U Parku 256',t:'241 932 155',e:'',w:'',d:'3 apartmány pro 15 hostů, zahrada, parking'},
+{n:'Penzion Míra',c:'sluzby',i:'🛏️',a:'Říčanská 11',t:'607 137 193',e:'',w:'www.penzionmira.cz',d:'7 pokojů, snídaně, Wi-Fi, parking'},
+{n:'AC-Tax',c:'sluzby',i:'📊',a:'Azalkové 846, H. Jirčany',t:'603 532 562',e:'',w:'',d:'Účetnictví, daňová evidence'},
+{n:'Athleta – účetnictví',c:'sluzby',i:'📊',a:'Heřmánková 321, Osnice',t:'720 141 552',e:'',w:'www.mlckovsky.cz',d:'Účetnictví, daně, mzdy'},
+{n:'Ekofinall',c:'sluzby',i:'📊',a:'Lomená 981',t:'608 333 326',e:'',w:'www.uctodaneunas.cz',d:'Kompletní účetní a daňové služby'},
+{n:'Levné účetnictví',c:'sluzby',i:'📊',a:'V Uličce 280',t:'731 634 062',e:'',w:'www.levne-ucetnictvi.cz',d:'Účetnictví, mzdy, daňová přiznání'},
+{n:'Optimum Tax',c:'sluzby',i:'📊',a:'Bažantí 361, Zdiměřice',t:'603 434 574',e:'',w:'www.optimumtax.cz',d:'Daňové poradenství, účetnictví, mzdy'},
+{n:'Taxillus',c:'sluzby',i:'📊',a:'Hrnčířská 354, Zdiměřice',t:'773 140 600',e:'',w:'www.taxillus.cz',d:'Účetnictví/daně pro podnikatele i neziskovky'},
+{n:'Zetfin',c:'sluzby',i:'📊',a:'Sadová 8, Zdiměřice',t:'241 931 725',e:'',w:'www.zetfin.cz',d:'Mzdy, účetnictví, daně pro malé firmy'},
+{n:'A.R. Garamond',c:'sluzby',i:'🖨️',a:'Bělnická 758',t:'724 264 277',e:'',w:'',d:'Grafické studio, tisk, vazba, plakáty, letáky'},
+{n:'Smile Company',c:'sluzby',i:'🖨️',a:'Skřivánová 228, Zdiměřice',t:'777 626 447',e:'',w:'www.smile-online.cz',d:'Reklamní předměty, výšivky, sítotisk'},
+{n:'Tiskárna Printom',c:'sluzby',i:'🖨️',a:'Říčanská 431',t:'605 252 711',e:'',w:'',d:'Vizitky, letáky, reklamní materiály'},
+{n:'TiskniHned',c:'sluzby',i:'🖨️',a:'Budějovická 606, H. Jirčany',t:'608 360 560',e:'',w:'www.tisknihned.cz',d:'Sítotisk, potisk textilu, PVC samolepky'}
+];
+
+let currentBizCat = 'vse';
+function initFirmy() {
+  const catGrid = document.getElementById('biz-cat-grid');
+  if (!catGrid) return;
+  const counts = {vse: FIRMY.length};
+  FIRMY.forEach(f => { counts[f.c] = (counts[f.c]||0) + 1; });
+  let html = '<div class="biz-cat-card active" onclick="filterBiz(\'vse\',this)"><div class="bcc-icon">🏪</div><h5>Vše</h5><span>' + FIRMY.length + ' podniků</span></div>';
+  for (const [key, val] of Object.entries(FIRMY_CATS)) {
+    if (counts[key]) html += '<div class="biz-cat-card" onclick="filterBiz(\'' + key + '\',this)"><div class="bcc-icon">' + val.icon + '</div><h5>' + val.label + '</h5><span>' + counts[key] + '</span></div>';
+  }
+  catGrid.innerHTML = html;
+  const tot = document.getElementById('firmy-total');
+  if (tot) tot.textContent = FIRMY.length;
+  renderFirmy();
+}
+function renderFirmy() {
+  const grid = document.getElementById('biz-grid');
+  if (!grid) return;
+  const search = (document.getElementById('firmy-search')?.value || '').toLowerCase();
+  const filtered = FIRMY.filter(f => {
+    if (currentBizCat !== 'vse' && f.c !== currentBizCat) return false;
+    if (search && !f.n.toLowerCase().includes(search) && !f.d.toLowerCase().includes(search) && !f.a.toLowerCase().includes(search)) return false;
+    return true;
+  });
+  const cnt = document.getElementById('biz-count');
+  if (cnt) cnt.textContent = filtered.length;
+  grid.innerHTML = filtered.map(f => {
+    const catLabel = FIRMY_CATS[f.c]?.label || '';
+    const webLink = f.w ? (f.w.startsWith('http') ? f.w : 'https://' + f.w) : '';
+    let contacts = '';
+    if (f.t) contacts += '<span>📞 ' + f.t + '</span>';
+    if (f.a) contacts += '<span>📍 ' + f.a + '</span>';
+    let actions = '';
+    if (f.t) actions += '<a class="biz-btn biz-btn-primary" href="tel:' + f.t.replace(/\s/g,'') + '" onclick="event.stopPropagation()">📞 Volat</a>';
+    if (webLink) actions += '<a class="biz-btn biz-btn-sec" href="' + webLink + '" target="_blank" onclick="event.stopPropagation()">🌐 Web</a>';
+    if (f.e) actions += '<a class="biz-btn biz-btn-sec" href="mailto:' + f.e + '" onclick="event.stopPropagation()">✉️ Email</a>';
+    return '<div class="biz-card"><div class="biz-header"><div class="biz-logo">' + f.i + '</div><div class="biz-info"><div class="biz-category">' + catLabel + '</div><div class="biz-name">' + f.n + '</div><div class="biz-tagline">' + f.d + '</div></div></div><div class="biz-body"><div class="biz-meta">' + contacts + '</div><div class="biz-actions">' + actions + '</div></div></div>';
+  }).join('');
+}
 function filterBiz(cat, el) {
   document.querySelectorAll('.biz-cat-card').forEach(c => c.classList.remove('active'));
   if (el) el.classList.add('active');
-  const cards = document.querySelectorAll('#biz-grid .biz-card');
-  let visible = 0;
-  cards.forEach(c => {
-    const show = cat === 'vse' || c.dataset.cat === cat;
-    c.style.display = show ? '' : 'none';
-    if (show) visible++;
-  });
-  const cnt = document.getElementById('biz-count');
-  if (cnt) cnt.textContent = visible;
-  // Make sure listings tab is active
-  document.getElementById('biz-tab-listings').classList.add('active');
-  document.getElementById('biz-tab-jobs').classList.remove('active');
-  document.getElementById('tab-listings').classList.add('active');
-  document.getElementById('tab-jobs').classList.remove('active');
+  currentBizCat = cat;
+  renderFirmy();
 }
-function showJobsTab() {
-  switchBizTab('jobs', document.getElementById('tab-jobs'));
-}
-function switchBizTab(tab, el) {
-  document.querySelectorAll('#biz-tabs .tab').forEach(t => t.classList.remove('active'));
-  document.getElementById('biz-tab-listings').classList.remove('active');
-  document.getElementById('biz-tab-jobs').classList.remove('active');
-  if (el) el.classList.add('active');
-  document.getElementById('biz-tab-' + tab).classList.add('active');
-}
-function filterJobType(el, type) {
-  document.querySelectorAll('#biz-tab-jobs .chip').forEach(c => c.classList.remove('active'));
-  el.classList.add('active');
-  toast(type === 'vse' ? 'Zobrazuji vše' : 'Filtr nastaven: ' + el.textContent);
-}
+// Init on page load
+document.addEventListener('DOMContentLoaded', initFirmy);
+
 function switchBizDetailTab(tab, el) {
   document.querySelectorAll('.biz-detail-tab').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.biz-detail-tc').forEach(t => t.classList.remove('active'));
