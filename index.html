@@ -1165,7 +1165,7 @@
     <a onclick="showView('podniky')" id="nav-podniky">Místní podniky</a>
     <a onclick="showView('challenge')" id="nav-challenge" style="color:#9B59B6;font-weight:600">🏆 Challenge</a>
     <a onclick="showView('welcome')" id="nav-welcome">Nový v Jesenici?</a>
-    <a onclick="showView('login')" class="nav-btn" id="nav-login">Přihlásit se</a>
+    <a onclick="showView('register')" class="nav-btn" id="nav-login">Chci se přidat</a>
   </div>
 </nav>
 
@@ -3841,8 +3841,6 @@
         <input type="password" placeholder="••••••••">
       </div>
       <button class="btn btn-green" style="width:100%;padding:13px;font-size:15px;margin-bottom:16px" onclick="toast('Přihlášení úspěšné! Vítejte.')">Přihlásit se</button>
-      <div style="text-align:center;font-size:13px;color:var(--ink-light)">nebo</div>
-      <button class="btn" style="width:100%;padding:13px;font-size:14px;margin-top:12px;background:var(--green-light);color:var(--green)" onclick="toast('Přesměrování na BankID...')">🏦 Přihlásit přes BankID</button>
       <div style="text-align:center;font-size:13px;color:var(--ink-light);margin-top:20px">
         Ještě nemáte účet? <a href="#" style="color:var(--green);font-weight:600" onclick="event.preventDefault();showView('register')">Zaregistrujte se</a>
       </div>
@@ -3898,8 +3896,6 @@
         <label for="reg-terms" style="font-weight:400;font-size:13px;color:var(--ink-mid);margin-bottom:0;cursor:pointer">Souhlasím se <a href="#" style="color:var(--green);font-weight:600" onclick="event.preventDefault();toast('Podmínky používání — brzy k dispozici')">zpracováním osobních údajů</a> a <a href="#" style="color:var(--green);font-weight:600" onclick="event.preventDefault();toast('Pravidla komunity — brzy k dispozici')">pravidly komunity</a></label>
       </div>
       <button class="btn btn-green" style="width:100%;padding:13px;font-size:15px;margin-bottom:16px" onclick="registerUser()">Vytvořit účet</button>
-      <div style="text-align:center;font-size:13px;color:var(--ink-light)">nebo</div>
-      <button class="btn" style="width:100%;padding:13px;font-size:14px;margin-top:12px;background:var(--green-light);color:var(--green)" onclick="toast('Přesměrování na BankID…')">🏦 Registrace přes BankID</button>
       <div style="text-align:center;font-size:13px;color:var(--ink-light);margin-top:20px">
         Už máte účet? <a href="#" style="color:var(--green);font-weight:600" onclick="event.preventDefault();showView('login')">Přihlaste se</a>
       </div>
