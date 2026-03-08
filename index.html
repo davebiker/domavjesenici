@@ -825,7 +825,7 @@
   </a>
   <div class="nav-links">
     <a onclick="showView('community')" id="nav-community">Komunita</a>
-    <a onclick="showView('issues')" id="nav-issues">Závady</a>
+    <a onclick="showView('issues')" id="nav-issues">Zlepšováky</a>
     <a onclick="showView('projects')" id="nav-projects">Projekty</a>
     <a onclick="showView('events')" id="nav-events">Akce</a>
     <a onclick="showView('bazar')" id="nav-bazar">Bazar</a>
@@ -861,7 +861,7 @@
     </div>
     <div class="stat-item">
       <span class="stat-num">34</span>
-      <span class="stat-label">otevřených závad</span>
+      <span class="stat-label">otevřených zlepšováků</span>
     </div>
     <div class="stat-item">
       <span class="stat-num">7</span>
@@ -886,8 +886,8 @@
         </div>
         <div class="module-card" onclick="showView('issues')">
           <div class="icon">📍</div>
-          <h3>Hlášení závad</h3>
-          <p>Nahlaste výtluk, rozbité osvětlení nebo jinou závadu. Sledujte stav opravy.</p>
+          <h3>Zlepšováky</h3>
+          <p>Nahlaste výtluk, rozbité osvětlení nebo nápad na zlepšení. Sledujte stav řešení.</p>
           <div class="count">34 otevřených hlášení</div>
         </div>
         <div class="module-card" onclick="showView('projects')">
@@ -1038,7 +1038,7 @@
             </div>
           </div>
           <div class="sidebar-card">
-            <h4>🔧 Poslední závady</h4>
+            <h4>🔧 Poslední zlepšováky</h4>
             <div style="font-size:13px;margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid var(--border)">
               <span class="pill pill-orange">Řeší se</span>
               <span style="margin-left:8px;color:var(--ink-mid)">Výtluk — Komenského ul.</span>
@@ -1203,8 +1203,8 @@
 <!-- ═══════════════════════════════ ISSUES ═══════════════════════════════ -->
 <div id="view-issues" class="view">
   <div class="page-header container" style="border-radius:0;margin-bottom:0">
-    <h2>📍 Hlášení závad</h2>
-    <p>Nahlaste závadu a sledujte jak ji město řeší. Každé hlášení dostane odpověď.</p>
+    <h2>💡 Zlepšováky</h2>
+    <p>Nahlaste problém nebo navrhněte zlepšení a sledujte, jak ho město řeší. Každý podnět dostane odpověď.</p>
   </div>
   <div class="container" style="padding-top:24px">
     <div class="sidebar-layout">
@@ -1281,9 +1281,9 @@
 
       <div>
         <div class="sidebar-card">
-          <h4>📌 Nahlásit novou závadu</h4>
+          <h4>📌 Nahlásit nový zlepšovák</h4>
           <div class="form-group">
-            <label>Typ závady</label>
+            <label>Typ podnětu</label>
             <select>
               <option>Výtluk / poškozená cesta</option>
               <option>Osvětlení</option>
@@ -1295,7 +1295,7 @@
           </div>
           <div class="form-group">
             <label>Popis</label>
-            <textarea placeholder="Popište závadu..." style="min-height:60px"></textarea>
+            <textarea placeholder="Popište problém nebo návrh na zlepšení..." style="min-height:60px"></textarea>
           </div>
           <div class="form-group">
             <label>Ulice / lokalita</label>
@@ -1305,7 +1305,7 @@
             <span style="font-size:24px">📍</span>
             Klikněte pro označení na mapě
           </div>
-          <button class="btn btn-green" style="width:100%" onclick="toast('Závada nahlášena! Dostanete notifikaci o průběhu.')">Nahlásit závadu</button>
+          <button class="btn btn-green" style="width:100%" onclick="toast('Zlepšovák nahlášen! Dostanete notifikaci o průběhu.')">Odeslat zlepšovák</button>
         </div>
         <div class="sidebar-card">
           <h4>📊 Statistiky</h4>
