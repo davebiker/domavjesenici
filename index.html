@@ -1162,6 +1162,31 @@
   .prof-badge-icon { width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; margin: 0 auto 4px; }
   .prof-badge-earned { background: var(--green-light); border: 2px solid var(--green); }
   .prof-badge-locked { background: var(--cream); border: 2px solid var(--border); opacity: 0.5; filter: grayscale(1); }
+  /* BADGE SYSTEM */
+  .badge-tabs { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 16px; }
+  .badge-tab { padding: 6px 12px; border-radius: 20px; border: 1px solid var(--border); background: white; font-size: 12px; cursor: pointer; transition: all .15s; white-space: nowrap; }
+  .badge-tab:hover { border-color: var(--green); }
+  .badge-tab.active { background: var(--green); color: white; border-color: var(--green); }
+  .badge-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 12px; }
+  .badge-card { text-align: center; padding: 12px 6px; border-radius: var(--r); border: 1.5px solid var(--border); background: white; cursor: pointer; transition: all .15s; position: relative; }
+  .badge-card:hover { border-color: var(--green); box-shadow: var(--shadow); transform: translateY(-2px); }
+  .badge-card.earned { border-color: var(--green-light); background: var(--green-xlight); }
+  .badge-card.locked { opacity: 0.45; filter: grayscale(0.8); }
+  .badge-card-icon { font-size: 28px; margin-bottom: 4px; }
+  .badge-card-name { font-size: 11px; font-weight: 600; color: var(--ink); line-height: 1.3; }
+  .badge-card-tier { font-size: 10px; margin-top: 2px; }
+  .badge-card-progress { font-size: 10px; color: var(--green); margin-top: 4px; font-weight: 600; }
+  .badge-card .badge-check { position: absolute; top: 4px; right: 4px; width: 16px; height: 16px; background: var(--green); border-radius: 50%; color: white; font-size: 10px; display: flex; align-items: center; justify-content: center; }
+  .badge-detail-popup { position: fixed; inset: 0; z-index: 200; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; padding: 24px; animation: fadeIn 0.2s; }
+  .badge-detail-card { background: white; border-radius: var(--r); max-width: 360px; width: 100%; padding: 28px; text-align: center; }
+  .badge-detail-icon { font-size: 56px; margin-bottom: 12px; }
+  .badge-detail-name { font-family: 'Fraunces', serif; font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+  .badge-detail-cat { font-size: 12px; color: var(--ink-light); margin-bottom: 16px; }
+  .badge-detail-desc { font-size: 14px; color: var(--ink-mid); line-height: 1.6; margin-bottom: 16px; }
+  .badge-detail-progress { background: var(--cream); border-radius: var(--r-sm); padding: 12px; font-size: 13px; margin-bottom: 16px; }
+  .badge-cat-bar { display: flex; align-items: center; gap: 8px; font-size: 12px; margin-bottom: 6px; }
+  .badge-cat-bar-fill { height: 6px; border-radius: 3px; background: var(--border); flex: 1; overflow: hidden; }
+  .badge-cat-bar-fill span { display: block; height: 100%; background: var(--green); border-radius: 3px; }
   .prof-toggle { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border); }
   .prof-toggle:last-child { border-bottom: none; }
   .prof-switch { position: relative; width: 44px; height: 24px; }
@@ -5679,24 +5704,33 @@
               <span style="font-size:13px;color:var(--ink-light)">245 / 400 bodů → Jesenický patriot</span>
             </div>
             <div class="prof-xp-bar"><div class="prof-xp-fill" style="width:61%"></div></div>
-            <div style="font-size:12px;color:var(--ink-light);margin-top:10px">
-              Body získáváte za: příspěvek (+5), hlasování (+2), účast na akci (+10), dokončená brigáda (+15), vyřešený zlepšovák (+20)
+            <div style="font-size:12px;color:var(--ink-light);margin-top:6px;margin-bottom:16px">
+              Body získáváte za: příspěvek (+5), hlasování (+2), účast na akci (+10), brigáda (+15), zlepšovák (+20)
             </div>
+            <div style="font-size:13px;font-weight:600;margin-bottom:10px">Odznaky podle kategorií</div>
+            <div class="badge-cat-bar"><span style="min-width:80px">🌱 Vítací</span><div class="badge-cat-bar-fill"><span style="width:100%"></span></div><span style="min-width:30px;text-align:right;color:var(--green)">5/5</span></div>
+            <div class="badge-cat-bar"><span style="min-width:80px">🏘️ Komunitní</span><div class="badge-cat-bar-fill"><span style="width:57%"></span></div><span style="min-width:30px;text-align:right">4/7</span></div>
+            <div class="badge-cat-bar"><span style="min-width:80px">⚡ Brigádní</span><div class="badge-cat-bar-fill"><span style="width:62%"></span></div><span style="min-width:30px;text-align:right">5/8</span></div>
+            <div class="badge-cat-bar"><span style="min-width:80px">🏆 Challenge</span><div class="badge-cat-bar-fill"><span style="width:43%"></span></div><span style="min-width:30px;text-align:right">3/7</span></div>
+            <div class="badge-cat-bar"><span style="min-width:80px">🏛️ Civic</span><div class="badge-cat-bar-fill"><span style="width:50%"></span></div><span style="min-width:30px;text-align:right">3/6</span></div>
+            <div class="badge-cat-bar"><span style="min-width:80px">🐕 Lifestyle</span><div class="badge-cat-bar-fill"><span style="width:29%"></span></div><span style="min-width:30px;text-align:right">2/7</span></div>
+            <div class="badge-cat-bar"><span style="min-width:80px">👑 Legendární</span><div class="badge-cat-bar-fill"><span style="width:17%"></span></div><span style="min-width:30px;text-align:right">1/6</span></div>
           </div>
 
           <!-- BADGES -->
           <div class="prof-section">
-            <h4>🏅 Odznaky</h4>
-            <div class="prof-badges-grid">
-              <div class="prof-badge-item"><div class="prof-badge-icon prof-badge-earned">✍️</div>První příspěvek</div>
-              <div class="prof-badge-item"><div class="prof-badge-icon prof-badge-earned">🤝</div>Spolehlivý soused</div>
-              <div class="prof-badge-item"><div class="prof-badge-icon prof-badge-earned">📍</div>Hlásič problémů</div>
-              <div class="prof-badge-item"><div class="prof-badge-icon prof-badge-earned">🎉</div>Společenský typ</div>
-              <div class="prof-badge-item"><div class="prof-badge-icon prof-badge-earned">⚡</div>Brigádník</div>
-              <div class="prof-badge-item"><div class="prof-badge-icon prof-badge-locked">🗳️</div>Hlasující občan</div>
-              <div class="prof-badge-item"><div class="prof-badge-icon prof-badge-locked">🏆</div>Šampion</div>
-              <div class="prof-badge-item"><div class="prof-badge-icon prof-badge-locked">💎</div>Patriot roku</div>
+            <h4>🏅 Odznaky <span style="font-weight:400;font-size:13px;color:var(--ink-light);margin-left:8px" id="badge-summary">23/47 odznaků získáno</span></h4>
+            <div class="badge-tabs">
+              <button class="badge-tab active" onclick="filterBadges('vse')">Vše</button>
+              <button class="badge-tab" onclick="filterBadges('vitaci')">🌱 Vítací</button>
+              <button class="badge-tab" onclick="filterBadges('komunita')">🏘️ Komunitní</button>
+              <button class="badge-tab" onclick="filterBadges('brigady')">⚡ Brigádní</button>
+              <button class="badge-tab" onclick="filterBadges('challenge')">🏆 Challenge</button>
+              <button class="badge-tab" onclick="filterBadges('civic')">🏛️ Civic</button>
+              <button class="badge-tab" onclick="filterBadges('lifestyle')">🐕 Lifestyle</button>
+              <button class="badge-tab" onclick="filterBadges('legendy')">👑 Legendární</button>
             </div>
+            <div class="badge-grid" id="badge-grid"></div>
           </div>
 
           <!-- RECENT ACTIVITY -->
@@ -7222,6 +7256,168 @@ function profLogout() {
 
 // Check login state on load
 updateNavLogin();
+
+/* ═══ BADGE SYSTEM ═══ */
+const BADGES = [
+  // VÍTACÍ (5) - all earned in demo
+  { id:'novy-soused', icon:'🌱', name:'Nový soused', cat:'vitaci', desc:'Dokončil profil a ověřil adresu v Jesenici', earned:true },
+  { id:'prvni-krok', icon:'👋', name:'První krok', cat:'vitaci', desc:'Přidal první příspěvek nebo komentář do komunity', earned:true },
+  { id:'orientovany', icon:'🗺️', name:'Orientovaný', cat:'vitaci', desc:'Navštívil min. 5 různých sekcí portálu', earned:true },
+  { id:'overeny', icon:'✅', name:'Ověřený obyvatel', cat:'vitaci', desc:'Adresa potvrzena — skutečný obyvatel Jesenice', earned:true },
+  { id:'pripojeny', icon:'🔔', name:'Připojený', cat:'vitaci', desc:'Zapnul push notifikace nebo emailový přehled', earned:true },
+
+  // KOMUNITNÍ (7) - 4 earned
+  { id:'dobry-soused', icon:'🤝', name:'Dobrý soused', cat:'komunita', desc:'Odpověděl na žádost o pomoc', tier:true, current:10, bronze:3, silver:10, gold:25, earned:'silver' },
+  { id:'spolehliv', icon:'⭐', name:'Spolehlivý', cat:'komunita', desc:'Průměrné hodnocení 4.8+ po min. 5 hodnoceních', earned:true },
+  { id:'aktivni-hlas', icon:'💬', name:'Aktivní hlas', cat:'komunita', desc:'Komentáře v komunitním feedu', tier:true, current:87, bronze:50, silver:200, gold:500, earned:'bronze' },
+  { id:'oblibenec', icon:'❤️', name:'Oblíbenec', cat:'komunita', desc:'100 lajků na vlastních příspěvcích celkem', current:64, target:100, earned:false },
+  { id:'dekujeme', icon:'🧡', name:'Děkujeme ti', cat:'komunita', desc:'10× dostal vyjádření díků od jiného uživatele. Nejcennější badge — udělují ho ostatní.', current:4, target:10, earned:false },
+  { id:'propojovac', icon:'🌍', name:'Propojovač', cat:'komunita', desc:'Pomohl 5 různým uživatelům přes sekci Hledám parťáka', current:3, target:5, earned:false },
+  { id:'hlasatel', icon:'📢', name:'Hlasatel', cat:'komunita', desc:'Sdílel komunitní obsah min. 10× do jiných kanálů', earned:true },
+
+  // BRIGÁDNÍ (8) - 5 earned
+  { id:'pomocna-ruka', icon:'⚡', name:'Pomocná ruka', cat:'brigady', desc:'Splněné brigády', tier:true, current:5, bronze:3, silver:10, gold:25, earned:'bronze' },
+  { id:'spolehliv-borec', icon:'💪', name:'Spolehlivý borec', cat:'brigady', desc:'Brigády s hodnocením 4.5+', tier:true, current:5, bronze:3, silver:10, gold:25, earned:'bronze' },
+  { id:'jesenicky-pomocnik', icon:'🏆', name:'Jesenický pomocník', cat:'brigady', desc:'25 brigád — top 1% uživatelů', current:5, target:25, earned:false },
+  { id:'specialista', icon:'🌟', name:'Specialista', cat:'brigady', desc:'5 brigád ve stejné kategorii', current:3, target:5, earned:false },
+  { id:'rychla-reakce', icon:'🚀', name:'Rychlá reakce', cat:'brigady', desc:'Přijal brigádu do 30 minut od zveřejnění (3×)', earned:true },
+  { id:'prvni-vydelek', icon:'💰', name:'První výdělek', cat:'brigady', desc:'Splnil první placenou brigádu', earned:true },
+  { id:'mesicni-kral', icon:'🏅', name:'Měsíční král', cat:'brigady', desc:'Umístění #1 v měsíčním žebříčku brigád', earned:false },
+  { id:'mentor', icon:'🎓', name:'Mentor', cat:'brigady', desc:'Hodnocení 5.0 po splnění brigády (5×)', earned:true },
+
+  // CHALLENGE (7) - 3 earned
+  { id:'fotograf', icon:'📸', name:'Fotograf Jesenice', cat:'challenge', desc:'Zúčastnil se min. jedné fotovýzvy', earned:true },
+  { id:'filmar', icon:'🎬', name:'Filmař Jesenice', cat:'challenge', desc:'Nahrál video do Challenge', earned:false },
+  { id:'vitez', icon:'🥇', name:'Vítěz výzvy', cat:'challenge', desc:'Vyhrál libovolnou Challenge (1. místo)', earned:true },
+  { id:'na-serii', icon:'🎯', name:'Na sérii', cat:'challenge', desc:'Zúčastnil se 3 výzev po sobě', current:2, target:3, earned:false },
+  { id:'ambasador-ch', icon:'🌍', name:'Ambasador', cat:'challenge', desc:'Jeho příspěvek byl oficiálně sdílen městem', earned:false },
+  { id:'tvurce', icon:'🎨', name:'Tvůrce', cat:'challenge', desc:'Přidal příspěvek do 5 různých kategorií výzev', current:3, target:5, earned:false },
+  { id:'na-vlne', icon:'🔥', name:'Na vlně', cat:'challenge', desc:'Top 10 v měsíčním žebříčku Challenge', earned:true },
+
+  // CIVIC (6) - 3 earned
+  { id:'hlidac', icon:'🔧', name:'Hlídač závad', cat:'civic', desc:'Nahlášené závady které byly opraveny', tier:true, current:3, bronze:3, silver:10, gold:25, earned:'bronze' },
+  { id:'stavitel', icon:'🏗️', name:'Stavitel', cat:'civic', desc:'Komentoval nebo hlasoval o min. 5 projektech města', current:4, target:5, earned:false },
+  { id:'volic', icon:'🗳️', name:'Volič', cat:'civic', desc:'Hlasoval v participativním rozpočtu', earned:true },
+  { id:'kronikar', icon:'📰', name:'Kronikář', cat:'civic', desc:'Přidal příspěvek do sekce Jesenice Story', earned:false },
+  { id:'patriot', icon:'🌳', name:'Lokální patriot', cat:'civic', desc:'Aktivní na portálu 12 měsíců po sobě', current:8, target:12, earned:false },
+  { id:'napadnik', icon:'💡', name:'Nápadník', cat:'civic', desc:'Jeho návrh do participativního rozpočtu byl schválen', earned:true },
+
+  // LIFESTYLE (7) - 2 earned
+  { id:'psi-parta', icon:'🐕', name:'Psí parta', cat:'lifestyle', desc:'5 propojení přes sekci Hledám parťáka — psi', current:2, target:5, earned:false },
+  { id:'rodicovsky', icon:'👶', name:'Rodičovský klub', cat:'lifestyle', desc:'Aktivní v sekci Rodiče s dětmi (min. 10 příspěvků)', current:4, target:10, earned:false },
+  { id:'spolujezdec', icon:'🚗', name:'Spolujezdec', cat:'lifestyle', desc:'Splněné spolujízdy', tier:true, current:1, bronze:3, silver:10, gold:25, earned:false },
+  { id:'lokal-zakaznik', icon:'🍕', name:'Lokální zákazník', cat:'lifestyle', desc:'Ohodnotil nebo navštívil 5 místních podniků', current:5, target:5, earned:true },
+  { id:'pruvodce', icon:'📚', name:'Průvodce', cat:'lifestyle', desc:'Pomohl novému obyvateli přes sekci Průvodce', earned:true },
+  { id:'biozrout', icon:'🌿', name:'Biožrout', cat:'lifestyle', desc:'Nakoupil nebo ohodnotil lokální bio / zeleninu', earned:false },
+  { id:'sportovec', icon:'🎾', name:'Sportovec', cat:'lifestyle', desc:'Propojil se přes sekci Sport & pohyb (3×)', current:1, target:3, earned:false },
+
+  // LEGENDÁRNÍ (6) - 1 earned
+  { id:'legenda', icon:'👑', name:'Jesenická legenda', cat:'legendy', desc:'100 brigád nebo výzev celkem — top 0.1% uživatelů', current:12, target:100, earned:false },
+  { id:'pilir', icon:'🌟', name:'Pilíř komunity', cat:'legendy', desc:'Ve všech 6 kategoriích aspoň bronzový badge', earned:false },
+  { id:'hlas-jesenice', icon:'🏛️', name:'Hlas Jesenice', cat:'legendy', desc:'Jeho návrh byl schválen a realizován zastupiteli', earned:false },
+  { id:'zakladatel', icon:'🎖️', name:'Zakladatel', cat:'legendy', desc:'Registrace v prvních 100 uživatelích portálu', earned:true },
+  { id:'budoucnost', icon:'🔮', name:'Budoucnost Jesenice', cat:'legendy', desc:'Uděluje redakce portálu za mimořádný přínos', earned:false },
+  { id:'ambasador100', icon:'🤝', name:'Ambasador 100', cat:'legendy', desc:'Přivedl 10 nových registrovaných uživatelů', current:3, target:10, earned:false }
+];
+
+const BADGE_CATS = {
+  vitaci: { icon:'🌱', name:'Vítací', color:'#27AE60' },
+  komunita: { icon:'🏘️', name:'Komunitní', color:'#2A6EBB' },
+  brigady: { icon:'⚡', name:'Brigádní', color:'#E07A3A' },
+  challenge: { icon:'🏆', name:'Challenge', color:'#9B59B6' },
+  civic: { icon:'🏛️', name:'Civic', color:'#16A085' },
+  lifestyle: { icon:'🐕', name:'Lifestyle', color:'#E74C3C' },
+  legendy: { icon:'👑', name:'Legendární', color:'#F1C40F' }
+};
+
+function getBadgeEarnedCount() {
+  return BADGES.filter(b => b.earned).length;
+}
+
+function getBadgeTierLabel(b) {
+  if (!b.tier) return '';
+  if (b.earned === 'gold') return '🥇';
+  if (b.earned === 'silver') return '🥈';
+  if (b.earned === 'bronze') return '🥉';
+  return '';
+}
+
+function getBadgeProgress(b) {
+  if (b.tier) {
+    if (b.earned === 'gold') return '';
+    const next = b.earned === 'silver' ? b.gold : (b.earned === 'bronze' ? b.silver : b.bronze);
+    const label = b.earned === 'silver' ? 'Zlato' : (b.earned === 'bronze' ? 'Stříbro' : 'Bronz');
+    return b.current + '/' + next + ' → ' + label;
+  }
+  if (b.target && !b.earned) return b.current + '/' + b.target;
+  return '';
+}
+
+function filterBadges(cat) {
+  document.querySelectorAll('.badge-tab').forEach(t => t.classList.remove('active'));
+  event.target.classList.add('active');
+  document.querySelectorAll('.badge-card').forEach(c => {
+    c.style.display = (cat === 'vse' || c.dataset.badgecat === cat) ? '' : 'none';
+  });
+}
+
+function openBadgeDetail(idx) {
+  const b = BADGES[idx];
+  const cat = BADGE_CATS[b.cat];
+  const isEarned = !!b.earned;
+  const tierLabel = b.tier ? (b.earned === 'gold' ? '🥇 Zlato' : (b.earned === 'silver' ? '🥈 Stříbro' : (b.earned === 'bronze' ? '🥉 Bronz' : 'Nezískáno'))) : '';
+
+  let progressHTML = '';
+  if (b.tier) {
+    progressHTML = '<div style="display:flex;flex-direction:column;gap:6px;text-align:left">';
+    ['bronze','silver','gold'].forEach(t => {
+      const label = t === 'bronze' ? '🥉 Bronz' : (t === 'silver' ? '🥈 Stříbro' : '🥇 Zlato');
+      const target = b[t];
+      const done = b.current >= target;
+      const pct = Math.min(100, Math.round(b.current / target * 100));
+      progressHTML += '<div style="font-size:12px;display:flex;align-items:center;gap:8px"><span style="min-width:70px">' + label + '</span><div style="flex:1;height:6px;background:var(--border);border-radius:3px;overflow:hidden"><div style="width:' + pct + '%;height:100%;background:' + (done ? 'var(--green)' : 'var(--orange)') + ';border-radius:3px"></div></div><span style="min-width:40px;text-align:right;color:' + (done ? 'var(--green)' : 'var(--ink-light)') + '">' + b.current + '/' + target + '</span></div>';
+    });
+    progressHTML += '</div>';
+  } else if (b.target && !b.earned) {
+    const pct = Math.round(b.current / b.target * 100);
+    progressHTML = '<div style="margin-bottom:4px;font-size:13px;font-weight:600">' + b.current + ' / ' + b.target + '</div><div style="height:8px;background:var(--border);border-radius:4px;overflow:hidden"><div style="width:' + pct + '%;height:100%;background:var(--green);border-radius:4px"></div></div>';
+  }
+
+  const html = '<div class="badge-detail-popup" onclick="if(event.target===this)this.remove()">' +
+    '<div class="badge-detail-card">' +
+    '<div class="badge-detail-icon">' + b.icon + '</div>' +
+    '<div class="badge-detail-name">' + b.name + '</div>' +
+    '<div class="badge-detail-cat"><span style="color:' + cat.color + '">' + cat.icon + ' ' + cat.name + '</span>' + (tierLabel ? ' · ' + tierLabel : '') + '</div>' +
+    '<div class="badge-detail-desc">' + b.desc + '</div>' +
+    (progressHTML ? '<div class="badge-detail-progress">' + progressHTML + '</div>' : '') +
+    '<div style="font-size:13px;font-weight:600;color:' + (isEarned ? 'var(--green)' : 'var(--ink-light)') + '">' + (isEarned ? '✅ Získáno' : '🔒 Zatím nezískáno') + '</div>' +
+    '<button onclick="this.closest(\'.badge-detail-popup\').remove()" style="margin-top:16px;padding:8px 24px;border-radius:var(--r-sm);border:1px solid var(--border);background:white;cursor:pointer;font-size:13px">Zavřít</button>' +
+    '</div></div>';
+  document.body.insertAdjacentHTML('beforeend', html);
+}
+
+function renderBadges() {
+  const grid = document.getElementById('badge-grid');
+  if (!grid) return;
+  const earned = getBadgeEarnedCount();
+  document.getElementById('badge-summary').textContent = earned + '/47 odznaků získáno';
+
+  grid.innerHTML = BADGES.map((b, i) => {
+    const isEarned = !!b.earned;
+    const tier = getBadgeTierLabel(b);
+    const progress = getBadgeProgress(b);
+    return '<div class="badge-card ' + (isEarned ? 'earned' : 'locked') + '" data-badgecat="' + b.cat + '" onclick="openBadgeDetail(' + i + ')">' +
+      (isEarned ? '<div class="badge-check">✓</div>' : '') +
+      '<div class="badge-card-icon">' + b.icon + '</div>' +
+      '<div class="badge-card-name">' + b.name + '</div>' +
+      (tier ? '<div class="badge-card-tier">' + tier + '</div>' : '') +
+      (progress ? '<div class="badge-card-progress">' + progress + '</div>' : '') +
+      '</div>';
+  }).join('');
+}
+
+// Render badges on load
+setTimeout(renderBadges, 100);
 </script>
 
 <footer style="background:var(--green);color:rgba(255,255,255,0.85);padding:40px 24px 24px;margin-top:60px">
