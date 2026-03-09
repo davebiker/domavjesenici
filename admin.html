@@ -6,6 +6,25 @@
 <title>Doma v Jesenici — Admin</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;0,9..144,700;1,9..144,400&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<script>
+(function(){
+  if(sessionStorage.getItem('dvj-auth')==='1')return;
+  document.documentElement.style.visibility='hidden';
+  document.addEventListener('DOMContentLoaded',function(){
+    document.documentElement.style.visibility='';
+    var o=document.createElement('div');
+    o.id='pw-gate';
+    o.style.cssText='position:fixed;inset:0;z-index:99999;background:#1F5C3A;display:flex;align-items:center;justify-content:center;font-family:Plus Jakarta Sans,sans-serif';
+    o.innerHTML='<div style="text-align:center;color:white;padding:24px;max-width:360px;width:100%"><div style="font-size:48px;margin-bottom:16px">🌿</div><div style="font-family:Fraunces,serif;font-size:28px;font-weight:700;margin-bottom:8px">Doma v Jesenici</div><div style="font-size:14px;opacity:0.7;margin-bottom:28px">Přístup k demo verzi je chráněn heslem</div><input id="pw-input" type="password" placeholder="Zadejte heslo" style="width:100%;padding:12px 16px;border:2px solid rgba(255,255,255,0.3);border-radius:8px;background:rgba(255,255,255,0.1);color:white;font-size:15px;outline:none;margin-bottom:12px;text-align:center" autocomplete="off"><button id="pw-btn" style="width:100%;padding:12px;border:none;border-radius:8px;background:white;color:#1F5C3A;font-size:15px;font-weight:600;cursor:pointer">Vstoupit</button><div id="pw-err" style="color:#FF6B6B;font-size:13px;margin-top:10px;display:none">Nesprávné heslo</div></div>';
+    document.body.appendChild(o);
+    var inp=document.getElementById('pw-input'),btn=document.getElementById('pw-btn'),err=document.getElementById('pw-err');
+    function check(){if(inp.value==='davebiker'){sessionStorage.setItem('dvj-auth','1');o.remove();}else{err.style.display='';inp.style.borderColor='#FF6B6B';inp.value='';inp.focus();}}
+    btn.onclick=check;
+    inp.onkeydown=function(e){if(e.key==='Enter')check();};
+    inp.focus();
+  });
+})();
+</script>
 <style>
 :root {
   --green: #1F5C3A;
