@@ -1140,6 +1140,36 @@
     .evt-detail { gap: 8px; }
     .evt-footer { flex-direction: column; align-items: flex-start; }
   }
+
+  /* PROFILE */
+  .prof-header { background: linear-gradient(135deg, var(--green) 0%, var(--green-mid) 100%); color: white; padding: 40px 24px 32px; }
+  .prof-avatar { width: 80px; height: 80px; border-radius: 50%; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: 700; border: 3px solid rgba(255,255,255,0.4); }
+  .prof-badge { display: inline-block; padding: 3px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; background: rgba(255,255,255,0.2); color: white; }
+  .prof-stats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; }
+  .prof-stat-card { background: white; border: 1px solid var(--border); border-radius: var(--r); padding: 16px; text-align: center; }
+  .prof-stat-num { font-family: 'Fraunces', serif; font-size: 24px; font-weight: 700; color: var(--green); }
+  .prof-stat-label { font-size: 12px; color: var(--ink-light); margin-top: 2px; }
+  .prof-section { background: white; border: 1px solid var(--border); border-radius: var(--r); padding: 20px; margin-bottom: 16px; }
+  .prof-section h4 { font-weight: 700; font-size: 15px; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+  .prof-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
+  .prof-item:last-child { border-bottom: none; }
+  .prof-item-title { font-weight: 600; color: var(--ink); }
+  .prof-item-meta { color: var(--ink-light); font-size: 12px; }
+  .prof-xp-bar { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; margin-top: 8px; }
+  .prof-xp-fill { height: 100%; background: linear-gradient(90deg, var(--green), #27AE60); border-radius: 4px; transition: width 0.5s; }
+  .prof-badges-grid { display: flex; flex-wrap: wrap; gap: 10px; }
+  .prof-badge-item { width: 64px; text-align: center; font-size: 11px; color: var(--ink-mid); }
+  .prof-badge-icon { width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; margin: 0 auto 4px; }
+  .prof-badge-earned { background: var(--green-light); border: 2px solid var(--green); }
+  .prof-badge-locked { background: var(--cream); border: 2px solid var(--border); opacity: 0.5; filter: grayscale(1); }
+  .prof-toggle { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border); }
+  .prof-toggle:last-child { border-bottom: none; }
+  .prof-switch { position: relative; width: 44px; height: 24px; }
+  .prof-switch input { opacity: 0; width: 0; height: 0; }
+  .prof-switch-slider { position: absolute; inset: 0; background: var(--border); border-radius: 12px; cursor: pointer; transition: .2s; }
+  .prof-switch-slider::before { content: ''; position: absolute; width: 18px; height: 18px; left: 3px; bottom: 3px; background: white; border-radius: 50%; transition: .2s; }
+  .prof-switch input:checked + .prof-switch-slider { background: var(--green); }
+  .prof-switch input:checked + .prof-switch-slider::before { transform: translateX(20px); }
 </style>
 </head>
 <body>
@@ -1166,6 +1196,7 @@
     <a onclick="showView('challenge')" id="nav-challenge" style="color:#9B59B6;font-weight:600">🏆 Challenge</a>
     <a onclick="showView('welcome')" id="nav-welcome">Nový v Jesenici?</a>
     <a onclick="showView('register')" class="nav-btn" id="nav-login">Chci se přidat</a>
+    <a onclick="showView('profile')" class="nav-btn" id="nav-profile" style="display:none">👤 Můj profil</a>
   </div>
 </nav>
 
@@ -5596,15 +5627,330 @@
   </div>
 </div>
 
+<!-- ═══════════════════════════════ PROFIL ═══════════════════════════════ -->
+<div id="view-profile" class="view">
+  <!-- HEADER -->
+  <div class="prof-header">
+    <div class="container" style="display:flex;gap:20px;align-items:center;flex-wrap:wrap">
+      <div class="prof-avatar" id="prof-avatar">JN</div>
+      <div>
+        <div style="font-family:'Fraunces',serif;font-size:24px;font-weight:700" id="prof-name">Jan Novák</div>
+        <div style="font-size:14px;opacity:0.8" id="prof-location">📍 Jesenice – centrum · Člen od března 2025</div>
+        <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap">
+          <span class="prof-badge" id="prof-level">🌿 Aktivní občan</span>
+          <span class="prof-badge" style="background:rgba(255,255,255,0.15)">245 bodů</span>
+        </div>
+      </div>
+      <div style="margin-left:auto">
+        <button class="btn" style="background:rgba(255,255,255,0.15);color:white;border:1px solid rgba(255,255,255,0.3);font-size:13px" onclick="profLogout()">Odhlásit se</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="container" style="padding-top:24px">
+    <div class="tabs" id="profile-tabs">
+      <button class="tab active" onclick="switchProfileTab('prehled',this)">📊 Přehled</button>
+      <button class="tab" onclick="switchProfileTab('aktivita',this)">📋 Moje aktivita</button>
+      <button class="tab" onclick="switchProfileTab('nastaveni',this)">⚙️ Nastavení</button>
+    </div>
+  </div>
+
+  <!-- TAB: PŘEHLED -->
+  <div id="prof-tab-prehled" class="tab-content active">
+    <div class="container" style="padding-top:20px">
+      <!-- STATS -->
+      <div class="prof-stats-grid" style="margin-bottom:24px">
+        <div class="prof-stat-card"><div class="prof-stat-num">12</div><div class="prof-stat-label">Příspěvků</div></div>
+        <div class="prof-stat-card"><div class="prof-stat-num">3</div><div class="prof-stat-label">Zlepšováků</div></div>
+        <div class="prof-stat-card"><div class="prof-stat-num">8</div><div class="prof-stat-label">Účast na akcích</div></div>
+        <div class="prof-stat-card"><div class="prof-stat-num">5</div><div class="prof-stat-label">Brigád</div></div>
+        <div class="prof-stat-card"><div class="prof-stat-num">4</div><div class="prof-stat-label">Hlasů v rozpočtu</div></div>
+        <div class="prof-stat-card"><div class="prof-stat-num">2</div><div class="prof-stat-label">Inzerátů</div></div>
+      </div>
+
+      <div class="sidebar-layout">
+        <div>
+          <!-- XP / LEVEL -->
+          <div class="prof-section">
+            <h4>🌿 Sousedské skóre</h4>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+              <span style="font-size:14px;font-weight:600">Aktivní občan</span>
+              <span style="font-size:13px;color:var(--ink-light)">245 / 400 bodů → Jesenický patriot</span>
+            </div>
+            <div class="prof-xp-bar"><div class="prof-xp-fill" style="width:61%"></div></div>
+            <div style="font-size:12px;color:var(--ink-light);margin-top:10px">
+              Body získáváte za: příspěvek (+5), hlasování (+2), účast na akci (+10), dokončená brigáda (+15), vyřešený zlepšovák (+20)
+            </div>
+          </div>
+
+          <!-- BADGES -->
+          <div class="prof-section">
+            <h4>🏅 Odznaky</h4>
+            <div class="prof-badges-grid">
+              <div class="prof-badge-item"><div class="prof-badge-icon prof-badge-earned">✍️</div>První příspěvek</div>
+              <div class="prof-badge-item"><div class="prof-badge-icon prof-badge-earned">🤝</div>Spolehlivý soused</div>
+              <div class="prof-badge-item"><div class="prof-badge-icon prof-badge-earned">📍</div>Hlásič problémů</div>
+              <div class="prof-badge-item"><div class="prof-badge-icon prof-badge-earned">🎉</div>Společenský typ</div>
+              <div class="prof-badge-item"><div class="prof-badge-icon prof-badge-earned">⚡</div>Brigádník</div>
+              <div class="prof-badge-item"><div class="prof-badge-icon prof-badge-locked">🗳️</div>Hlasující občan</div>
+              <div class="prof-badge-item"><div class="prof-badge-icon prof-badge-locked">🏆</div>Šampion</div>
+              <div class="prof-badge-item"><div class="prof-badge-icon prof-badge-locked">💎</div>Patriot roku</div>
+            </div>
+          </div>
+
+          <!-- RECENT ACTIVITY -->
+          <div class="prof-section">
+            <h4>🕐 Poslední aktivita</h4>
+            <div class="prof-item"><div><div class="prof-item-title">Příspěvek v komunitě</div><div class="prof-item-meta">Tip na kadeřnici v Osnici</div></div><span style="font-size:12px;color:var(--ink-light)">před 2 hod</span></div>
+            <div class="prof-item"><div><div class="prof-item-title">Hlasování — Participativní rozpočet</div><div class="prof-item-meta">Komunitní zahrada Osnice (+1 hlas)</div></div><span style="font-size:12px;color:var(--ink-light)">včera</span></div>
+            <div class="prof-item"><div><div class="prof-item-title">Brigáda dokončena</div><div class="prof-item-meta">Sekání trávy — 450 Kč</div></div><span style="font-size:12px;color:var(--ink-light)">3. 3. 2026</span></div>
+            <div class="prof-item"><div><div class="prof-item-title">Účast na akci</div><div class="prof-item-meta">Sousedský úklid Jirčany</div></div><span style="font-size:12px;color:var(--ink-light)">1. 3. 2026</span></div>
+            <div class="prof-item"><div><div class="prof-item-title">Zlepšovák podán</div><div class="prof-item-meta">Rozbitá lavička — park u Prokopa</div></div><span style="font-size:12px;color:var(--ink-light)">25. 2. 2026</span></div>
+          </div>
+        </div>
+
+        <!-- SIDEBAR -->
+        <div>
+          <!-- BOOKMARKS -->
+          <div class="prof-section">
+            <h4>🔖 Moje záložky</h4>
+            <div class="prof-item"><div><div class="prof-item-title">🏗️ Nové centrum Jesenice</div><div class="prof-item-meta">Sledovaný projekt</div></div><button style="background:none;border:none;cursor:pointer;font-size:14px" onclick="toast('Záložka odebrána')">✕</button></div>
+            <div class="prof-item"><div><div class="prof-item-title">🚌 Tramvaj Písnice–Jesenice</div><div class="prof-item-meta">Sledovaný projekt</div></div><button style="background:none;border:none;cursor:pointer;font-size:14px" onclick="toast('Záložka odebrána')">✕</button></div>
+            <div class="prof-item"><div><div class="prof-item-title">🛋️ Kožená pohovka — 3 500 Kč</div><div class="prof-item-meta">Uložený inzerát</div></div><button style="background:none;border:none;cursor:pointer;font-size:14px" onclick="toast('Záložka odebrána')">✕</button></div>
+            <div class="prof-item"><div><div class="prof-item-title">🎵 Koncert kapely Jeseničtí</div><div class="prof-item-meta">Oblíbená akce · 22. 3.</div></div><button style="background:none;border:none;cursor:pointer;font-size:14px" onclick="toast('Záložka odebrána')">✕</button></div>
+          </div>
+
+          <!-- POSITION -->
+          <div class="prof-section" style="background:var(--green-xlight);border-color:var(--green)">
+            <h4>📊 Žebříček komunity</h4>
+            <div style="text-align:center;padding:8px 0">
+              <div style="font-family:'Fraunces',serif;font-size:36px;font-weight:700;color:var(--green)">27.</div>
+              <div style="font-size:13px;color:var(--ink-mid)">místo z 1 847 členů</div>
+              <div style="font-size:12px;color:var(--ink-light);margin-top:6px">Top 1.5% komunity</div>
+            </div>
+          </div>
+
+          <!-- QUICK STATS -->
+          <div class="prof-section">
+            <h4>⚡ Brigády — souhrn</h4>
+            <div style="display:flex;justify-content:space-between;font-size:13px;padding:6px 0;border-bottom:1px solid var(--border)"><span>Dokončeno</span><strong>5 brigád</strong></div>
+            <div style="display:flex;justify-content:space-between;font-size:13px;padding:6px 0;border-bottom:1px solid var(--border)"><span>Vyděláno celkem</span><strong style="color:var(--green)">2 350 Kč</strong></div>
+            <div style="display:flex;justify-content:space-between;font-size:13px;padding:6px 0"><span>Hodnocení</span><strong>⭐ 4.9</strong></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: MOJE AKTIVITA -->
+  <div id="prof-tab-aktivita" class="tab-content">
+    <div class="container" style="padding-top:20px">
+      <!-- FILTER CHIPS -->
+      <div class="chips" style="margin-bottom:20px">
+        <button class="chip active" onclick="filterProfileActivity('vse',this)">Vše</button>
+        <button class="chip" onclick="filterProfileActivity('prispevky',this)">Příspěvky</button>
+        <button class="chip" onclick="filterProfileActivity('zlepsovaky',this)">Zlepšováky</button>
+        <button class="chip" onclick="filterProfileActivity('bazar',this)">Bazar</button>
+        <button class="chip" onclick="filterProfileActivity('brigady',this)">Brigády</button>
+        <button class="chip" onclick="filterProfileActivity('akce',this)">Akce</button>
+      </div>
+
+      <!-- MY POSTS -->
+      <div id="prof-activity-list">
+        <div class="prof-section" data-profcat="prispevky">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
+            <span class="post-tag tag-tip" style="font-size:11px">💡 Tip</span>
+            <span style="font-size:12px;color:var(--ink-light)">před 2 hod</span>
+          </div>
+          <div style="font-size:14px;margin-bottom:8px">Tip na kadeřnici v Osnici — paní Horáková, Sportovní ulice. Super práce a příjemná cena.</div>
+          <div style="font-size:12px;color:var(--ink-light)">👍 8 · 💬 3 komentáře</div>
+        </div>
+
+        <div class="prof-section" data-profcat="zlepsovaky">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
+            <span class="pill pill-orange">Řeší se</span>
+            <span style="font-size:12px;color:var(--ink-light)">25. 2. 2026</span>
+          </div>
+          <div style="font-weight:600;font-size:14px;margin-bottom:4px">📍 Rozbitá lavička — park u sv. Prokopa</div>
+          <div style="font-size:13px;color:var(--ink-mid);margin-bottom:8px">Lavička u dětského hřiště má zlomenou opěrku. Nebezpečné pro děti.</div>
+          <div style="font-size:12px;color:var(--ink-light)">👍 14 hlasů · Přijato městem</div>
+        </div>
+
+        <div class="prof-section" data-profcat="brigady">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
+            <span class="pill pill-green">Dokončeno</span>
+            <span style="font-size:12px;color:var(--ink-light)">3. 3. 2026</span>
+          </div>
+          <div style="font-weight:600;font-size:14px;margin-bottom:4px">⚡ Sekání trávy — zahrada</div>
+          <div style="font-size:13px;color:var(--ink-mid);margin-bottom:8px">Pro: Petr V. (Zdiměřice) · 2 hodiny</div>
+          <div style="font-size:12px"><strong style="color:var(--green)">+450 Kč</strong> · ⭐ Hodnocení: 5/5</div>
+        </div>
+
+        <div class="prof-section" data-profcat="bazar">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
+            <span class="pill pill-green">Aktivní</span>
+            <span style="font-size:12px;color:var(--ink-light)">28. 2. 2026</span>
+          </div>
+          <div style="font-weight:600;font-size:14px;margin-bottom:4px">🛍️ Dětská autosedačka Maxi-Cosi</div>
+          <div style="font-size:13px;color:var(--ink-mid);margin-bottom:8px">Málo používaná, do 18 kg. Vyzvednutí v Jesenici.</div>
+          <div style="font-size:12px;color:var(--ink-light)">💰 800 Kč · 👀 34 zobrazení · ✋ 2 zájemci</div>
+        </div>
+
+        <div class="prof-section" data-profcat="bazar">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
+            <span style="display:inline-block;padding:2px 10px;border-radius:20px;font-size:12px;font-weight:600;background:var(--cream);color:var(--ink-light)">Prodáno</span>
+            <span style="font-size:12px;color:var(--ink-light)">15. 2. 2026</span>
+          </div>
+          <div style="font-weight:600;font-size:14px;margin-bottom:4px">🚲 Horské kolo Author — 26"</div>
+          <div style="font-size:13px;color:var(--ink-mid)">Prodáno za 4 200 Kč · Kupující: Tomáš K.</div>
+        </div>
+
+        <div class="prof-section" data-profcat="akce">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
+            <span class="pill pill-green">Zúčastnil/a se</span>
+            <span style="font-size:12px;color:var(--ink-light)">1. 3. 2026</span>
+          </div>
+          <div style="font-weight:600;font-size:14px;margin-bottom:4px">🌿 Sousedský úklid Horní Jirčany</div>
+          <div style="font-size:13px;color:var(--ink-mid)">17 účastníků · Organizátor: SDH Jirčany</div>
+        </div>
+
+        <div class="prof-section" data-profcat="prispevky">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
+            <span class="post-tag tag-question" style="font-size:11px">❓ Otázka</span>
+            <span style="font-size:12px;color:var(--ink-light)">22. 2. 2026</span>
+          </div>
+          <div style="font-size:14px;margin-bottom:8px">Ví někdo kdy otevřou novou pekárnu v centru? Prý měla být v únoru...</div>
+          <div style="font-size:12px;color:var(--ink-light)">👍 3 · 💬 7 komentářů</div>
+        </div>
+
+        <div class="prof-section" data-profcat="brigady">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
+            <span class="pill pill-green">Dokončeno</span>
+            <span style="font-size:12px;color:var(--ink-light)">18. 2. 2026</span>
+          </div>
+          <div style="font-weight:600;font-size:14px;margin-bottom:4px">⚡ Venčení psa — 2 dny</div>
+          <div style="font-size:13px;color:var(--ink-mid);margin-bottom:8px">Pro: Eva M. (Osnice) · 2× 30 min</div>
+          <div style="font-size:12px"><strong style="color:var(--green)">+300 Kč</strong> · ⭐ Hodnocení: 5/5</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: NASTAVENÍ -->
+  <div id="prof-tab-nastaveni" class="tab-content">
+    <div class="container" style="padding-top:20px">
+      <div class="sidebar-layout">
+        <div>
+          <!-- PERSONAL INFO -->
+          <div class="prof-section">
+            <h4>👤 Osobní údaje</h4>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+              <div class="form-group"><label>Jméno</label><input type="text" id="prof-edit-fname" value="Jan"></div>
+              <div class="form-group"><label>Příjmení</label><input type="text" id="prof-edit-lname" value="Novák"></div>
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:12px">
+              <input type="checkbox" id="prof-edit-nick-toggle" style="width:auto;margin-top:3px;accent-color:var(--green)" onchange="document.getElementById('prof-edit-nick-wrap').style.display=this.checked?'':'none'">
+              <label for="prof-edit-nick-toggle" style="font-weight:400;font-size:13px;color:var(--ink-mid);margin-bottom:0;cursor:pointer">Používat přezdívku (jméno nebude veřejné)</label>
+            </div>
+            <div class="form-group" id="prof-edit-nick-wrap" style="display:none">
+              <label>Přezdívka</label>
+              <input type="text" id="prof-edit-nickname" placeholder="Vaše přezdívka">
+            </div>
+            <div class="form-group"><label>Email</label><input type="email" id="prof-edit-email" value="jan.novak@email.cz"></div>
+            <div class="form-group">
+              <label>Lokalita</label>
+              <select id="prof-edit-location">
+                <option value="jesenice-centrum" selected>Jesenice – centrum</option>
+                <option value="zdiměřice">Zdiměřice</option>
+                <option value="osnice">Osnice</option>
+                <option value="horní-jirčany">Horní Jirčany</option>
+                <option value="kocanda">Kocanda</option>
+              </select>
+            </div>
+            <button class="btn btn-green" onclick="toast('Údaje uloženy!')">Uložit změny</button>
+          </div>
+
+          <!-- CHANGE PASSWORD -->
+          <div class="prof-section">
+            <h4>🔒 Změna hesla</h4>
+            <div class="form-group"><label>Současné heslo</label><input type="password" placeholder="••••••••"></div>
+            <div class="form-group"><label>Nové heslo</label><input type="password" placeholder="Minimálně 8 znaků"></div>
+            <div class="form-group"><label>Nové heslo znovu</label><input type="password" placeholder="Zopakujte nové heslo"></div>
+            <button class="btn btn-green" onclick="toast('Heslo změněno!')">Změnit heslo</button>
+          </div>
+        </div>
+
+        <!-- SIDEBAR: NOTIFICATIONS + PRIVACY -->
+        <div>
+          <div class="prof-section">
+            <h4>🔔 Notifikace</h4>
+            <div style="font-size:13px">
+              <div class="prof-toggle">
+                <span>Odpovědi na mé příspěvky</span>
+                <label class="prof-switch"><input type="checkbox" checked><span class="prof-switch-slider"></span></label>
+              </div>
+              <div class="prof-toggle">
+                <span>Změny u sledovaných projektů</span>
+                <label class="prof-switch"><input type="checkbox" checked><span class="prof-switch-slider"></span></label>
+              </div>
+              <div class="prof-toggle">
+                <span>Nové akce v mé lokalitě</span>
+                <label class="prof-switch"><input type="checkbox" checked><span class="prof-switch-slider"></span></label>
+              </div>
+              <div class="prof-toggle">
+                <span>Zájem o mé inzeráty</span>
+                <label class="prof-switch"><input type="checkbox" checked><span class="prof-switch-slider"></span></label>
+              </div>
+              <div class="prof-toggle">
+                <span>Nové brigády v mé kategorii</span>
+                <label class="prof-switch"><input type="checkbox"><span class="prof-switch-slider"></span></label>
+              </div>
+              <div class="prof-toggle">
+                <span>Týdenní souhrn komunity</span>
+                <label class="prof-switch"><input type="checkbox" checked><span class="prof-switch-slider"></span></label>
+              </div>
+            </div>
+          </div>
+
+          <div class="prof-section">
+            <h4>🔐 Soukromí</h4>
+            <div style="font-size:13px">
+              <div class="prof-toggle">
+                <span>Zobrazit mě v žebříčku</span>
+                <label class="prof-switch"><input type="checkbox" checked><span class="prof-switch-slider"></span></label>
+              </div>
+              <div class="prof-toggle">
+                <span>Zobrazit mou lokalitu</span>
+                <label class="prof-switch"><input type="checkbox" checked><span class="prof-switch-slider"></span></label>
+              </div>
+              <div class="prof-toggle">
+                <span>Zobrazit mé odznaky</span>
+                <label class="prof-switch"><input type="checkbox" checked><span class="prof-switch-slider"></span></label>
+              </div>
+            </div>
+          </div>
+
+          <div class="prof-section" style="border-color:var(--red)">
+            <h4 style="color:var(--red)">⚠️ Nebezpečná zóna</h4>
+            <p style="font-size:13px;color:var(--ink-mid);margin-bottom:12px">Smazání účtu je nevratné. Přijdete o všechny příspěvky, body a odznaky.</p>
+            <button class="btn" style="background:#FEE;color:var(--red);border:1px solid var(--red);font-size:13px" onclick="if(confirm('Opravdu chcete smazat účet? Tato akce je nevratná.')) { localStorage.removeItem('dvj-user'); updateNavLogin(); showView('home'); toast('Účet byl smazán.'); }">Smazat účet</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
-const views = ['home','community','issues','projects','events','welcome','login','register','budget','bazar','spojeni','podniky','brigady','challenge'];
-const navMap = { community:'nav-community', issues:'nav-issues', projects:'nav-projects', budget:'nav-budget', events:'nav-events', welcome:'nav-welcome', login:'nav-login', bazar:'nav-bazar', spojeni:'nav-spojeni', podniky:'nav-podniky', brigady:'nav-brigady', challenge:'nav-challenge' };
+const views = ['home','community','issues','projects','events','welcome','login','register','budget','bazar','spojeni','podniky','brigady','challenge','profile'];
+const navMap = { community:'nav-community', issues:'nav-issues', projects:'nav-projects', budget:'nav-budget', events:'nav-events', welcome:'nav-welcome', login:'nav-login', bazar:'nav-bazar', spojeni:'nav-spojeni', podniky:'nav-podniky', brigady:'nav-brigady', challenge:'nav-challenge', profile:'nav-profile' };
 
 const hashMap = {
   home:'', community:'komunita', issues:'zlepsovaky', projects:'projekty',
   events:'akce', welcome:'novy-v-jesenici', login:'prihlaseni', register:'registrace',
   budget:'rozpocet', bazar:'bazar', spojeni:'hledam-partaka', podniky:'mistni-podniky',
-  brigady:'brigady', challenge:'challenge'
+  brigady:'brigady', challenge:'challenge', profile:'muj-profil'
 };
 const hashReverse = {};
 Object.entries(hashMap).forEach(([k,v]) => { if (v) hashReverse[v] = k; });
@@ -6577,8 +6923,11 @@ function registerUser() {
   if (pass !== pass2) { toast('Hesla se neshodují.'); return; }
   if (!location) { toast('Vyberte svou lokalitu.'); return; }
   if (!terms) { toast('Musíte souhlasit s podmínkami.'); return; }
-  toast('Registrace úspěšná! Vítejte v komunitě, ' + fname + '!');
-  setTimeout(() => showView('home'), 1500);
+  const nickname = document.getElementById('reg-nickname-toggle').checked ? (document.getElementById('reg-nickname').value.trim() || '') : '';
+  localStorage.setItem('dvj-user', JSON.stringify({fname, lname, email, location, nickname, joined: new Date().toISOString()}));
+  updateNavLogin();
+  toast('Registrace úspěšná! Vítejte v komunitě, ' + (nickname || fname) + '!');
+  setTimeout(() => showView('profile'), 1500);
 }
 
 function addBazarItem() {
@@ -6814,6 +7163,65 @@ function submitBudgetProposal() {
   document.getElementById('bud-prop-cost').value = '';
   toast('🎉 Návrh odeslán! Po schválení se objeví v seznamu k hlasování.');
 }
+
+/* ═══ PROFILE ═══ */
+function switchProfileTab(tab, el) {
+  document.querySelectorAll('#profile-tabs .tab').forEach(t => t.classList.remove('active'));
+  ['prehled','aktivita','nastaveni'].forEach(t => {
+    const el2 = document.getElementById('prof-tab-' + t);
+    if (el2) el2.classList.remove('active');
+  });
+  el.classList.add('active');
+  const target = document.getElementById('prof-tab-' + tab);
+  if (target) target.classList.add('active');
+}
+
+function filterProfileActivity(cat, el) {
+  el.closest('.chips').querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('#prof-activity-list .prof-section').forEach(item => {
+    item.style.display = (cat === 'vse' || item.dataset.profcat === cat) ? '' : 'none';
+  });
+}
+
+function updateNavLogin() {
+  const user = JSON.parse(localStorage.getItem('dvj-user') || 'null');
+  const loginBtn = document.getElementById('nav-login');
+  const profileBtn = document.getElementById('nav-profile');
+  if (user) {
+    if (loginBtn) loginBtn.style.display = 'none';
+    if (profileBtn) {
+      profileBtn.style.display = '';
+      profileBtn.textContent = '👤 ' + (user.nickname || user.fname);
+    }
+    // Update profile header
+    const initials = (user.fname[0] || '') + (user.lname[0] || '');
+    const el = document.getElementById('prof-avatar');
+    if (el) el.textContent = initials;
+    const nameEl = document.getElementById('prof-name');
+    if (nameEl) nameEl.textContent = user.nickname || (user.fname + ' ' + user.lname);
+    const locMap = {'jesenice-centrum':'Jesenice – centrum','zdiměřice':'Zdiměřice','osnice':'Osnice','horní-jirčany':'Horní Jirčany','kocanda':'Kocanda','říčany-okolí':'Okolí'};
+    const locEl = document.getElementById('prof-location');
+    if (locEl) {
+      const joined = new Date(user.joined);
+      const months = ['ledna','února','března','dubna','května','června','července','srpna','září','října','listopadu','prosince'];
+      locEl.textContent = '📍 ' + (locMap[user.location] || user.location) + ' · Člen od ' + months[joined.getMonth()] + ' ' + joined.getFullYear();
+    }
+  } else {
+    if (loginBtn) loginBtn.style.display = '';
+    if (profileBtn) profileBtn.style.display = 'none';
+  }
+}
+
+function profLogout() {
+  localStorage.removeItem('dvj-user');
+  updateNavLogin();
+  showView('home');
+  toast('Byli jste odhlášeni.');
+}
+
+// Check login state on load
+updateNavLogin();
 </script>
 
 <footer style="background:var(--green);color:rgba(255,255,255,0.85);padding:40px 24px 24px;margin-top:60px">
