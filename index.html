@@ -1030,6 +1030,10 @@
   .wel-check input:checked ~ div { text-decoration: line-through; color: var(--ink-light); }
   .wel-check div strong { font-weight: 600; color: var(--ink); display: block; }
   .wel-check div span { color: var(--ink-light); font-size: 12px; }
+  .wel-skip { font-size:11px !important; padding:3px 10px !important; background:var(--cream) !important; color:var(--ink-light) !important; margin-left:auto; white-space:nowrap; border-radius:14px !important; }
+  .wel-skip:hover { background:var(--border) !important; }
+  .wel-check.skipped { opacity: 0.45; }
+  .wel-check.skipped .wel-skip { display: none; }
   .wel-map-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
   .wel-map-card {
     background: white; border: 1.5px solid var(--border); border-radius: var(--r);
@@ -3718,10 +3722,12 @@
         <label class="wel-check" onclick="welCheck()">
           <input type="checkbox"><span class="wel-check-box"></span>
           <div><strong>Přihlásit děti do školy/školky</strong><br><span>ZŠ Jesenice, ZŠ Zdiměřice, 4 MŠ pobočky.</span></div>
+          <button class="btn wel-skip" onclick="event.preventDefault();welSkip(this)">Nemám děti</button>
         </label>
         <label class="wel-check" onclick="welCheck()">
           <input type="checkbox"><span class="wel-check-box"></span>
           <div><strong>Přihlásit psa</strong><br><span>Poplatek 200 Kč/rok, online nebo na MÚ.</span></div>
+          <button class="btn wel-skip" onclick="event.preventDefault();welSkip(this)">Nemám psa</button>
         </label>
         <label class="wel-check" onclick="welCheck()">
           <input type="checkbox"><span class="wel-check-box"></span>
@@ -6311,6 +6317,14 @@ function welToggleChecklist() {
     toggle.textContent = 'Sbalit ▴';
     toggle.dataset.open = '1';
   }
+}
+
+function welSkip(btn) {
+  const label = btn.closest('.wel-check');
+  const cb = label.querySelector('input[type=checkbox]');
+  cb.checked = true;
+  label.classList.add('skipped');
+  welCheck();
 }
 
 function welCheck() {
