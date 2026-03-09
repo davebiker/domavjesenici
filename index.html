@@ -1011,7 +1011,7 @@
   }
   .wel-situation:hover { background: rgba(255,255,255,0.2); }
   .wel-situation.active { background: white; color: var(--green); border-color: white; }
-  .wel-checklist { display: flex; flex-direction: column; gap: 0; }
+  .wel-checklist { display: flex; flex-direction: column; gap: 0; transition: max-height .3s ease; }
   .wel-check {
     display: flex; align-items: center; gap: 12px; padding: 12px 0;
     border-bottom: 1px solid var(--border); cursor: pointer; font-size: 13px; margin: 0;
@@ -3682,7 +3682,6 @@
     <p>Pomůžeme vám se zorientovat. Pár kroků a budete doma.</p>
     <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:20px;justify-content:center">
       <button class="wel-situation active" onclick="welSituation(this,'stehuju')">🚚 Stěhuju se sem</button>
-      <button class="wel-situation" onclick="welSituation(this,'cerstvy')">🏠 Právě jsem tu</button>
       <button class="wel-situation" onclick="welSituation(this,'staronovy')">🤝 Žiju tu, hledám lidi</button>
     </div>
   </div>
@@ -3690,10 +3689,13 @@
   <div class="container" style="padding-top:24px">
 
     <!-- PROGRESS CHECKLIST -->
-    <div style="background:white;border:1px solid var(--border);border-radius:var(--r);padding:24px;margin-bottom:28px">
+    <div id="wel-checklist-wrap" style="background:white;border:1px solid var(--border);border-radius:var(--r);padding:24px;margin-bottom:28px">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;flex-wrap:wrap;gap:8px">
         <div style="font-family:'Fraunces',serif;font-size:20px;font-weight:700">Váš první týden v Jesenici</div>
-        <div id="wel-progress-label" style="font-size:13px;color:var(--green);font-weight:600">0/8 splněno</div>
+        <div style="display:flex;align-items:center;gap:12px">
+          <div id="wel-progress-label" style="font-size:13px;color:var(--green);font-weight:600">0/8 splněno</div>
+          <button id="wel-checklist-toggle" style="display:none;background:var(--green-light);color:var(--green);border:none;border-radius:16px;padding:4px 12px;font-size:12px;font-weight:600;cursor:pointer" onclick="welToggleChecklist()">Rozbalit ▾</button>
+        </div>
       </div>
       <div style="background:var(--border);border-radius:6px;height:10px;overflow:hidden;margin-bottom:18px">
         <div id="wel-progress-bar" style="width:0%;height:100%;background:linear-gradient(90deg,var(--green),var(--green-mid));border-radius:6px;transition:width .4s"></div>
@@ -3737,6 +3739,9 @@
         </label>
       </div>
     </div>
+
+    <!-- SEKCE POUZE PRO STĚHUJU SE SEM -->
+    <div id="wel-stehuju-only">
 
     <!-- INTERAKTIVNÍ MAPA -->
     <div style="margin-bottom:28px">
@@ -3949,6 +3954,45 @@
               </div>
             </div>
           </div>
+        </div>
+      </div>
+    </div>
+
+    </div><!-- /wel-stehuju-only -->
+
+    <!-- SEKCE POUZE PRO ŽIJU TU -->
+    <div id="wel-komunita-only" style="display:none;margin-bottom:28px">
+      <div class="section-title serif" style="font-size:20px;margin-bottom:16px">Zapojte se do dění</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px">
+        <div class="wel-map-card" onclick="showView('community')" style="text-align:left;padding:20px">
+          <div style="font-size:28px;margin-bottom:8px">💬</div>
+          <h4 style="font-size:15px;margin-bottom:4px">Komunita</h4>
+          <div style="font-size:13px;color:var(--ink-mid)">Diskuze, ankety, sousedská výměna zkušeností.</div>
+        </div>
+        <div class="wel-map-card" onclick="showView('events')" style="text-align:left;padding:20px">
+          <div style="font-size:28px;margin-bottom:8px">📅</div>
+          <h4 style="font-size:15px;margin-bottom:4px">Akce</h4>
+          <div style="font-size:13px;color:var(--ink-mid)">Úklidy, sportovní dny, dílny, sousedské grilovačky.</div>
+        </div>
+        <div class="wel-map-card" onclick="showView('spojeni')" style="text-align:left;padding:20px">
+          <div style="font-size:28px;margin-bottom:8px">🤝</div>
+          <h4 style="font-size:15px;margin-bottom:4px">Hledám parťáka</h4>
+          <div style="font-size:13px;color:var(--ink-mid)">Spolujízda, hlídání, společné sporty, procházky.</div>
+        </div>
+        <div class="wel-map-card" onclick="showView('brigady')" style="text-align:left;padding:20px">
+          <div style="font-size:28px;margin-bottom:8px">💼</div>
+          <h4 style="font-size:15px;margin-bottom:4px">Brigády</h4>
+          <div style="font-size:13px;color:var(--ink-mid)">Sousedská výpomoc, hlídání, doučování.</div>
+        </div>
+        <div class="wel-map-card" onclick="showView('bazar')" style="text-align:left;padding:20px">
+          <div style="font-size:28px;margin-bottom:8px">🛍️</div>
+          <h4 style="font-size:15px;margin-bottom:4px">Bazar</h4>
+          <div style="font-size:13px;color:var(--ink-mid)">Prodej, darování, výměna mezi sousedy.</div>
+        </div>
+        <div class="wel-map-card" onclick="showView('issues')" style="text-align:left;padding:20px">
+          <div style="font-size:28px;margin-bottom:8px">🔧</div>
+          <h4 style="font-size:15px;margin-bottom:4px">Zlepšováky</h4>
+          <div style="font-size:13px;color:var(--ink-mid)">Nahlaste problém, hlasujte, sledujte řešení.</div>
         </div>
       </div>
     </div>
@@ -6230,8 +6274,43 @@ function votePoll(pollId, optionIdx, btn) {
 function welSituation(btn, type) {
   document.querySelectorAll('.wel-situation').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
-  const labels = { stehuju: 'Stěhuju se sem', cerstvy: 'Právě jsem tu', staronovy: 'Žiju tu, hledám lidi' };
-  toast('Profil: ' + labels[type] + ' — průvodce přizpůsoben');
+  const stehuju = type === 'stehuju';
+  // Toggle sections
+  document.getElementById('wel-stehuju-only').style.display = stehuju ? '' : 'none';
+  document.getElementById('wel-komunita-only').style.display = stehuju ? 'none' : '';
+  // Checklist: full vs collapsed
+  const checklist = document.getElementById('wel-checklist');
+  const toggle = document.getElementById('wel-checklist-toggle');
+  if (stehuju) {
+    checklist.style.maxHeight = '';
+    checklist.style.overflow = '';
+    toggle.style.display = 'none';
+  } else {
+    checklist.style.maxHeight = '0px';
+    checklist.style.overflow = 'hidden';
+    toggle.style.display = '';
+    toggle.textContent = 'Rozbalit ▾';
+    toggle.dataset.open = '0';
+  }
+  const labels = { stehuju: 'Stěhuju se sem', staronovy: 'Žiju tu, hledám lidi' };
+  toast('Průvodce přizpůsoben: ' + labels[type]);
+}
+
+function welToggleChecklist() {
+  const checklist = document.getElementById('wel-checklist');
+  const toggle = document.getElementById('wel-checklist-toggle');
+  const isOpen = toggle.dataset.open === '1';
+  if (isOpen) {
+    checklist.style.maxHeight = '0px';
+    checklist.style.overflow = 'hidden';
+    toggle.textContent = 'Rozbalit ▾';
+    toggle.dataset.open = '0';
+  } else {
+    checklist.style.maxHeight = checklist.scrollHeight + 'px';
+    checklist.style.overflow = '';
+    toggle.textContent = 'Sbalit ▴';
+    toggle.dataset.open = '1';
+  }
 }
 
 function welCheck() {
