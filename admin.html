@@ -1,0 +1,1258 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Doma v Jesenici — Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;0,9..144,700;1,9..144,400&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --green: #1F5C3A;
+  --green-mid: #2D7A52;
+  --green-light: #E8F4EE;
+  --green-xlight: #F4FAF6;
+  --sidebar: #1a1a2e;
+  --sidebar-hover: #25253e;
+  --sidebar-active: #2d2d4e;
+  --ink: #1A1A1A;
+  --ink-mid: #4A4A4A;
+  --ink-light: #888;
+  --border: #E2DDD6;
+  --white: #FFFFFF;
+  --orange: #E07A3A;
+  --blue: #2A6EBB;
+  --red: #C0392B;
+  --cream: #F9F5EF;
+  --shadow: 0 2px 16px rgba(31,92,58,0.08);
+  --shadow-lg: 0 8px 40px rgba(31,92,58,0.13);
+  --r: 12px;
+  --r-sm: 8px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background: #f5f5f5;
+  color: var(--ink);
+  min-height: 100vh;
+  font-size: 15px;
+  line-height: 1.6;
+}
+.serif { font-family: 'Fraunces', Georgia, serif; }
+
+/* TOAST */
+.toast {
+  position: fixed; bottom: 30px; right: 30px; z-index: 9999;
+  background: var(--sidebar); color: white;
+  padding: 14px 24px; border-radius: var(--r);
+  font-size: 14px; font-weight: 500;
+  box-shadow: var(--shadow-lg);
+  transform: translateY(100px); opacity: 0;
+  transition: all 0.3s ease;
+  max-width: 400px;
+}
+.toast.show { transform: translateY(0); opacity: 1; }
+
+/* LOGIN */
+#login-screen {
+  display: flex; align-items: center; justify-content: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, var(--sidebar) 0%, #16213e 100%);
+}
+.login-box {
+  background: white; border-radius: 16px; padding: 48px 40px;
+  width: 100%; max-width: 420px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+}
+.login-box .logo {
+  font-family: 'Fraunces', serif; font-weight: 700;
+  font-size: 22px; color: var(--green);
+  text-align: center; margin-bottom: 8px;
+}
+.login-box .logo-sub {
+  text-align: center; color: var(--ink-light);
+  font-size: 14px; margin-bottom: 32px;
+}
+.login-box label {
+  display: block; font-size: 13px; font-weight: 600;
+  margin-bottom: 6px; color: var(--ink-mid);
+}
+.login-box input[type="email"],
+.login-box input[type="password"] {
+  width: 100%; padding: 12px 14px;
+  border: 1px solid var(--border); border-radius: var(--r-sm);
+  font-size: 15px; font-family: inherit;
+  margin-bottom: 20px; transition: border-color 0.2s;
+}
+.login-box input:focus { outline: none; border-color: var(--green); }
+.login-error {
+  color: var(--red); font-size: 13px;
+  margin-bottom: 12px; display: none;
+}
+.btn {
+  padding: 12px 24px; border-radius: 10px; font-weight: 600;
+  font-size: 15px; cursor: pointer; border: none;
+  transition: all 0.15s; text-decoration: none;
+  display: inline-block; font-family: inherit;
+}
+.btn-green { background: var(--green); color: white; }
+.btn-green:hover { background: var(--green-mid); }
+.btn-sm { padding: 6px 14px; font-size: 13px; border-radius: var(--r-sm); }
+.btn-outline-sm {
+  padding: 5px 12px; font-size: 12px; border-radius: 6px;
+  background: transparent; border: 1px solid var(--border);
+  cursor: pointer; font-family: inherit; color: var(--ink-mid);
+  transition: all 0.15s;
+}
+.btn-outline-sm:hover { background: #f0f0f0; }
+.btn-red { background: var(--red); color: white; }
+.btn-red:hover { background: #a93226; }
+.btn-orange { background: var(--orange); color: white; }
+.btn-orange:hover { background: #c96a2e; }
+.btn-blue { background: var(--blue); color: white; }
+.btn-blue:hover { background: #1f5a9e; }
+
+/* LAYOUT */
+#admin-app { display: none; }
+.admin-layout { display: flex; min-height: 100vh; }
+
+/* SIDEBAR */
+.sidebar {
+  width: 260px; background: var(--sidebar); color: #ccc;
+  display: flex; flex-direction: column;
+  position: fixed; top: 0; left: 0; bottom: 0;
+  z-index: 100; transition: transform 0.3s;
+}
+.sidebar-header {
+  padding: 24px 20px 20px; border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.sidebar-logo {
+  font-family: 'Fraunces', serif; font-weight: 700;
+  font-size: 17px; color: white;
+  line-height: 1.3;
+}
+.sidebar-logo span { color: rgba(255,255,255,0.5); font-weight: 300; font-size: 14px; }
+.sidebar-nav { flex: 1; overflow-y: auto; padding: 12px 0; }
+.sidebar-nav a {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 20px; color: #aaa; text-decoration: none;
+  font-size: 14px; font-weight: 500;
+  transition: all 0.15s; cursor: pointer;
+  border-left: 3px solid transparent;
+}
+.sidebar-nav a:hover { background: var(--sidebar-hover); color: white; }
+.sidebar-nav a.active {
+  background: var(--sidebar-active); color: white;
+  border-left-color: var(--green);
+}
+.sidebar-nav a .icon { font-size: 16px; width: 24px; text-align: center; }
+.sidebar-footer {
+  padding: 16px 20px; border-top: 1px solid rgba(255,255,255,0.08);
+  font-size: 13px;
+}
+.sidebar-footer .user-email { color: #aaa; font-size: 12px; }
+.sidebar-footer .user-role {
+  display: inline-block; background: var(--red); color: white;
+  font-size: 10px; padding: 2px 8px; border-radius: 4px;
+  font-weight: 600; margin-top: 4px;
+}
+.sidebar-footer .logout-btn {
+  display: block; margin-top: 12px; padding: 8px 16px;
+  background: rgba(255,255,255,0.08); color: #ccc;
+  border: none; border-radius: 6px; font-size: 13px;
+  cursor: pointer; width: 100%; text-align: center;
+  font-family: inherit; transition: background 0.15s;
+}
+.sidebar-footer .logout-btn:hover { background: rgba(255,255,255,0.15); color: white; }
+.sidebar-back {
+  display: block; padding: 10px 20px; color: #777;
+  text-decoration: none; font-size: 13px;
+  border-top: 1px solid rgba(255,255,255,0.05);
+  transition: color 0.15s;
+}
+.sidebar-back:hover { color: white; }
+
+/* MOBILE TOGGLE */
+.mobile-toggle {
+  display: none; position: fixed; top: 12px; left: 12px; z-index: 200;
+  background: var(--sidebar); color: white; border: none;
+  width: 40px; height: 40px; border-radius: 8px;
+  font-size: 20px; cursor: pointer;
+}
+.mobile-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,0.5); z-index: 99;
+}
+
+/* MAIN CONTENT */
+.main-content {
+  flex: 1; margin-left: 260px; min-height: 100vh;
+  display: flex; flex-direction: column;
+}
+.content-header {
+  background: white; border-bottom: 1px solid var(--border);
+  padding: 20px 32px; display: flex; align-items: center;
+  justify-content: space-between;
+}
+.content-header h1 {
+  font-family: 'Fraunces', serif; font-size: 22px; font-weight: 700;
+}
+.content-body { padding: 24px 32px; flex: 1; }
+.admin-footer {
+  padding: 16px 32px; text-align: center;
+  font-size: 12px; color: var(--ink-light);
+  border-top: 1px solid var(--border);
+  background: white;
+}
+
+/* SECTIONS */
+.admin-section { display: none; animation: fadeIn 0.3s ease; }
+.admin-section.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+/* CARDS */
+.stat-cards {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px; margin-bottom: 24px;
+}
+.stat-card {
+  background: white; border-radius: var(--r);
+  padding: 20px; box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+}
+.stat-card .label { font-size: 13px; color: var(--ink-light); margin-bottom: 8px; }
+.stat-card .value {
+  font-family: 'Fraunces', serif; font-size: 28px;
+  font-weight: 700; color: var(--green);
+}
+.stat-card .value.red { color: var(--red); }
+.stat-card .value.orange { color: var(--orange); }
+.stat-card .value.blue { color: var(--blue); }
+
+/* PANEL */
+.panel {
+  background: white; border-radius: var(--r);
+  border: 1px solid var(--border); box-shadow: var(--shadow);
+  margin-bottom: 24px; overflow: hidden;
+}
+.panel-header {
+  padding: 16px 20px; border-bottom: 1px solid var(--border);
+  font-family: 'Fraunces', serif; font-size: 16px; font-weight: 700;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.panel-body { padding: 20px; }
+
+/* TABLES */
+.admin-table {
+  width: 100%; border-collapse: collapse; font-size: 14px;
+}
+.admin-table th {
+  text-align: left; padding: 10px 12px;
+  background: #f8f8f8; font-weight: 600;
+  font-size: 12px; text-transform: uppercase;
+  letter-spacing: 0.05em; color: var(--ink-light);
+  border-bottom: 2px solid var(--border);
+}
+.admin-table td {
+  padding: 10px 12px; border-bottom: 1px solid #f0f0f0;
+  vertical-align: middle;
+}
+.admin-table tr:hover td { background: #fafafa; }
+.admin-table .actions { display: flex; gap: 6px; flex-wrap: wrap; }
+
+/* BADGES */
+.badge {
+  display: inline-block; padding: 3px 10px; border-radius: 20px;
+  font-size: 11px; font-weight: 600;
+}
+.badge-green { background: var(--green-light); color: var(--green); }
+.badge-red { background: #fde8e8; color: var(--red); }
+.badge-orange { background: #fef3e2; color: var(--orange); }
+.badge-blue { background: #e0ecff; color: var(--blue); }
+.badge-gray { background: #f0f0f0; color: var(--ink-light); }
+
+/* FILTERS */
+.filter-bar {
+  display: flex; gap: 12px; flex-wrap: wrap;
+  margin-bottom: 20px; align-items: center;
+}
+.filter-bar input[type="text"],
+.filter-bar select {
+  padding: 8px 14px; border: 1px solid var(--border);
+  border-radius: var(--r-sm); font-size: 14px;
+  font-family: inherit; background: white;
+}
+.filter-bar input[type="text"] { flex: 1; min-width: 200px; }
+
+/* STATS BAR INLINE */
+.stats-inline {
+  display: flex; gap: 24px; flex-wrap: wrap;
+  margin-bottom: 20px; padding: 14px 20px;
+  background: white; border-radius: var(--r);
+  border: 1px solid var(--border);
+}
+.stats-inline .si {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 14px;
+}
+.stats-inline .si strong {
+  font-family: 'Fraunces', serif; font-size: 20px;
+  color: var(--green);
+}
+
+/* BAR CHART CSS */
+.bar-chart { display: flex; flex-direction: column; gap: 8px; }
+.bar-row {
+  display: flex; align-items: center; gap: 12px; font-size: 13px;
+}
+.bar-label { width: 80px; text-align: right; color: var(--ink-mid); flex-shrink: 0; }
+.bar-track {
+  flex: 1; height: 24px; background: #f0f0f0;
+  border-radius: 4px; overflow: hidden;
+}
+.bar-fill {
+  height: 100%; background: var(--green); border-radius: 4px;
+  transition: width 0.6s ease; display: flex; align-items: center;
+  padding-left: 8px; color: white; font-size: 11px; font-weight: 600;
+  min-width: fit-content;
+}
+.bar-fill.alt { background: var(--blue); }
+
+/* ACTIVITY FEED */
+.feed-item {
+  display: flex; gap: 12px; padding: 12px 0;
+  border-bottom: 1px solid #f0f0f0; font-size: 14px;
+}
+.feed-item:last-child { border-bottom: none; }
+.feed-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--green); margin-top: 6px; flex-shrink: 0;
+}
+.feed-time { color: var(--ink-light); font-size: 12px; margin-top: 2px; }
+
+/* TOGGLE SWITCH */
+.toggle { position: relative; display: inline-block; width: 44px; height: 24px; }
+.toggle input { opacity: 0; width: 0; height: 0; }
+.toggle .slider {
+  position: absolute; cursor: pointer; inset: 0;
+  background: #ccc; border-radius: 24px; transition: 0.3s;
+}
+.toggle .slider::before {
+  content: ''; position: absolute; width: 18px; height: 18px;
+  left: 3px; bottom: 3px; background: white;
+  border-radius: 50%; transition: 0.3s;
+}
+.toggle input:checked + .slider { background: var(--green); }
+.toggle input:checked + .slider::before { transform: translateX(20px); }
+
+/* TABS */
+.tab-bar { display: flex; gap: 0; border-bottom: 2px solid var(--border); margin-bottom: 20px; }
+.tab-bar a {
+  padding: 10px 20px; font-size: 14px; font-weight: 500;
+  color: var(--ink-light); text-decoration: none; cursor: pointer;
+  border-bottom: 2px solid transparent; margin-bottom: -2px;
+  transition: all 0.15s;
+}
+.tab-bar a:hover { color: var(--ink); }
+.tab-bar a.active { color: var(--green); border-bottom-color: var(--green); }
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+/* PROJECT ADMIN CARDS */
+.proj-admin-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 16px;
+}
+.proj-admin-card {
+  background: white; border: 1px solid var(--border);
+  border-radius: var(--r); padding: 20px;
+  box-shadow: var(--shadow);
+}
+.proj-admin-card h4 { font-family: 'Fraunces', serif; margin-bottom: 8px; }
+.progress-bar {
+  height: 6px; background: #eee; border-radius: 3px;
+  overflow: hidden; margin: 8px 0;
+}
+.progress-fill { height: 100%; background: var(--green); border-radius: 3px; }
+
+/* INLINE FORM */
+.inline-form {
+  background: #f9f9f9; border: 1px solid var(--border);
+  border-radius: var(--r); padding: 20px; margin-top: 16px;
+  display: none;
+}
+.inline-form.show { display: block; }
+.form-group { margin-bottom: 14px; }
+.form-group label {
+  display: block; font-size: 13px; font-weight: 600;
+  margin-bottom: 4px; color: var(--ink-mid);
+}
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%; padding: 10px 14px; border: 1px solid var(--border);
+  border-radius: var(--r-sm); font-size: 14px; font-family: inherit;
+}
+.form-group textarea { resize: vertical; min-height: 80px; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+/* MODERATION BOX */
+.mod-box {
+  background: #fff8f0; border: 1px solid #f0d9c0;
+  border-radius: var(--r); padding: 16px 20px;
+  margin-top: 16px;
+}
+.mod-box .mod-item {
+  display: flex; justify-content: space-between;
+  align-items: center; padding: 8px 0;
+  font-size: 14px;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .sidebar { transform: translateX(-100%); }
+  .sidebar.open { transform: translateX(0); }
+  .mobile-toggle { display: block; }
+  .mobile-overlay.show { display: block; }
+  .main-content { margin-left: 0; }
+  .content-header { padding: 16px 16px 16px 60px; }
+  .content-body { padding: 16px; }
+  .stat-cards { grid-template-columns: 1fr 1fr; }
+  .filter-bar input[type="text"] { min-width: 120px; }
+  .form-row { grid-template-columns: 1fr; }
+  .admin-table { font-size: 12px; }
+  .admin-table th, .admin-table td { padding: 8px 6px; }
+}
+</style>
+</head>
+<body>
+
+<!-- TOAST NOTIFICATION -->
+<div class="toast" id="toast"></div>
+
+<!-- LOGIN SCREEN -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="logo">Doma v Jesenici</div>
+    <div class="logo-sub">Administrace portalu</div>
+    <div class="login-error" id="login-error">Neplatne prihlasovaci udaje.</div>
+    <label>E-mail</label>
+    <input type="email" id="login-email" placeholder="vas@email.cz" autocomplete="email">
+    <label>Heslo</label>
+    <input type="password" id="login-pass" placeholder="Heslo" autocomplete="current-password">
+    <button class="btn btn-green" style="width:100%" onclick="adminLogin()">Prihlasit se</button>
+  </div>
+</div>
+
+<!-- ADMIN APP -->
+<div id="admin-app">
+  <button class="mobile-toggle" onclick="toggleSidebar()">&#9776;</button>
+  <div class="mobile-overlay" id="mobile-overlay" onclick="toggleSidebar()"></div>
+
+  <div class="admin-layout">
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">Doma v Jesenici<br><span>Administrace</span></div>
+      </div>
+      <nav class="sidebar-nav">
+        <a onclick="showAdmin('dashboard')" id="snav-dashboard" class="active"><span class="icon">&#x1F4CA;</span> Dashboard</a>
+        <a onclick="showAdmin('users')" id="snav-users"><span class="icon">&#x1F465;</span> Uzivatele</a>
+        <a onclick="showAdmin('community')" id="snav-community"><span class="icon">&#x1F4AC;</span> Komunita</a>
+        <a onclick="showAdmin('improvements')" id="snav-improvements"><span class="icon">&#x1F4CD;</span> Zlepsovaky</a>
+        <a onclick="showAdmin('projects')" id="snav-projects"><span class="icon">&#x1F3D7;</span> Projekty</a>
+        <a onclick="showAdmin('budget')" id="snav-budget"><span class="icon">&#x1F4B0;</span> Rozpocet</a>
+        <a onclick="showAdmin('events')" id="snav-events"><span class="icon">&#x1F4C5;</span> Akce</a>
+        <a onclick="showAdmin('bazar')" id="snav-bazar"><span class="icon">&#x1F6CD;</span> Bazar</a>
+        <a onclick="showAdmin('brigady')" id="snav-brigady"><span class="icon">&#x26A1;</span> Brigady</a>
+        <a onclick="showAdmin('partaci')" id="snav-partaci"><span class="icon">&#x1F91D;</span> Partaci</a>
+        <a onclick="showAdmin('businesses')" id="snav-businesses"><span class="icon">&#x1F3EA;</span> Podniky</a>
+        <a onclick="showAdmin('challenge')" id="snav-challenge"><span class="icon">&#x1F3C6;</span> Challenge</a>
+        <a onclick="showAdmin('settings')" id="snav-settings"><span class="icon">&#x2699;</span> Nastaveni</a>
+      </nav>
+      <div class="sidebar-footer">
+        <div style="font-weight:600;color:white">David Beska</div>
+        <div class="user-email">david@beska.cz</div>
+        <div><span class="user-role">Superadmin</span></div>
+        <button class="logout-btn" onclick="adminLogout()">Odhlasit se</button>
+      </div>
+      <a class="sidebar-back" href="index.html">&larr; Zpet na web</a>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main-content">
+      <div class="content-header">
+        <h1 id="page-title" class="serif">Dashboard</h1>
+        <div style="font-size:13px;color:var(--ink-light)">9. 3. 2026</div>
+      </div>
+      <div class="content-body">
+
+<!-- ==================== DASHBOARD ==================== -->
+<div class="admin-section active" id="sec-dashboard">
+  <div class="stat-cards">
+    <div class="stat-card"><div class="label">Registrovani uzivatele</div><div class="value">1 847</div></div>
+    <div class="stat-card"><div class="label">Nove prispevky dnes</div><div class="value blue">23</div></div>
+    <div class="stat-card"><div class="label">Otevrene zlepsovaky</div><div class="value orange">34</div></div>
+    <div class="stat-card"><div class="label">Nove registrace (mesic)</div><div class="value">67</div></div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:24px">
+    <div class="panel">
+      <div class="panel-header">Aktivita za poslednich 7 dni</div>
+      <div class="panel-body">
+        <div class="bar-chart">
+          <div class="bar-row"><span class="bar-label">Po</span><div class="bar-track"><div class="bar-fill" style="width:65%">42</div></div></div>
+          <div class="bar-row"><span class="bar-label">Ut</span><div class="bar-track"><div class="bar-fill" style="width:80%">51</div></div></div>
+          <div class="bar-row"><span class="bar-label">St</span><div class="bar-track"><div class="bar-fill" style="width:45%">29</div></div></div>
+          <div class="bar-row"><span class="bar-label">Ct</span><div class="bar-track"><div class="bar-fill" style="width:90%">58</div></div></div>
+          <div class="bar-row"><span class="bar-label">Pa</span><div class="bar-track"><div class="bar-fill" style="width:70%">45</div></div></div>
+          <div class="bar-row"><span class="bar-label">So</span><div class="bar-track"><div class="bar-fill" style="width:35%">22</div></div></div>
+          <div class="bar-row"><span class="bar-label">Ne</span><div class="bar-track"><div class="bar-fill" style="width:50%">32</div></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-header">Nejaktivnejsi sekce</div>
+      <div class="panel-body">
+        <div class="bar-chart">
+          <div class="bar-row"><span class="bar-label">Komunita</span><div class="bar-track"><div class="bar-fill alt" style="width:100%">247</div></div></div>
+          <div class="bar-row"><span class="bar-label">Bazar</span><div class="bar-track"><div class="bar-fill alt" style="width:63%">156</div></div></div>
+          <div class="bar-row"><span class="bar-label">Brigady</span><div class="bar-track"><div class="bar-fill alt" style="width:36%">89</div></div></div>
+          <div class="bar-row"><span class="bar-label">Akce</span><div class="bar-track"><div class="bar-fill alt" style="width:27%">67</div></div></div>
+          <div class="bar-row"><span class="bar-label">Zlepsovaky</span><div class="bar-track"><div class="bar-fill alt" style="width:14%">34</div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:2fr 1fr;gap:24px">
+    <div class="panel">
+      <div class="panel-header">Posledni aktivita</div>
+      <div class="panel-body">
+        <div class="feed-item"><div class="feed-dot"></div><div><div>Martina N. pridala prispevek do Komunity</div><div class="feed-time">pred 12 min</div></div></div>
+        <div class="feed-item"><div class="feed-dot" style="background:var(--orange)"></div><div><div>Jan P. nahlasil vytluk &mdash; Komenskeho ul.</div><div class="feed-time">pred 34 min</div></div></div>
+        <div class="feed-item"><div class="feed-dot" style="background:var(--blue)"></div><div><div>Nova registrace: Tomas K. (Zdimerice)</div><div class="feed-time">pred 1 hod</div></div></div>
+        <div class="feed-item"><div class="feed-dot"></div><div><div>Petr H. pridal brigadu: Sekani travy</div><div class="feed-time">pred 2 hod</div></div></div>
+        <div class="feed-item"><div class="feed-dot" style="background:var(--red)"></div><div><div>Eva M. nahlasila nevhodny obsah v Bazaru</div><div class="feed-time">pred 3 hod</div></div></div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-header">Moderacni fronta</div>
+      <div class="panel-body">
+        <div style="font-size:32px;text-align:center;margin-bottom:12px">&#x1F6A8;</div>
+        <div style="text-align:center;font-size:14px;margin-bottom:8px"><strong>3</strong> prispevky cekaji na schvaleni</div>
+        <div style="text-align:center;font-size:14px;margin-bottom:16px;color:var(--red)"><strong>1</strong> nahlaseny obsah</div>
+        <div style="text-align:center">
+          <button class="btn btn-green btn-sm" onclick="showAdmin('community');toast('Zobrazena fronta ke schvaleni')">Zobrazit frontu</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== UZIVATELE ==================== -->
+<div class="admin-section" id="sec-users">
+  <div class="filter-bar">
+    <input type="text" placeholder="Hledat uzivatele..." oninput="toast('Vyhledavani: '+this.value)">
+    <select><option>Vsechny lokality</option><option>Jesenice</option><option>Zdimerice</option><option>Osnice</option><option>Horni Jircany</option></select>
+    <select><option>Vsechny role</option><option>Superadmin</option><option>Moderator</option><option>Uzivatel</option></select>
+    <select><option>Vsechny stavy</option><option>Aktivni</option><option>Neaktivni</option><option>Pozastaveny</option></select>
+  </div>
+  <div class="stats-inline">
+    <div class="si"><strong>1 847</strong> Celkem</div>
+    <div class="si"><strong style="color:var(--green)">1 203</strong> Aktivni</div>
+    <div class="si"><strong style="color:var(--ink-light)">644</strong> Neaktivni</div>
+    <div class="si"><strong style="color:var(--red)">3</strong> Pozastaveni</div>
+  </div>
+  <div class="panel">
+    <div class="panel-body" style="overflow-x:auto">
+      <table class="admin-table">
+        <thead><tr><th>Jmeno</th><th>Prezdivka</th><th>Email</th><th>Lokalita</th><th>Registrace</th><th>Role</th><th>Status</th><th>Akce</th></tr></thead>
+        <tbody>
+          <tr><td><strong>David Beska</strong></td><td>david.b</td><td>david@beska.cz</td><td>Jesenice</td><td>1. 1. 2025</td><td><span class="badge badge-red">Superadmin</span></td><td><span class="badge badge-green">Aktivni</span></td><td class="actions"><button class="btn-outline-sm" onclick="adminAction('edit','David Beska')">Upravit</button></td></tr>
+          <tr><td><strong>Martina Novakova</strong></td><td>martina.n</td><td>martina@email.cz</td><td>Zdimerice</td><td>15. 3. 2025</td><td><span class="badge badge-orange">Moderator</span></td><td><span class="badge badge-green">Aktivni</span></td><td class="actions"><button class="btn-outline-sm" onclick="adminAction('edit','Martina Novakova')">Upravit</button><button class="btn-outline-sm" onclick="adminAction('suspend','Martina Novakova')">Pozastavit</button></td></tr>
+          <tr><td><strong>Jan Prochazka</strong></td><td>jan.p</td><td>jan.p@seznam.cz</td><td>Osnice</td><td>22. 5. 2025</td><td><span class="badge badge-green">Uzivatel</span></td><td><span class="badge badge-green">Aktivni</span></td><td class="actions"><button class="btn-outline-sm" onclick="adminAction('edit','Jan Prochazka')">Upravit</button><button class="btn-outline-sm" onclick="adminAction('suspend','Jan Prochazka')">Pozastavit</button><button class="btn-outline-sm" onclick="adminAction('delete','Jan Prochazka')" style="color:var(--red)">Smazat</button></td></tr>
+          <tr><td><strong>Eva Mala</strong></td><td>evicka</td><td>eva.m@gmail.com</td><td>Jesenice</td><td>3. 7. 2025</td><td><span class="badge badge-green">Uzivatel</span></td><td><span class="badge badge-green">Aktivni</span></td><td class="actions"><button class="btn-outline-sm" onclick="adminAction('edit','Eva Mala')">Upravit</button><button class="btn-outline-sm" onclick="adminAction('suspend','Eva Mala')">Pozastavit</button><button class="btn-outline-sm" onclick="adminAction('delete','Eva Mala')" style="color:var(--red)">Smazat</button></td></tr>
+          <tr><td><strong>Tomas Kratky</strong></td><td>tom.k</td><td>tomas.k@email.cz</td><td>Zdimerice</td><td>11. 9. 2025</td><td><span class="badge badge-green">Uzivatel</span></td><td><span class="badge badge-green">Aktivni</span></td><td class="actions"><button class="btn-outline-sm" onclick="adminAction('edit','Tomas Kratky')">Upravit</button><button class="btn-outline-sm" onclick="adminAction('suspend','Tomas Kratky')">Pozastavit</button><button class="btn-outline-sm" onclick="adminAction('delete','Tomas Kratky')" style="color:var(--red)">Smazat</button></td></tr>
+          <tr><td><strong>Petr Horak</strong></td><td>petr.h</td><td>petr.h@centrum.cz</td><td>Horni Jircany</td><td>28. 10. 2025</td><td><span class="badge badge-green">Uzivatel</span></td><td><span class="badge badge-gray">Neaktivni</span></td><td class="actions"><button class="btn-outline-sm" onclick="adminAction('edit','Petr Horak')">Upravit</button><button class="btn-outline-sm" onclick="adminAction('delete','Petr Horak')" style="color:var(--red)">Smazat</button></td></tr>
+          <tr><td><strong>Lucie Vesela</strong></td><td>lucy.v</td><td>lucie.v@post.cz</td><td>Jesenice</td><td>5. 12. 2025</td><td><span class="badge badge-green">Uzivatel</span></td><td><span class="badge badge-red">Pozastaveny</span></td><td class="actions"><button class="btn-outline-sm" onclick="adminAction('activate','Lucie Vesela')">Aktivovat</button><button class="btn-outline-sm" onclick="adminAction('delete','Lucie Vesela')" style="color:var(--red)">Smazat</button></td></tr>
+          <tr><td><strong>Karel Dvorak</strong></td><td>karel.d</td><td>karel.d@email.cz</td><td>Osnice</td><td>19. 1. 2026</td><td><span class="badge badge-orange">Moderator</span></td><td><span class="badge badge-green">Aktivni</span></td><td class="actions"><button class="btn-outline-sm" onclick="adminAction('edit','Karel Dvorak')">Upravit</button><button class="btn-outline-sm" onclick="adminAction('suspend','Karel Dvorak')">Pozastavit</button></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== KOMUNITA ==================== -->
+<div class="admin-section" id="sec-community">
+  <div class="stats-inline">
+    <div class="si"><strong>1 247</strong> Prispevku celkem</div>
+    <div class="si"><strong style="color:var(--blue)">23</strong> Dnes</div>
+    <div class="si"><strong style="color:var(--red)">1</strong> Nahlasenych</div>
+    <div class="si"><strong style="color:var(--orange)">2</strong> Aktivnich anket</div>
+  </div>
+  <div class="tab-bar">
+    <a class="active" onclick="filterCommunity(this,'all')">Vse</a>
+    <a onclick="filterCommunity(this,'pending')">Ceka na schvaleni (3)</a>
+    <a onclick="filterCommunity(this,'flagged')">Nahlasene (1)</a>
+    <a onclick="filterCommunity(this,'approved')">Schvalene</a>
+  </div>
+  <div class="panel">
+    <div class="panel-body" style="overflow-x:auto">
+      <table class="admin-table">
+        <thead><tr><th>Autor</th><th>Kategorie</th><th>Obsah</th><th>Datum</th><th>Status</th><th>Akce</th></tr></thead>
+        <tbody>
+          <tr><td>Martina N.</td><td><span class="badge badge-blue">Diskuze</span></td><td>Co rikate na novy kruhovy objezd u Albertu?...</td><td>9. 3. 2026</td><td><span class="badge badge-green">Schvaleno</span></td><td class="actions"><button class="btn-outline-sm" onclick="adminAction('hide','prispevek')">Skryt</button><button class="btn-outline-sm" onclick="adminAction('detail','prispevek')">Detail</button></td></tr>
+          <tr><td>Jan P.</td><td><span class="badge badge-orange">Oznameni</span></td><td>Pozor, zitra se bude opravovat vodovod na...</td><td>9. 3. 2026</td><td><span class="badge badge-green">Schvaleno</span></td><td class="actions"><button class="btn-outline-sm" onclick="adminAction('hide','prispevek')">Skryt</button><button class="btn-outline-sm" onclick="adminAction('detail','prispevek')">Detail</button></td></tr>
+          <tr><td>Tomas K.</td><td><span class="badge badge-blue">Dotaz</span></td><td>Vie nekdo, kdy otviraji novou kavarn...</td><td>8. 3. 2026</td><td><span class="badge badge-orange">Ceka</span></td><td class="actions"><button class="btn-outline-sm" style="color:var(--green)" onclick="adminAction('approve','prispevek')">Schvalit</button><button class="btn-outline-sm" onclick="adminAction('hide','prispevek')">Skryt</button><button class="btn-outline-sm" style="color:var(--red)" onclick="adminAction('delete','prispevek')">Smazat</button></td></tr>
+          <tr><td>Eva M.</td><td><span class="badge badge-red">Nahlaseno</span></td><td>Prodej pochybnych doplnku stravy - spam...</td><td>8. 3. 2026</td><td><span class="badge badge-red">Nahlaseno</span></td><td class="actions"><button class="btn-outline-sm" onclick="adminAction('approve','prispevek')">Ponechat</button><button class="btn-outline-sm" style="color:var(--red)" onclick="adminAction('delete','prispevek')">Smazat</button></td></tr>
+          <tr><td>Hana F.</td><td><span class="badge badge-green">Tip</span></td><td>Skvely novy obchod s farmou potravinami na...</td><td>7. 3. 2026</td><td><span class="badge badge-orange">Ceka</span></td><td class="actions"><button class="btn-outline-sm" style="color:var(--green)" onclick="adminAction('approve','prispevek')">Schvalit</button><button class="btn-outline-sm" style="color:var(--red)" onclick="adminAction('delete','prispevek')">Smazat</button></td></tr>
+          <tr><td>Pavel J.</td><td><span class="badge badge-blue">Diskuze</span></td><td>Kdo by mel zajem o spolecny beh v sobotu?...</td><td>7. 3. 2026</td><td><span class="badge badge-orange">Ceka</span></td><td class="actions"><button class="btn-outline-sm" style="color:var(--green)" onclick="adminAction('approve','prispevek')">Schvalit</button><button class="btn-outline-sm" style="color:var(--red)" onclick="adminAction('delete','prispevek')">Smazat</button></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="panel" style="margin-top:24px">
+    <div class="panel-header">Ankety</div>
+    <div class="panel-body">
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid #f0f0f0">
+        <div><strong>Jste spokojeni s udrzbu zelene?</strong><br><span style="font-size:13px;color:var(--ink-light)">247 hlasu &middot; Aktivni do 15. 3. 2026</span></div>
+        <div class="actions"><button class="btn-outline-sm" onclick="adminAction('end','anketu')">Ukoncit</button><button class="btn-outline-sm" style="color:var(--red)" onclick="adminAction('delete','anketu')">Smazat</button></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0">
+        <div><strong>Preferujete kruhovy objezd nebo semafory?</strong><br><span style="font-size:13px;color:var(--ink-light)">189 hlasu &middot; Aktivni do 20. 3. 2026</span></div>
+        <div class="actions"><button class="btn-outline-sm" onclick="adminAction('end','anketu')">Ukoncit</button><button class="btn-outline-sm" style="color:var(--red)" onclick="adminAction('delete','anketu')">Smazat</button></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== ZLEPSOVAKY ==================== -->
+<div class="admin-section" id="sec-improvements">
+  <div class="stat-cards">
+    <div class="stat-card"><div class="label">Otevrene</div><div class="value orange">34</div></div>
+    <div class="stat-card"><div class="label">Resi se</div><div class="value blue">12</div></div>
+    <div class="stat-card"><div class="label">Vyreseno</div><div class="value">156</div></div>
+    <div class="stat-card"><div class="label">Zamitnuto</div><div class="value red">8</div></div>
+  </div>
+  <div class="filter-bar">
+    <select><option>Vsechny stavy</option><option>Nove</option><option>Resi se</option><option>Vyreseno</option><option>Zamitnuto</option></select>
+    <select><option>Vsechny kategorie</option><option>Silnice</option><option>Chodnik</option><option>Osvetleni</option><option>Zelen</option><option>Jine</option></select>
+    <input type="text" placeholder="Hledat zlepsovak...">
+    <button class="btn btn-green btn-sm" onclick="toast('CSV export pripraven ke stazeni.')">Export CSV</button>
+  </div>
+  <div class="panel">
+    <div class="panel-body" style="overflow-x:auto">
+      <table class="admin-table">
+        <thead><tr><th>ID</th><th>Popis</th><th>Kategorie</th><th>Lokalita</th><th>Autor</th><th>Datum</th><th>Stav</th><th>Akce</th></tr></thead>
+        <tbody>
+          <tr><td>#Z-201</td><td>Vytluk na Budejovicke u polikliniky</td><td>Silnice</td><td>Jesenice</td><td>Jan P.</td><td>9. 3. 2026</td><td><select class="btn-outline-sm" onchange="adminAction('status','zlepsovak #Z-201 na '+this.value)"><option selected>Nove</option><option>Resi se</option><option>Vyreseno</option><option>Zamitnuto</option></select></td><td class="actions"><button class="btn-outline-sm" onclick="toggleStatement(this)">Vyjadreni</button></td></tr>
+          <tr><td>#Z-200</td><td>Nefunkcni lampa na Ricanske ul.</td><td>Osvetleni</td><td>Jesenice</td><td>Eva M.</td><td>8. 3. 2026</td><td><select class="btn-outline-sm" onchange="adminAction('status','zlepsovak #Z-200 na '+this.value)"><option>Nove</option><option selected>Resi se</option><option>Vyreseno</option><option>Zamitnuto</option></select></td><td class="actions"><button class="btn-outline-sm" onclick="toggleStatement(this)">Vyjadreni</button></td></tr>
+          <tr><td>#Z-199</td><td>Prerostla zelen blokuje vyhled na krizovatce</td><td>Zelen</td><td>Osnice</td><td>Karel D.</td><td>7. 3. 2026</td><td><select class="btn-outline-sm" onchange="adminAction('status','zlepsovak #Z-199 na '+this.value)"><option selected>Nove</option><option>Resi se</option><option>Vyreseno</option><option>Zamitnuto</option></select></td><td class="actions"><button class="btn-outline-sm" onclick="toggleStatement(this)">Vyjadreni</button></td></tr>
+          <tr><td>#Z-198</td><td>Chybejici odpadkovy kos u detsk. hriste</td><td>Jine</td><td>Zdimerice</td><td>Lucie V.</td><td>6. 3. 2026</td><td><select class="btn-outline-sm" onchange="adminAction('status','zlepsovak #Z-198 na '+this.value)"><option selected>Nove</option><option>Resi se</option><option>Vyreseno</option><option>Zamitnuto</option></select></td><td class="actions"><button class="btn-outline-sm" onclick="toggleStatement(this)">Vyjadreni</button></td></tr>
+          <tr><td>#Z-197</td><td>Poskozeny chodnik u skoly</td><td>Chodnik</td><td>Jesenice</td><td>Tomas K.</td><td>5. 3. 2026</td><td><select class="btn-outline-sm" onchange="adminAction('status','zlepsovak #Z-197 na '+this.value)"><option>Nove</option><option>Resi se</option><option selected>Vyreseno</option><option>Zamitnuto</option></select></td><td class="actions"><button class="btn-outline-sm" onclick="toggleStatement(this)">Vyjadreni</button></td></tr>
+          <tr><td>#Z-196</td><td>Zadost o prechod pro chodce u Penny</td><td>Silnice</td><td>Jesenice</td><td>Hana F.</td><td>4. 3. 2026</td><td><select class="btn-outline-sm" onchange="adminAction('status','zlepsovak #Z-196 na '+this.value)"><option>Nove</option><option selected>Resi se</option><option>Vyreseno</option><option>Zamitnuto</option></select></td><td class="actions"><button class="btn-outline-sm" onclick="toggleStatement(this)">Vyjadreni</button></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== PROJEKTY ==================== -->
+<div class="admin-section" id="sec-projects">
+  <div style="margin-bottom:20px">
+    <button class="btn btn-green btn-sm" onclick="document.getElementById('new-project-form').classList.toggle('show')">+ Pridat projekt</button>
+  </div>
+  <div class="inline-form" id="new-project-form">
+    <h4 class="serif" style="margin-bottom:16px">Novy projekt</h4>
+    <div class="form-row">
+      <div class="form-group"><label>Nazev</label><input type="text" placeholder="Nazev projektu"></div>
+      <div class="form-group"><label>Status</label><select><option>Priprava</option><option>Realizace</option><option>Dokonceno</option></select></div>
+    </div>
+    <div class="form-group"><label>Popis</label><textarea placeholder="Popis projektu..."></textarea></div>
+    <div class="form-row">
+      <div class="form-group"><label>Rozpocet</label><input type="text" placeholder="napr. 85 mil. Kc"></div>
+      <div class="form-group"><label>Casovy plan</label><input type="text" placeholder="napr. 2025-2027"></div>
+    </div>
+    <div class="form-group"><label>Postup (%)</label><input type="range" min="0" max="100" value="0" oninput="this.nextElementSibling.textContent=this.value+'%'"><span>0%</span></div>
+    <button class="btn btn-green btn-sm" onclick="toast('Projekt ulozen.');document.getElementById('new-project-form').classList.remove('show')">Ulozit projekt</button>
+    <button class="btn-outline-sm" onclick="document.getElementById('new-project-form').classList.remove('show')" style="margin-left:8px">Zrusit</button>
+  </div>
+
+  <div class="proj-admin-grid" style="margin-top:20px">
+    <div class="proj-admin-card">
+      <div style="display:flex;justify-content:space-between;align-items:start">
+        <h4>&#x1F3D9;&#xFE0F; Nove centrum Jesenice</h4>
+        <span class="badge badge-orange">Priprava</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" style="width:35%"></div></div>
+      <div style="font-size:13px;color:var(--ink-mid);margin-bottom:12px">35 % &middot; 85 mil. Kc &middot; 2024-2028</div>
+      <div class="actions"><button class="btn-outline-sm" onclick="adminAction('edit','projekt Nove centrum')">Upravit</button><button class="btn-outline-sm" style="color:var(--red)" onclick="adminAction('delete','projekt Nove centrum')">Smazat</button></div>
+    </div>
+    <div class="proj-admin-card">
+      <div style="display:flex;justify-content:space-between;align-items:start">
+        <h4>&#x1F6B6; Chodniky a pesi infrastruktura</h4>
+        <span class="badge badge-green">Realizace</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" style="width:72%"></div></div>
+      <div style="font-size:13px;color:var(--ink-mid);margin-bottom:12px">72 % &middot; 12 mil. Kc &middot; 2025</div>
+      <div class="actions"><button class="btn-outline-sm" onclick="adminAction('edit','projekt Chodniky')">Upravit</button><button class="btn-outline-sm" style="color:var(--red)" onclick="adminAction('delete','projekt Chodniky')">Smazat</button></div>
+    </div>
+    <div class="proj-admin-card">
+      <div style="display:flex;justify-content:space-between;align-items:start">
+        <h4>&#x1F333; Revitalizace parku u sv. Prokopa</h4>
+        <span class="badge badge-blue">Proj. priprava</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" style="width:20%"></div></div>
+      <div style="font-size:13px;color:var(--ink-mid);margin-bottom:12px">20 % &middot; 6 mil. Kc &middot; 2026</div>
+      <div class="actions"><button class="btn-outline-sm" onclick="adminAction('edit','projekt Park')">Upravit</button><button class="btn-outline-sm" style="color:var(--red)" onclick="adminAction('delete','projekt Park')">Smazat</button></div>
+    </div>
+    <div class="proj-admin-card">
+      <div style="display:flex;justify-content:space-between;align-items:start">
+        <h4>&#x1F3EB; ZS Zdimerice</h4>
+        <span class="badge badge-orange">Vyberove rizeni</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" style="width:55%"></div></div>
+      <div style="font-size:13px;color:var(--ink-mid);margin-bottom:12px">55 % &middot; 145 mil. Kc &middot; 2025-2027</div>
+      <div class="actions"><button class="btn-outline-sm" onclick="adminAction('edit','projekt ZS Zdimerice')">Upravit</button><button class="btn-outline-sm" style="color:var(--red)" onclick="adminAction('delete','projekt ZS Zdimerice')">Smazat</button></div>
+    </div>
+    <div class="proj-admin-card">
+      <div style="display:flex;justify-content:space-between;align-items:start">
+        <h4>&#x1F68C; Tramvaj Pisnice-Jesenice</h4>
+        <span class="badge badge-gray">Priprava EIA</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" style="width:15%"></div></div>
+      <div style="font-size:13px;color:var(--ink-mid);margin-bottom:12px">15 % &middot; 2,6 mld. Kc &middot; 2027-2030</div>
+      <div class="actions"><button class="btn-outline-sm" onclick="adminAction('edit','projekt Tramvaj')">Upravit</button><button class="btn-outline-sm" style="color:var(--red)" onclick="adminAction('delete','projekt Tramvaj')">Smazat</button></div>
+    </div>
+    <div class="proj-admin-card">
+      <div style="display:flex;justify-content:space-between;align-items:start">
+        <h4>&#x2600;&#xFE0F; Fotovoltaika na obecnich budovach</h4>
+        <span class="badge badge-green">Realizace</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" style="width:90%"></div></div>
+      <div style="font-size:13px;color:var(--ink-mid);margin-bottom:12px">90 % &middot; 3,8 mil. Kc &middot; 2025-2026</div>
+      <div class="actions"><button class="btn-outline-sm" onclick="adminAction('edit','projekt Fotovoltaika')">Upravit</button><button class="btn-outline-sm" style="color:var(--red)" onclick="adminAction('delete','projekt Fotovoltaika')">Smazat</button></div>
+    </div>
+    <div class="proj-admin-card">
+      <div style="display:flex;justify-content:space-between;align-items:start">
+        <h4>&#x1F6B0; Kanalizace Osnice-jih</h4>
+        <span class="badge badge-green">Dokonceno</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" style="width:100%"></div></div>
+      <div style="font-size:13px;color:var(--ink-mid);margin-bottom:12px">100 % &middot; 8,2 mil. Kc &middot; 2024-2025</div>
+      <div class="actions"><button class="btn-outline-sm" onclick="adminAction('edit','projekt Kanalizace')">Upravit</button><button class="btn-outline-sm" style="color:var(--red)" onclick="adminAction('delete','projekt Kanalizace')">Smazat</button></div>
+    </div>
+    <div class="proj-admin-card">
+      <div style="display:flex;justify-content:space-between;align-items:start">
+        <h4>&#x1F6DD; Detske hriste Zdimerice</h4>
+        <span class="badge badge-green">Dokonceno</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" style="width:100%"></div></div>
+      <div style="font-size:13px;color:var(--ink-mid);margin-bottom:12px">100 % &middot; 1,4 mil. Kc &middot; 2025</div>
+      <div class="actions"><button class="btn-outline-sm" onclick="adminAction('edit','projekt Detske hriste')">Upravit</button><button class="btn-outline-sm" style="color:var(--red)" onclick="adminAction('delete','projekt Detske hriste')">Smazat</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== ROZPOCET ==================== -->
+<div class="admin-section" id="sec-budget">
+  <div class="panel">
+    <div class="panel-header">Nahrat novy dokument</div>
+    <div class="panel-body">
+      <div style="display:flex;gap:12px;align-items:center">
+        <input type="file" style="font-size:14px;font-family:inherit">
+        <button class="btn btn-green btn-sm" onclick="toast('Dokument byl nahran.')">Nahrat</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-header">Dokumenty rozpoctu</div>
+    <div class="panel-body">
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid #f0f0f0">
+        <div><strong>Rozpocet 2026</strong><br><span style="font-size:13px;color:var(--ink-light)">PDF &middot; 2,3 MB &middot; Nahrano 15. 1. 2026</span></div>
+        <div class="actions"><button class="btn-outline-sm" onclick="toast('Dokument bude stazen.')">Stahnout</button><button class="btn-outline-sm" style="color:var(--red)" onclick="adminAction('delete','dokument Rozpocet 2026')">Smazat</button></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0">
+        <div><strong>Vyhled 2027-2028</strong><br><span style="font-size:13px;color:var(--ink-light)">PDF &middot; 1,8 MB &middot; Nahrano 15. 1. 2026</span></div>
+        <div class="actions"><button class="btn-outline-sm" onclick="toast('Dokument bude stazen.')">Stahnout</button><button class="btn-outline-sm" style="color:var(--red)" onclick="adminAction('delete','dokument Vyhled 2027-2028')">Smazat</button></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-header">Participativni rozpocet &mdash; Navrhy</div>
+    <div class="panel-body" style="overflow-x:auto">
+      <table class="admin-table">
+        <thead><tr><th>Navrh</th><th>Autor</th><th>Hlasy</th><th>Castka</th><th>Status</th><th>Akce</th></tr></thead>
+        <tbody>
+          <tr><td>Cyklostezka k Vltave</td><td>Petr H.</td><td>124</td><td>800 000 Kc</td><td><span class="badge badge-green">Schvaleno</span></td><td class="actions"><button class="btn-outline-sm" onclick="adminAction('reject','navrh')">Zamitnout</button></td></tr>
+          <tr><td>Workoutove hriste Osnice</td><td>Tomas K.</td><td>98</td><td>450 000 Kc</td><td><span class="badge badge-green">Schvaleno</span></td><td class="actions"><button class="btn-outline-sm" onclick="adminAction('reject','navrh')">Zamitnout</button></td></tr>
+          <tr><td>Komunitni zahrada</td><td>Eva M.</td><td>87</td><td>200 000 Kc</td><td><span class="badge badge-orange">Ceka</span></td><td class="actions"><button class="btn-outline-sm" style="color:var(--green)" onclick="adminAction('approve','navrh')">Schvalit</button><button class="btn-outline-sm" onclick="adminAction('reject','navrh')">Zamitnout</button></td></tr>
+          <tr><td>Lavicky na Namesti</td><td>Hana F.</td><td>65</td><td>150 000 Kc</td><td><span class="badge badge-orange">Ceka</span></td><td class="actions"><button class="btn-outline-sm" style="color:var(--green)" onclick="adminAction('approve','navrh')">Schvalit</button><button class="btn-outline-sm" onclick="adminAction('reject','navrh')">Zamitnout</button></td></tr>
+          <tr><td>Dobijeci stanice pro e-kola</td><td>Karel D.</td><td>43</td><td>300 000 Kc</td><td><span class="badge badge-red">Zamitnuto</span></td><td class="actions"><button class="btn-outline-sm" style="color:var(--green)" onclick="adminAction('approve','navrh')">Schvalit</button></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-header">Nastaveni participativniho rozpoctu</div>
+    <div class="panel-body">
+      <div class="form-row">
+        <div class="form-group"><label>Celkova castka</label><input type="text" value="2 000 000 Kc"></div>
+        <div class="form-group"><label>Termin podavani navrhu</label><input type="date" value="2026-06-30"></div>
+      </div>
+      <div class="form-group"><label>Termin hlasovani</label><input type="date" value="2026-09-30"></div>
+      <button class="btn btn-green btn-sm" onclick="toast('Nastaveni ulozeno.')">Ulozit nastaveni</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== AKCE ==================== -->
+<div class="admin-section" id="sec-events">
+  <div style="margin-bottom:20px">
+    <button class="btn btn-green btn-sm" onclick="document.getElementById('new-event-form').classList.toggle('show')">+ Pridat akci</button>
+  </div>
+  <div class="inline-form" id="new-event-form">
+    <h4 class="serif" style="margin-bottom:16px">Nova akce</h4>
+    <div class="form-row">
+      <div class="form-group"><label>Nazev</label><input type="text" placeholder="Nazev akce"></div>
+      <div class="form-group"><label>Datum</label><input type="date"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Misto</label><input type="text" placeholder="Misto konani"></div>
+      <div class="form-group"><label>Poradatel</label><input type="text" placeholder="Poradatel"></div>
+    </div>
+    <button class="btn btn-green btn-sm" onclick="toast('Akce pridana.');document.getElementById('new-event-form').classList.remove('show')">Ulozit akci</button>
+    <button class="btn-outline-sm" onclick="document.getElementById('new-event-form').classList.remove('show')" style="margin-left:8px">Zrusit</button>
+  </div>
+
+  <div class="panel" style="margin-top:20px">
+    <div class="panel-body" style="overflow-x:auto">
+      <table class="admin-table">
+        <thead><tr><th>Nazev</th><th>Datum</th><th>Misto</th><th>Poradatel</th><th>Prihlasenych</th><th>Status</th><th>Akce</th></tr></thead>
+        <tbody>
+          <tr><td>Jarni jarmark</td><td>22. 3. 2026</td><td>Namesti Jesenice</td><td>Mesto Jesenice</td><td>124</td><td><span class="badge badge-green">Schvalena</span></td><td class="actions"><button class="btn-outline-sm" onclick="adminAction('edit','akci')">Upravit</button><button class="btn-outline-sm" style="color:var(--red)" onclick="adminAction('delete','akci')">Smazat</button></td></tr>
+          <tr><td>Detsky den</td><td>1. 6. 2026</td><td>Park u sv. Prokopa</td><td>TJ Sokol</td><td>56</td><td><span class="badge badge-green">Schvalena</span></td><td class="actions"><button class="btn-outline-sm" onclick="adminAction('edit','akci')">Upravit</button><button class="btn-outline-sm" style="color:var(--red)" onclick="adminAction('delete','akci')">Smazat</button></td></tr>
+          <tr><td>Bezecky zavod Jesenice</td><td>15. 4. 2026</td><td>Start u MU</td><td>Running Club Jesenice</td><td>89</td><td><span class="badge badge-orange">Ceka na schvaleni</span></td><td class="actions"><button class="btn-outline-sm" style="color:var(--green)" onclick="adminAction('approve','akci')">Schvalit</button><button class="btn-outline-sm" style="color:var(--red)" onclick="adminAction('delete','akci')">Smazat</button></td></tr>
+          <tr><td>Vanocni trhy</td><td>14. 12. 2026</td><td>Namesti Jesenice</td><td>Mesto Jesenice</td><td>0</td><td><span class="badge badge-green">Schvalena</span></td><td class="actions"><button class="btn-outline-sm" onclick="adminAction('edit','akci')">Upravit</button><button class="btn-outline-sm" style="color:var(--red)" onclick="adminAction('delete','akci')">Smazat</button></td></tr>
+          <tr><td>Masopust 2026</td><td>17. 2. 2026</td><td>Jesenice centrum</td><td>KD Jesenice</td><td>210</td><td><span class="badge badge-gray">Probehla</span></td><td class="actions"><button class="btn-outline-sm" onclick="adminAction('detail','akci')">Detail</button></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="panel" style="margin-top:24px">
+    <div class="panel-header">Spolky a organizace</div>
+    <div class="panel-body">
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #f0f0f0"><div><strong>TJ Sokol Jesenice</strong><br><span style="font-size:13px;color:var(--ink-light)">Sport &middot; 85 clenu</span></div><div class="actions"><button class="btn-outline-sm" onclick="adminAction('edit','spolek')">Upravit</button><button class="btn-outline-sm" style="color:var(--red)" onclick="adminAction('delete','spolek')">Smazat</button></div></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #f0f0f0"><div><strong>Running Club Jesenice</strong><br><span style="font-size:13px;color:var(--ink-light)">Sport &middot; 42 clenu</span></div><div class="actions"><button class="btn-outline-sm" onclick="adminAction('edit','spolek')">Upravit</button><button class="btn-outline-sm" style="color:var(--red)" onclick="adminAction('delete','spolek')">Smazat</button></div></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #f0f0f0"><div><strong>KD Jesenice</strong><br><span style="font-size:13px;color:var(--ink-light)">Kultura &middot; 120 clenu</span></div><div class="actions"><button class="btn-outline-sm" onclick="adminAction('edit','spolek')">Upravit</button><button class="btn-outline-sm" style="color:var(--red)" onclick="adminAction('delete','spolek')">Smazat</button></div></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #f0f0f0"><div><strong>Dobrovolni hasici Osnice</strong><br><span style="font-size:13px;color:var(--ink-light)">Sluzby &middot; 28 clenu</span></div><div class="actions"><button class="btn-outline-sm" onclick="adminAction('edit','spolek')">Upravit</button><button class="btn-outline-sm" style="color:var(--red)" onclick="adminAction('delete','spolek')">Smazat</button></div></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0"><div><strong>Zahrádkari Zdimerice</strong><br><span style="font-size:13px;color:var(--ink-light)">Volny cas &middot; 35 clenu</span></div><div class="actions"><button class="btn-outline-sm" onclick="adminAction('edit','spolek')">Upravit</button><button class="btn-outline-sm" style="color:var(--red)" onclick="adminAction('delete','spolek')">Smazat</button></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== BAZAR ==================== -->
+<div class="admin-section" id="sec-bazar">
+  <div class="stat-cards" style="grid-template-columns:repeat(3,1fr)">
+    <div class="stat-card"><div class="label">Aktivnich inzeratu</div><div class="value">156</div></div>
+    <div class="stat-card"><div class="label">Ceka na schvaleni</div><div class="value orange">4</div></div>
+    <div class="stat-card"><div class="label">Nahlasenych</div><div class="value red">1</div></div>
+  </div>
+  <div class="panel">
+    <div class="panel-body" style="overflow-x:auto">
+      <table class="admin-table">
+        <thead><tr><th>Nazev</th><th>Prodejce</th><th>Cena</th><th>Kategorie</th><th>Datum</th><th>Status</th><th>Akce</th></tr></thead>
+        <tbody>
+          <tr><td>Detsky kocarek Thule</td><td>Martina N.</td><td>4 500 Kc</td><td>Deti</td><td>9. 3. 2026</td><td><span class="badge badge-green">Aktivni</span></td><td class="actions"><button class="btn-outline-sm" onclick="adminAction('hide','inzerat')">Skryt</button><button class="btn-outline-sm" style="color:var(--red)" onclick="adminAction('delete','inzerat')">Smazat</button></td></tr>
+          <tr><td>Jizni kolo 28"</td><td>Petr H.</td><td>2 800 Kc</td><td>Sport</td><td>8. 3. 2026</td><td><span class="badge badge-orange">Ceka</span></td><td class="actions"><button class="btn-outline-sm" style="color:var(--green)" onclick="adminAction('approve','inzerat')">Schvalit</button><button class="btn-outline-sm" style="color:var(--red)" onclick="adminAction('delete','inzerat')">Smazat</button></td></tr>
+          <tr><td>Zahradni nabytek - set</td><td>Karel D.</td><td>6 200 Kc</td><td>Zahrada</td><td>7. 3. 2026</td><td><span class="badge badge-green">Aktivni</span></td><td class="actions"><button class="btn-outline-sm" onclick="adminAction('hide','inzerat')">Skryt</button><button class="btn-outline-sm" style="color:var(--red)" onclick="adminAction('delete','inzerat')">Smazat</button></td></tr>
+          <tr><td>Stare ucebnice ZS</td><td>Eva M.</td><td>Zdarma</td><td>Knihy</td><td>6. 3. 2026</td><td><span class="badge badge-orange">Ceka</span></td><td class="actions"><button class="btn-outline-sm" style="color:var(--green)" onclick="adminAction('approve','inzerat')">Schvalit</button><button class="btn-outline-sm" style="color:var(--red)" onclick="adminAction('delete','inzerat')">Smazat</button></td></tr>
+          <tr><td>Pochybne doplnky stravy</td><td>Anonym123</td><td>999 Kc</td><td>Zdravi</td><td>5. 3. 2026</td><td><span class="badge badge-red">Nahlaseno</span></td><td class="actions"><button class="btn-outline-sm" onclick="adminAction('approve','inzerat')">Ponechat</button><button class="btn-outline-sm" style="color:var(--red)" onclick="adminAction('delete','inzerat')">Smazat</button></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== BRIGADY ==================== -->
+<div class="admin-section" id="sec-brigady">
+  <div class="stat-cards" style="grid-template-columns:repeat(3,1fr)">
+    <div class="stat-card"><div class="label">Aktivnich brigad</div><div class="value">12</div></div>
+    <div class="stat-card"><div class="label">Dokoncených</div><div class="value blue">45</div></div>
+    <div class="stat-card"><div class="label">Nabidek pomoci</div><div class="value orange">8</div></div>
+  </div>
+  <div class="panel">
+    <div class="panel-body" style="overflow-x:auto">
+      <table class="admin-table">
+        <thead><tr><th>Nazev</th><th>Zadavatel</th><th>Odmena</th><th>Kategorie</th><th>Status</th><th>Akce</th></tr></thead>
+        <tbody>
+          <tr><td>Sekani travy - zahrada</td><td>Petr H.</td><td>500 Kc/hod</td><td>Zahrada</td><td><span class="badge badge-green">Aktivni</span></td><td class="actions"><button class="btn-outline-sm" onclick="adminAction('edit','brigadu')">Upravit</button><button class="btn-outline-sm" style="color:var(--red)" onclick="adminAction('delete','brigadu')">Smazat</button></td></tr>
+          <tr><td>Pomoc se stehovani</td><td>Eva M.</td><td>300 Kc/hod</td><td>Pomoc</td><td><span class="badge badge-green">Aktivni</span></td><td class="actions"><button class="btn-outline-sm" onclick="adminAction('edit','brigadu')">Upravit</button><button class="btn-outline-sm" style="color:var(--red)" onclick="adminAction('delete','brigadu')">Smazat</button></td></tr>
+          <tr><td>Douc. matematiky - ZS</td><td>Karel D.</td><td>400 Kc/hod</td><td>Vzdelavani</td><td><span class="badge badge-green">Aktivni</span></td><td class="actions"><button class="btn-outline-sm" onclick="adminAction('edit','brigadu')">Upravit</button><button class="btn-outline-sm" style="color:var(--red)" onclick="adminAction('delete','brigadu')">Smazat</button></td></tr>
+          <tr><td>Hlidani deti - vikend</td><td>Lucie V.</td><td>250 Kc/hod</td><td>Rodina</td><td><span class="badge badge-orange">Ceka</span></td><td class="actions"><button class="btn-outline-sm" style="color:var(--green)" onclick="adminAction('approve','brigadu')">Schvalit</button><button class="btn-outline-sm" style="color:var(--red)" onclick="adminAction('delete','brigadu')">Smazat</button></td></tr>
+          <tr><td>Natirání plotu</td><td>Tomas K.</td><td>350 Kc/hod</td><td>Remeslo</td><td><span class="badge badge-gray">Dokoncena</span></td><td class="actions"><button class="btn-outline-sm" onclick="adminAction('detail','brigadu')">Detail</button></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== PARTACI ==================== -->
+<div class="admin-section" id="sec-partaci">
+  <div class="panel">
+    <div class="panel-header">Spojeni &mdash; Kdo hledá koho</div>
+    <div class="panel-body" style="overflow-x:auto">
+      <table class="admin-table">
+        <thead><tr><th>Kdo hleda</th><th>Co hleda</th><th>Kategorie</th><th>Datum</th><th>Status</th><th>Akce</th></tr></thead>
+        <tbody>
+          <tr><td>Martina N.</td><td>Partaka na behani</td><td>Sport</td><td>9. 3. 2026</td><td><span class="badge badge-green">Aktivni</span></td><td class="actions"><button class="btn-outline-sm" onclick="adminAction('edit','inzerat')">Upravit</button><button class="btn-outline-sm" style="color:var(--red)" onclick="adminAction('delete','inzerat')">Smazat</button></td></tr>
+          <tr><td>Jan P.</td><td>Spoluhrace na tenis</td><td>Sport</td><td>8. 3. 2026</td><td><span class="badge badge-green">Aktivni</span></td><td class="actions"><button class="btn-outline-sm" onclick="adminAction('edit','inzerat')">Upravit</button><button class="btn-outline-sm" style="color:var(--red)" onclick="adminAction('delete','inzerat')">Smazat</button></td></tr>
+          <tr><td>Eva M.</td><td>Skupinku na cviceni s detmi</td><td>Rodina</td><td>7. 3. 2026</td><td><span class="badge badge-green">Aktivni</span></td><td class="actions"><button class="btn-outline-sm" onclick="adminAction('edit','inzerat')">Upravit</button><button class="btn-outline-sm" style="color:var(--red)" onclick="adminAction('delete','inzerat')">Smazat</button></td></tr>
+          <tr><td>Tomas K.</td><td>Nekoho na sdileni jizdy do Prahy</td><td>Doprava</td><td>6. 3. 2026</td><td><span class="badge badge-orange">Ceka</span></td><td class="actions"><button class="btn-outline-sm" style="color:var(--green)" onclick="adminAction('approve','inzerat')">Schvalit</button><button class="btn-outline-sm" style="color:var(--red)" onclick="adminAction('delete','inzerat')">Smazat</button></td></tr>
+          <tr><td>Hana F.</td><td>Sousedku na procházky</td><td>Volny cas</td><td>5. 3. 2026</td><td><span class="badge badge-green">Aktivni</span></td><td class="actions"><button class="btn-outline-sm" onclick="adminAction('edit','inzerat')">Upravit</button><button class="btn-outline-sm" style="color:var(--red)" onclick="adminAction('delete','inzerat')">Smazat</button></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== PODNIKY ==================== -->
+<div class="admin-section" id="sec-businesses">
+  <div style="display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap">
+    <button class="btn btn-green btn-sm" onclick="document.getElementById('new-biz-form').classList.toggle('show')">+ Pridat podnik</button>
+    <button class="btn-outline-sm" onclick="toast('CSV import zahajen.')">Import CSV</button>
+    <button class="btn-outline-sm" onclick="toast('CSV export pripraven ke stazeni.')">Export CSV</button>
+  </div>
+  <div class="inline-form" id="new-biz-form">
+    <h4 class="serif" style="margin-bottom:16px">Novy podnik</h4>
+    <div class="form-row">
+      <div class="form-group"><label>Nazev</label><input type="text" placeholder="Nazev podniku"></div>
+      <div class="form-group"><label>Kategorie</label><select><option>Restaurace</option><option>Obchod</option><option>Sluzby</option><option>Remesla</option><option>Zdravi</option></select></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Adresa</label><input type="text" placeholder="Adresa"></div>
+      <div class="form-group"><label>Telefon</label><input type="text" placeholder="Telefon"></div>
+    </div>
+    <button class="btn btn-green btn-sm" onclick="toast('Podnik pridan.');document.getElementById('new-biz-form').classList.remove('show')">Ulozit</button>
+    <button class="btn-outline-sm" onclick="document.getElementById('new-biz-form').classList.remove('show')" style="margin-left:8px">Zrusit</button>
+  </div>
+
+  <div class="filter-bar" style="margin-top:20px">
+    <input type="text" placeholder="Hledat podnik...">
+    <select><option>Vsechny kategorie</option><option>Restaurace</option><option>Obchod</option><option>Sluzby</option><option>Remesla</option><option>Zdravi</option></select>
+  </div>
+  <div class="panel">
+    <div class="panel-body" style="overflow-x:auto">
+      <table class="admin-table">
+        <thead><tr><th>Nazev</th><th>Kategorie</th><th>Adresa</th><th>Telefon</th><th>Status</th><th>Akce</th></tr></thead>
+        <tbody>
+          <tr><td>Restaurace U Konicku</td><td>Restaurace</td><td>Budejovicka 15, Jesenice</td><td>602 123 456</td><td><span class="badge badge-green">Overeny</span></td><td class="actions"><button class="btn-outline-sm" onclick="adminAction('edit','podnik')">Upravit</button><button class="btn-outline-sm" style="color:var(--red)" onclick="adminAction('delete','podnik')">Smazat</button></td></tr>
+          <tr><td>Potraviny Albert</td><td>Obchod</td><td>Ricanska 230, Jesenice</td><td>233 001 234</td><td><span class="badge badge-green">Overeny</span></td><td class="actions"><button class="btn-outline-sm" onclick="adminAction('edit','podnik')">Upravit</button><button class="btn-outline-sm" style="color:var(--red)" onclick="adminAction('delete','podnik')">Smazat</button></td></tr>
+          <tr><td>Kadernictvi Monika</td><td>Sluzby</td><td>Jeseniova 8, Jesenice</td><td>721 555 789</td><td><span class="badge badge-green">Overeny</span></td><td class="actions"><button class="btn-outline-sm" onclick="adminAction('edit','podnik')">Upravit</button><button class="btn-outline-sm" style="color:var(--red)" onclick="adminAction('delete','podnik')">Smazat</button></td></tr>
+          <tr><td>Autoservis Novak</td><td>Remesla</td><td>Prumyslova 3, Osnice</td><td>602 987 654</td><td><span class="badge badge-orange">Neovereny</span></td><td class="actions"><button class="btn-outline-sm" style="color:var(--green)" onclick="adminAction('verify','podnik')">Overit</button><button class="btn-outline-sm" style="color:var(--red)" onclick="adminAction('delete','podnik')">Smazat</button></td></tr>
+          <tr><td>Lekarna Jesenice</td><td>Zdravi</td><td>Budejovicka 42, Jesenice</td><td>233 002 567</td><td><span class="badge badge-green">Overeny</span></td><td class="actions"><button class="btn-outline-sm" onclick="adminAction('edit','podnik')">Upravit</button><button class="btn-outline-sm" style="color:var(--red)" onclick="adminAction('delete','podnik')">Smazat</button></td></tr>
+          <tr><td>Cukrarna Sladka Teckla</td><td>Restaurace</td><td>Namesti 5, Jesenice</td><td>721 333 222</td><td><span class="badge badge-orange">Neovereny</span></td><td class="actions"><button class="btn-outline-sm" style="color:var(--green)" onclick="adminAction('verify','podnik')">Overit</button><button class="btn-outline-sm" style="color:var(--red)" onclick="adminAction('delete','podnik')">Smazat</button></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== CHALLENGE ==================== -->
+<div class="admin-section" id="sec-challenge">
+  <div class="panel">
+    <div class="panel-header">Aktivni challenge</div>
+    <div class="panel-body">
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid #f0f0f0">
+        <div>
+          <strong>&#x1F3C3; 10 000 kroku denne</strong><br>
+          <span style="font-size:13px;color:var(--ink-light)">Tydenni &middot; 23 ucastniku &middot; do 15. 3. 2026</span>
+        </div>
+        <div class="actions"><button class="btn-outline-sm" onclick="adminAction('edit','challenge')">Upravit</button><button class="btn-outline-sm" onclick="adminAction('end','challenge')">Ukoncit</button><button class="btn-outline-sm" style="color:var(--red)" onclick="adminAction('delete','challenge')">Smazat</button></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid #f0f0f0">
+        <div>
+          <strong>&#x267B;&#xFE0F; Zero Waste tyden</strong><br>
+          <span style="font-size:13px;color:var(--ink-light)">Mesicni &middot; 15 ucastniku &middot; do 31. 3. 2026</span>
+        </div>
+        <div class="actions"><button class="btn-outline-sm" onclick="adminAction('edit','challenge')">Upravit</button><button class="btn-outline-sm" onclick="adminAction('end','challenge')">Ukoncit</button><button class="btn-outline-sm" style="color:var(--red)" onclick="adminAction('delete','challenge')">Smazat</button></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0">
+        <div>
+          <strong>&#x1F4DA; Prectete 3 knihy za mesic</strong><br>
+          <span style="font-size:13px;color:var(--ink-light)">Mesicni &middot; 8 ucastniku &middot; do 31. 3. 2026</span>
+        </div>
+        <div class="actions"><button class="btn-outline-sm" onclick="adminAction('edit','challenge')">Upravit</button><button class="btn-outline-sm" onclick="adminAction('end','challenge')">Ukoncit</button><button class="btn-outline-sm" style="color:var(--red)" onclick="adminAction('delete','challenge')">Smazat</button></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-header">Vytvorit novou challenge</div>
+    <div class="panel-body">
+      <div class="form-row">
+        <div class="form-group"><label>Nazev</label><input type="text" placeholder="Nazev challenge"></div>
+        <div class="form-group"><label>Typ</label><select><option>Tydenni</option><option>Mesicni</option><option>Jednorazova</option></select></div>
+      </div>
+      <div class="form-group"><label>Popis</label><textarea placeholder="Popis challenge..."></textarea></div>
+      <div class="form-row">
+        <div class="form-group"><label>Termin</label><input type="date"></div>
+        <div class="form-group"><label>Odmena</label><input type="text" placeholder="napr. 100 bodu, odznak..."></div>
+      </div>
+      <button class="btn btn-green btn-sm" onclick="toast('Challenge vytvorena.')">Vytvorit challenge</button>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-header">Prispevky k challenge</div>
+    <div class="panel-body" style="overflow-x:auto">
+      <table class="admin-table">
+        <thead><tr><th>Uzivatel</th><th>Challenge</th><th>Prispevek</th><th>Datum</th><th>Akce</th></tr></thead>
+        <tbody>
+          <tr><td>Martina N.</td><td>10 000 kroku</td><td>Dnesni prochazka - 12 340 kroku</td><td>9. 3. 2026</td><td class="actions"><button class="btn-outline-sm" style="color:var(--green)" onclick="adminAction('approve','prispevek')">Schvalit</button><button class="btn-outline-sm" style="color:var(--red)" onclick="adminAction('reject','prispevek')">Odmitnout</button></td></tr>
+          <tr><td>Petr H.</td><td>Zero Waste</td><td>Nakup bez plastu - foto</td><td>8. 3. 2026</td><td class="actions"><button class="btn-outline-sm" style="color:var(--green)" onclick="adminAction('approve','prispevek')">Schvalit</button><button class="btn-outline-sm" style="color:var(--red)" onclick="adminAction('reject','prispevek')">Odmitnout</button></td></tr>
+          <tr><td>Eva M.</td><td>3 knihy</td><td>Dokoncena: Babicka od Nemcove</td><td>7. 3. 2026</td><td class="actions"><button class="btn-outline-sm" style="color:var(--green)" onclick="adminAction('approve','prispevek')">Schvalit</button><button class="btn-outline-sm" style="color:var(--red)" onclick="adminAction('reject','prispevek')">Odmitnout</button></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== NASTAVENI ==================== -->
+<div class="admin-section" id="sec-settings">
+  <div class="tab-bar" id="settings-tabs">
+    <a class="active" onclick="switchSettingsTab(this,'stab-general')">Obecne</a>
+    <a onclick="switchSettingsTab(this,'stab-roles')">Role</a>
+    <a onclick="switchSettingsTab(this,'stab-notifications')">Notifikace</a>
+    <a onclick="switchSettingsTab(this,'stab-stats')">Statistiky</a>
+  </div>
+
+  <!-- Obecne -->
+  <div class="tab-content active" id="stab-general">
+    <div class="panel">
+      <div class="panel-body">
+        <div class="form-group"><label>Nazev portalu</label><input type="text" value="Doma v Jesenici"></div>
+        <div class="form-group"><label>Kontaktni email</label><input type="text" value="info@domavjesenici.cz"></div>
+        <div class="form-group"><label>Telefon</label><input type="text" value="+420 233 001 100"></div>
+        <div class="form-group"><label>Facebook</label><input type="text" value="https://facebook.com/domavjesenici"></div>
+        <div class="form-group"><label>Instagram</label><input type="text" value="https://instagram.com/domavjesenici"></div>
+        <button class="btn btn-green btn-sm" onclick="toast('Nastaveni ulozeno.')">Ulozit zmeny</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Role -->
+  <div class="tab-content" id="stab-roles">
+    <div class="panel">
+      <div class="panel-body" style="overflow-x:auto">
+        <table class="admin-table">
+          <thead><tr><th>Role</th><th>Sprava uzivatelu</th><th>Moderace obsahu</th><th>Sprava projektu</th><th>Sprava rozpoctu</th><th>Nastaveni</th></tr></thead>
+          <tbody>
+            <tr><td><span class="badge badge-red">Superadmin</span></td><td><input type="checkbox" checked disabled></td><td><input type="checkbox" checked disabled></td><td><input type="checkbox" checked disabled></td><td><input type="checkbox" checked disabled></td><td><input type="checkbox" checked disabled></td></tr>
+            <tr><td><span class="badge badge-orange">Moderator</span></td><td><input type="checkbox" onchange="toast('Opravneni zmeneno.')"></td><td><input type="checkbox" checked onchange="toast('Opravneni zmeneno.')"></td><td><input type="checkbox" onchange="toast('Opravneni zmeneno.')"></td><td><input type="checkbox" onchange="toast('Opravneni zmeneno.')"></td><td><input type="checkbox" onchange="toast('Opravneni zmeneno.')"></td></tr>
+            <tr><td><span class="badge badge-blue">Redaktor</span></td><td><input type="checkbox" onchange="toast('Opravneni zmeneno.')"></td><td><input type="checkbox" checked onchange="toast('Opravneni zmeneno.')"></td><td><input type="checkbox" checked onchange="toast('Opravneni zmeneno.')"></td><td><input type="checkbox" onchange="toast('Opravneni zmeneno.')"></td><td><input type="checkbox" onchange="toast('Opravneni zmeneno.')"></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notifikace -->
+  <div class="tab-content" id="stab-notifications">
+    <div class="panel">
+      <div class="panel-body">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid #f0f0f0"><span>Nova registrace uzivatele</span><label class="toggle"><input type="checkbox" checked onchange="toast('Notifikace zmenena.')"><span class="slider"></span></label></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid #f0f0f0"><span>Novy zlepsovak</span><label class="toggle"><input type="checkbox" checked onchange="toast('Notifikace zmenena.')"><span class="slider"></span></label></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid #f0f0f0"><span>Nahlaseny obsah</span><label class="toggle"><input type="checkbox" checked onchange="toast('Notifikace zmenena.')"><span class="slider"></span></label></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid #f0f0f0"><span>Novy prispevek ceka na schvaleni</span><label class="toggle"><input type="checkbox" checked onchange="toast('Notifikace zmenena.')"><span class="slider"></span></label></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid #f0f0f0"><span>Nova akce pridana</span><label class="toggle"><input type="checkbox" onchange="toast('Notifikace zmenena.')"><span class="slider"></span></label></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0"><span>Novy bazar inzerat</span><label class="toggle"><input type="checkbox" onchange="toast('Notifikace zmenena.')"><span class="slider"></span></label></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Statistiky -->
+  <div class="tab-content" id="stab-stats">
+    <div class="stat-cards">
+      <div class="stat-card"><div class="label">Navstevnost (mesic)</div><div class="value">12 450</div></div>
+      <div class="stat-card"><div class="label">Prumerna doba na strance</div><div class="value blue" style="font-size:22px">4:32 min</div></div>
+      <div class="stat-card"><div class="label">Registrace tento mesic</div><div class="value">67</div></div>
+      <div class="stat-card"><div class="label">Trend registraci</div><div class="value" style="font-size:22px">+12 %</div></div>
+    </div>
+    <div class="panel">
+      <div class="panel-header">Top sekce dle navstevnosti</div>
+      <div class="panel-body">
+        <div class="bar-chart">
+          <div class="bar-row"><span class="bar-label">Komunita</span><div class="bar-track"><div class="bar-fill" style="width:100%">3 420</div></div></div>
+          <div class="bar-row"><span class="bar-label">Bazar</span><div class="bar-track"><div class="bar-fill" style="width:65%">2 230</div></div></div>
+          <div class="bar-row"><span class="bar-label">Projekty</span><div class="bar-track"><div class="bar-fill" style="width:50%">1 710</div></div></div>
+          <div class="bar-row"><span class="bar-label">Akce</span><div class="bar-track"><div class="bar-fill" style="width:40%">1 370</div></div></div>
+          <div class="bar-row"><span class="bar-label">Zlepsovaky</span><div class="bar-track"><div class="bar-fill" style="width:28%">960</div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+      </div><!-- /content-body -->
+
+      <div class="admin-footer">&copy; 2026 Doma v Jesenici &middot; Administrace &middot; Verze 1.0</div>
+    </main>
+  </div>
+</div>
+
+<script>
+/* ========== TOAST ========== */
+let toastTimer;
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+/* ========== LOGIN ========== */
+function adminLogin() {
+  const email = document.getElementById('login-email').value.trim();
+  const pass = document.getElementById('login-pass').value;
+  const err = document.getElementById('login-error');
+  if (email === 'david@beska.cz' && pass === 'demo') {
+    err.style.display = 'none';
+    sessionStorage.setItem('admin_logged', '1');
+    sessionStorage.setItem('admin_email', email);
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('admin-app').style.display = 'block';
+    toast('Vitejte v administraci!');
+  } else {
+    err.style.display = 'block';
+  }
+}
+function adminLogout() {
+  sessionStorage.removeItem('admin_logged');
+  sessionStorage.removeItem('admin_email');
+  document.getElementById('admin-app').style.display = 'none';
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('login-email').value = '';
+  document.getElementById('login-pass').value = '';
+  toast('Byli jste odhlaseni.');
+}
+
+/* ========== SESSION CHECK ========== */
+(function() {
+  if (sessionStorage.getItem('admin_logged') === '1') {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('admin-app').style.display = 'block';
+  }
+})();
+
+/* ========== ENTER KEY LOGIN ========== */
+document.getElementById('login-pass').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') adminLogin();
+});
+document.getElementById('login-email').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') adminLogin();
+});
+
+/* ========== NAVIGATION ========== */
+const sectionNames = {
+  dashboard: 'Dashboard',
+  users: 'Uzivatele',
+  community: 'Komunita',
+  improvements: 'Zlepsovaky',
+  projects: 'Projekty',
+  budget: 'Rozpocet',
+  events: 'Akce',
+  bazar: 'Bazar',
+  brigady: 'Brigady',
+  partaci: 'Partaci',
+  businesses: 'Podniky',
+  challenge: 'Challenge',
+  settings: 'Nastaveni'
+};
+
+function showAdmin(section) {
+  // Hide all sections
+  document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
+  // Deactivate all nav items
+  document.querySelectorAll('.sidebar-nav a').forEach(a => a.classList.remove('active'));
+  // Show target section
+  const sec = document.getElementById('sec-' + section);
+  if (sec) sec.classList.add('active');
+  // Activate nav item
+  const nav = document.getElementById('snav-' + section);
+  if (nav) nav.classList.add('active');
+  // Update title
+  document.getElementById('page-title').textContent = sectionNames[section] || section;
+  // Close mobile sidebar
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('mobile-overlay').classList.remove('show');
+  // Scroll to top
+  window.scrollTo(0, 0);
+}
+
+/* ========== ADMIN ACTION ========== */
+function adminAction(action, item) {
+  const messages = {
+    edit: 'Oteviram upravu: ' + item,
+    delete: 'Smazano: ' + item,
+    suspend: 'Pozastaveno: ' + item,
+    activate: 'Aktivovano: ' + item,
+    approve: 'Schvaleno: ' + item,
+    reject: 'Zamitnuto: ' + item,
+    hide: 'Skryto: ' + item,
+    detail: 'Zobrazuji detail: ' + item,
+    end: 'Ukonceno: ' + item,
+    verify: 'Overeno: ' + item,
+    status: 'Zmenen stav: ' + item
+  };
+  if (action === 'delete') {
+    if (!confirm('Opravdu chcete smazat: ' + item + '?')) return;
+  }
+  toast(messages[action] || action + ': ' + item);
+}
+
+/* ========== SIDEBAR TOGGLE ========== */
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('mobile-overlay').classList.toggle('show');
+}
+
+/* ========== COMMUNITY FILTER ========== */
+function filterCommunity(el, filter) {
+  document.querySelectorAll('#sec-community .tab-bar a').forEach(a => a.classList.remove('active'));
+  el.classList.add('active');
+  toast('Filtr: ' + el.textContent);
+}
+
+/* ========== IMPROVEMENT STATEMENT ========== */
+function toggleStatement(btn) {
+  const row = btn.closest('tr');
+  let ta = row.nextElementSibling;
+  if (ta && ta.classList.contains('statement-row')) {
+    ta.remove();
+    return;
+  }
+  const newRow = document.createElement('tr');
+  newRow.classList.add('statement-row');
+  newRow.innerHTML = '<td colspan="8" style="background:#f9f9f9;padding:12px"><textarea style="width:100%;padding:8px 12px;border:1px solid #ddd;border-radius:8px;font-family:inherit;font-size:14px;resize:vertical" rows="2" placeholder="Napiste vyjadreni k tomuto zlepsovaku..."></textarea><br><button class="btn btn-green btn-sm" style="margin-top:8px" onclick="toast(\'Vyjadreni ulozeno.\');this.closest(\'tr\').remove()">Odeslat vyjadreni</button></td>';
+  row.parentNode.insertBefore(newRow, row.nextSibling);
+}
+
+/* ========== SETTINGS TABS ========== */
+function switchSettingsTab(el, tabId) {
+  document.querySelectorAll('#settings-tabs a').forEach(a => a.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('#sec-settings .tab-content').forEach(t => t.classList.remove('active'));
+  document.getElementById(tabId).classList.add('active');
+}
+</script>
+</body>
+</html>
