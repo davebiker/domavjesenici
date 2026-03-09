@@ -442,6 +442,13 @@ body {
   .form-row { grid-template-columns: 1fr; }
   .admin-table { font-size: 12px; }
   .admin-table th, .admin-table td { padding: 8px 6px; }
+  /* Inline grids to single column */
+  [style*="grid-template-columns:1fr 1fr"],
+  [style*="grid-template-columns: 1fr 1fr"],
+  [style*="grid-template-columns:2fr 1fr"],
+  [style*="grid-template-columns: 2fr 1fr"] {
+    grid-template-columns: 1fr !important;
+  }
 }
 </style>
 </head>
@@ -1157,6 +1164,7 @@ function adminLogin() {
 function adminLogout() {
   sessionStorage.removeItem('admin_logged');
   sessionStorage.removeItem('admin_email');
+  sessionStorage.removeItem('dvj-auth');
   document.getElementById('admin-app').style.display = 'none';
   document.getElementById('login-screen').style.display = 'flex';
   document.getElementById('login-email').value = '';
@@ -1244,11 +1252,31 @@ function toggleSidebar() {
   document.getElementById('mobile-overlay').classList.toggle('show');
 }
 
+/* ========== SETTINGS TABS ========== */
+function switchSettingsTab(el, tabId) {
+  document.querySelectorAll('#settings-tabs a').forEach(a => a.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('#sec-settings .tab-content').forEach(t => t.classList.remove('active'));
+  const target = document.getElementById(tabId);
+  if (target) target.classList.add('active');
+}
+
 /* ========== COMMUNITY FILTER ========== */
 function filterCommunity(el, filter) {
   document.querySelectorAll('#sec-community .tab-bar a').forEach(a => a.classList.remove('active'));
   el.classList.add('active');
-  toast('Filtr: ' + el.textContent);
+  // Filter table rows
+  const rows = document.querySelectorAll('#sec-community .admin-table tbody tr');
+  rows.forEach(r => {
+    if (filter === 'all') { r.style.display = ''; return; }
+    const status = r.querySelector('.badge');
+    if (!status) { r.style.display = ''; return; }
+    const text = status.textContent.toLowerCase();
+    if (filter === 'pending' && text.includes('ceka')) r.style.display = '';
+    else if (filter === 'flagged' && text.includes('nahlas')) r.style.display = '';
+    else if (filter === 'approved' && text.includes('schval')) r.style.display = '';
+    else r.style.display = 'none';
+  });
 }
 
 /* ========== IMPROVEMENT STATEMENT ========== */

@@ -487,12 +487,68 @@
   }
   .new-post-input:focus { border-color: var(--green); }
 
+  /* HAMBURGER */
+  .hamburger { display:none; background:none; border:none; cursor:pointer; padding:8px; z-index:201; }
+  .hamburger span { display:block; width:22px; height:2px; background:var(--ink); margin:5px 0; transition:0.3s; }
+  .hamburger.active span:nth-child(1) { transform:rotate(45deg) translate(5px,5px); }
+  .hamburger.active span:nth-child(2) { opacity:0; }
+  .hamburger.active span:nth-child(3) { transform:rotate(-45deg) translate(5px,-5px); }
+  .mobile-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.4); z-index:199; }
+  .mobile-overlay.active { display:block; }
+
   /* RESPONSIVE */
+  @media (max-width: 900px) {
+    .hamburger { display:block; }
+    .nav-links {
+      position:fixed; top:0; right:0; width:280px; height:100vh;
+      background:white; flex-direction:column; align-items:stretch;
+      padding:72px 20px 24px; gap:2px; z-index:200;
+      transform:translateX(100%); transition:transform 0.3s ease;
+      box-shadow:-4px 0 24px rgba(0,0,0,0.1); overflow-y:auto;
+    }
+    .nav-links.open { transform:translateX(0); }
+    .nav-links a { padding:10px 14px; font-size:15px; border-radius:8px; }
+    .nav-links .nav-btn { margin-left:0; margin-top:8px; text-align:center; }
+  }
   @media (max-width: 600px) {
-    .nav-links a:not(.nav-btn) { display: none; }
     .stats-bar { gap: 24px; }
     nav { padding: 0 16px; }
     .hero { padding: 48px 16px 40px; }
+    /* Force inline grids to single column on mobile */
+    [style*="grid-template-columns:1fr 320px"],
+    [style*="grid-template-columns: 1fr 320px"],
+    [style*="grid-template-columns:repeat(3,1fr)"],
+    [style*="grid-template-columns: repeat(3,1fr)"],
+    [style*="grid-template-columns:repeat(4,1fr)"],
+    [style*="grid-template-columns: repeat(4,1fr)"],
+    [style*="grid-template-columns:1fr 1fr 1fr"],
+    [style*="grid-template-columns: 1fr 1fr 1fr"] {
+      grid-template-columns: 1fr !important;
+    }
+    [style*="grid-template-columns:1fr 1fr"],
+    [style*="grid-template-columns: 1fr 1fr"],
+    [style*="grid-template-columns:2fr 1fr"],
+    [style*="grid-template-columns: 2fr 1fr"] {
+      grid-template-columns: 1fr !important;
+    }
+    /* Leaderboard rows - scroll horizontally */
+    [style*="grid-template-columns:40px 40px 1fr 80px 80px 80px"] {
+      grid-template-columns: 30px 30px 1fr 50px 50px 50px !important;
+      font-size: 12px !important;
+    }
+    /* Budget treemap */
+    .budget-treemap { grid-template-columns: repeat(4, 1fr) !important; }
+    .budget-treemap [style*="grid-column: span"] { grid-column: span 2 !important; }
+    /* Touch targets */
+    .nav-links a { min-height: 44px; display:flex; align-items:center; }
+    .tab { min-height: 44px; padding: 10px 16px !important; }
+    .chip { min-height: 44px; padding: 10px 14px !important; display:inline-flex; align-items:center; }
+    .post-action { min-height: 44px; padding: 8px 12px; }
+    /* Container padding */
+    .container { padding: 0 16px; }
+    .page-header { padding: 24px 16px !important; }
+    /* Section titles */
+    .page-header h2 { font-size: 22px; }
   }
 
   /* ZLEPŠOVÁKY */
@@ -1222,12 +1278,14 @@
 <div class="notification" id="toast"></div>
 
 <!-- NAV -->
+<div class="mobile-overlay" id="mob-overlay" onclick="toggleMobileMenu()"></div>
 <nav>
   <a class="nav-logo" href="#" onclick="showView('home')">
     <span class="nav-logo-dot"></span>
     Doma v Jesenici
   </a>
-  <div class="nav-links">
+  <button class="hamburger" id="hamburger-btn" onclick="toggleMobileMenu()"><span></span><span></span><span></span></button>
+  <div class="nav-links" id="nav-links-menu">
     <a onclick="showView('community')" id="nav-community">Komunita</a>
     <a onclick="showView('events')" id="nav-events">Akce</a>
     <a onclick="showView('spojeni')" id="nav-spojeni">Hledám</a>
@@ -4007,7 +4065,7 @@
         <label>Heslo</label>
         <input type="password" placeholder="••••••••">
       </div>
-      <button class="btn btn-green" style="width:100%;padding:13px;font-size:15px;margin-bottom:16px" onclick="toast('Přihlášení úspěšné! Vítejte.')">Přihlásit se</button>
+      <button class="btn btn-green" style="width:100%;padding:13px;font-size:15px;margin-bottom:16px" onclick="loginUser()">Přihlásit se</button>
       <div style="text-align:center;font-size:13px;color:var(--ink-light);margin-top:20px">
         Ještě nemáte účet? <a href="#" style="color:var(--green);font-weight:600" onclick="event.preventDefault();showView('register')">Zaregistrujte se</a>
       </div>
@@ -4115,7 +4173,7 @@
         <!-- BAZAR GRID -->
         <div class="bazar-grid" id="bazar-grid">
 
-          <div class="bazar-card" onclick="openBazar('Dětské kolo 20&quot;','🚲','1 200 Kč','Martina N.','Zdiměřice','5. 3. 2026','Kolo ve výborném stavu, málo jeté. Vhodné pro cca 6letého. Modrá barva, v ceně košík a přilba. Možnost osobního vyzkoušení.','Děti & hračky')">
+          <div class="bazar-card" data-cat="deti" onclick="openBazar('Dětské kolo 20&quot;','🚲','1 200 Kč','Martina N.','Zdiměřice','5. 3. 2026','Kolo ve výborném stavu, málo jeté. Vhodné pro cca 6letého. Modrá barva, v ceně košík a přilba. Možnost osobního vyzkoušení.','Děti & hračky')">
             <div class="bazar-img">🚲</div>
             <div class="bazar-body">
               <div class="bazar-price">1 200 Kč</div>
@@ -4128,7 +4186,7 @@
             </div>
           </div>
 
-          <div class="bazar-card" onclick="openBazar('MacBook Air M1','💻','18 500 Kč','Pavel H.','Jesenice','3. 3. 2026','MacBook Air 13&quot; M1, 8GB RAM, 256GB SSD. Rok a půl starý, v perfektním stavu, bez jediného škrábance. Prodávám kvůli přechodu na M3. Nabíječka a originální krabice v ceně.','Elektronika')">
+          <div class="bazar-card" data-cat="elektronika" onclick="openBazar('MacBook Air M1','💻','18 500 Kč','Pavel H.','Jesenice','3. 3. 2026','MacBook Air 13&quot; M1, 8GB RAM, 256GB SSD. Rok a půl starý, v perfektním stavu, bez jediného škrábance. Prodávám kvůli přechodu na M3. Nabíječka a originální krabice v ceně.','Elektronika')">
             <div class="bazar-img" style="background:#f0f0f0">💻
               <span class="bazar-badge bazar-badge-new">Nový přírůstek</span>
             </div>
@@ -4143,7 +4201,7 @@
             </div>
           </div>
 
-          <div class="bazar-card" onclick="openBazar('Zahradní altán 3×4m','⛺','4 800 Kč','Tomáš K.','Osnice','28. 2. 2026','Skládací zahradní altán, rozměr 3×4 m, s bočnicemi. Použitý 2 sezóny, střecha bez trhlin, rám lehce oprýskaný. Vhodný na zahradu i terasu.','Zahrada')">
+          <div class="bazar-card" data-cat="zahrada" onclick="openBazar('Zahradní altán 3×4m','⛺','4 800 Kč','Tomáš K.','Osnice','28. 2. 2026','Skládací zahradní altán, rozměr 3×4 m, s bočnicemi. Použitý 2 sezóny, střecha bez trhlin, rám lehce oprýskaný. Vhodný na zahradu i terasu.','Zahrada')">
             <div class="bazar-img" style="background:#e8f4e8">⛺</div>
             <div class="bazar-body">
               <div class="bazar-price">4 800 Kč</div>
@@ -4156,7 +4214,7 @@
             </div>
           </div>
 
-          <div class="bazar-card" onclick="openBazar('Lego City — velký set','🧱','890 Kč','Eva S.','Horní Jirčany','1. 3. 2026','Sada Lego City Letiště, cca 800 dílků, kompletní včetně návodů. Vše přítomno, zkontrolováno. Stav: použité, bez poškození.','Děti & hračky')">
+          <div class="bazar-card" data-cat="deti" onclick="openBazar('Lego City — velký set','🧱','890 Kč','Eva S.','Horní Jirčany','1. 3. 2026','Sada Lego City Letiště, cca 800 dílků, kompletní včetně návodů. Vše přítomno, zkontrolováno. Stav: použité, bez poškození.','Děti & hračky')">
             <div class="bazar-img" style="background:#fffbea">🧱
               <span class="bazar-badge bazar-badge-reservation">Rezervováno</span>
             </div>
@@ -4171,7 +4229,7 @@
             </div>
           </div>
 
-          <div class="bazar-card" onclick="openBazar('Jídelní stůl + 6 židlí','🍽️','zdarma','Jana M.','Zdiměřice','4. 3. 2026','Stůl 160×90 cm + 6 židlí, masiv buk, starší ale funkční. Daruju kvůli rekonstrukci. Odvoz nutný vlastní, pomůžu s nakládáním.','Nábytek')">
+          <div class="bazar-card" data-cat="daruju" onclick="openBazar('Jídelní stůl + 6 židlí','🍽️','zdarma','Jana M.','Zdiměřice','4. 3. 2026','Stůl 160×90 cm + 6 židlí, masiv buk, starší ale funkční. Daruju kvůli rekonstrukci. Odvoz nutný vlastní, pomůžu s nakládáním.','Nábytek')">
             <div class="bazar-img" style="background:#eef5fb">🍽️
               <span class="bazar-badge bazar-badge-free">Zdarma</span>
             </div>
@@ -4186,7 +4244,7 @@
             </div>
           </div>
 
-          <div class="bazar-card" onclick="openBazar('Horské kolo Trek 29&quot;','🚵','9 500 Kč','Radek P.','Jesenice','2. 3. 2026','Trek Marlin 5 vel. M, 29 palců. Rok 2022, výborný stav, servisováno v říjnu. Hydraulické kotouče, 21 rychlostí. Ideální na trails i asfalt.','Sport')">
+          <div class="bazar-card" data-cat="sport" onclick="openBazar('Horské kolo Trek 29&quot;','🚵','9 500 Kč','Radek P.','Jesenice','2. 3. 2026','Trek Marlin 5 vel. M, 29 palců. Rok 2022, výborný stav, servisováno v říjnu. Hydraulické kotouče, 21 rychlostí. Ideální na trails i asfalt.','Sport')">
             <div class="bazar-img" style="background:#f5eee8">🚵</div>
             <div class="bazar-body">
               <div class="bazar-price">9 500 Kč</div>
@@ -4199,7 +4257,7 @@
             </div>
           </div>
 
-          <div class="bazar-card" onclick="openBazar('Dětský kočárek Joolz','👶','6 200 Kč','Klára V.','Osnice','6. 3. 2026','Kočárek Joolz Day+ s hliníkovou konstrukcí, stříbrná barva. Kompletní výbava: korbička, sportovní sedačka, pláštěnka, deka. Jako nový, Cena nová 19 000 Kč.','Děti & hračky')">
+          <div class="bazar-card" data-cat="deti" onclick="openBazar('Dětský kočárek Joolz','👶','6 200 Kč','Klára V.','Osnice','6. 3. 2026','Kočárek Joolz Day+ s hliníkovou konstrukcí, stříbrná barva. Kompletní výbava: korbička, sportovní sedačka, pláštěnka, deka. Jako nový, Cena nová 19 000 Kč.','Děti & hračky')">
             <div class="bazar-img" style="background:#f9f0f9">👶
               <span class="bazar-badge bazar-badge-new">Nový přírůstek</span>
             </div>
@@ -4214,7 +4272,7 @@
             </div>
           </div>
 
-          <div class="bazar-card" onclick="openBazar('Zahradní sekačka Honda','🌿','3 400 Kč','Milan F.','Horní Jirčany','7. 3. 2026','Honda HRG 466 PK, pohon zadních kol, koš, mulčování. 4 roky stará, v provozu každé léto, servis každý podzim. Spouštění na klíč.','Zahrada')">
+          <div class="bazar-card" data-cat="zahrada" onclick="openBazar('Zahradní sekačka Honda','🌿','3 400 Kč','Milan F.','Horní Jirčany','7. 3. 2026','Honda HRG 466 PK, pohon zadních kol, koš, mulčování. 4 roky stará, v provozu každé léto, servis každý podzim. Spouštění na klíč.','Zahrada')">
             <div class="bazar-img" style="background:#edf7ed">🌿</div>
             <div class="bazar-body">
               <div class="bazar-price">3 400 Kč</div>
@@ -4227,7 +4285,7 @@
             </div>
           </div>
 
-          <div class="bazar-card" onclick="openBazar('Knihovna — tmavý dub','📚','zdarma','Petra D.','Jesenice','5. 3. 2026','Knihovna IKEA Billy, 80×202 cm, tmavý dub. Nutný odvoz, demontáž pomůžu. Záchrana před kontejnerem.','Nábytek')">
+          <div class="bazar-card" data-cat="daruju" onclick="openBazar('Knihovna — tmavý dub','📚','zdarma','Petra D.','Jesenice','5. 3. 2026','Knihovna IKEA Billy, 80×202 cm, tmavý dub. Nutný odvoz, demontáž pomůžu. Záchrana před kontejnerem.','Nábytek')">
             <div class="bazar-img" style="background:#faf6ee">📚
               <span class="bazar-badge bazar-badge-free">Zdarma</span>
             </div>
@@ -5738,16 +5796,16 @@
 
           <!-- BADGES -->
           <div class="prof-section">
-            <h4>🏅 Odznaky <span style="font-weight:400;font-size:13px;color:var(--ink-light);margin-left:8px" id="badge-summary">23/47 odznaků získáno</span></h4>
+            <h4>🏅 Odznaky <span style="font-weight:400;font-size:13px;color:var(--ink-light);margin-left:8px" id="badge-summary">23/46 odznaků získáno</span></h4>
             <div class="badge-tabs">
-              <button class="badge-tab active" onclick="filterBadges('vse')">Vše</button>
-              <button class="badge-tab" onclick="filterBadges('vitaci')">🌱 Vítací</button>
-              <button class="badge-tab" onclick="filterBadges('komunita')">🏘️ Komunitní</button>
-              <button class="badge-tab" onclick="filterBadges('brigady')">⚡ Brigádní</button>
-              <button class="badge-tab" onclick="filterBadges('challenge')">🏆 Soutěžíme</button>
-              <button class="badge-tab" onclick="filterBadges('civic')">🏛️ Civic</button>
-              <button class="badge-tab" onclick="filterBadges('lifestyle')">🐕 Lifestyle</button>
-              <button class="badge-tab" onclick="filterBadges('legendy')">👑 Legendární</button>
+              <button class="badge-tab active" onclick="filterBadges('vse',this)">Vše</button>
+              <button class="badge-tab" onclick="filterBadges('vitaci',this)">🌱 Vítací</button>
+              <button class="badge-tab" onclick="filterBadges('komunita',this)">🏘️ Komunitní</button>
+              <button class="badge-tab" onclick="filterBadges('brigady',this)">⚡ Brigádní</button>
+              <button class="badge-tab" onclick="filterBadges('challenge',this)">🏆 Soutěžíme</button>
+              <button class="badge-tab" onclick="filterBadges('civic',this)">🏛️ Civic</button>
+              <button class="badge-tab" onclick="filterBadges('lifestyle',this)">🐕 Lifestyle</button>
+              <button class="badge-tab" onclick="filterBadges('legendy',this)">👑 Legendární</button>
             </div>
             <div class="badge-grid" id="badge-grid"></div>
           </div>
@@ -5997,7 +6055,7 @@
 
 <script>
 const views = ['home','community','issues','projects','events','welcome','login','register','budget','bazar','spojeni','podniky','brigady','challenge','profile'];
-const navMap = { community:'nav-community', issues:'nav-issues', projects:'nav-projects', budget:'nav-budget', events:'nav-events', welcome:'nav-welcome', login:'nav-login', bazar:'nav-bazar', spojeni:'nav-spojeni', podniky:'nav-podniky', brigady:'nav-brigady', challenge:'nav-challenge', profile:'nav-profile' };
+const navMap = { community:'nav-community', issues:'nav-issues', projects:'nav-projects', budget:'nav-budget', events:'nav-events', welcome:'nav-welcome', login:'nav-login', register:'nav-login', bazar:'nav-bazar', spojeni:'nav-spojeni', podniky:'nav-podniky', brigady:'nav-brigady', challenge:'nav-challenge', profile:'nav-profile' };
 
 const hashMap = {
   home:'', community:'komunita', issues:'zlepsovaky', projects:'projekty',
@@ -6019,6 +6077,14 @@ function showView(id, skipHash) {
   });
   const target = document.getElementById('view-' + id);
   if (target) { target.classList.add('active'); window.scrollTo(0,0); }
+  // Close mobile menu on view change
+  const navMenu = document.getElementById('nav-links-menu');
+  if (navMenu) navMenu.classList.remove('open');
+  const hb = document.getElementById('hamburger-btn');
+  if (hb) hb.classList.remove('active');
+  const mo = document.getElementById('mob-overlay');
+  if (mo) mo.classList.remove('active');
+  document.body.style.overflow = '';
   if (navMap[id]) {
     const nav = document.getElementById(navMap[id]);
     if (nav) nav.classList.add('active');
@@ -6041,11 +6107,23 @@ window.addEventListener('hashchange', () => {
   if (h && hashReverse[h]) showView(hashReverse[h], true);
 })();
 
+function esc(s) { const d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
+
 function toast(msg) {
   const t = document.getElementById('toast');
   t.textContent = '✓ ' + msg;
   t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 3200);
+}
+
+function toggleMobileMenu() {
+  const menu = document.getElementById('nav-links-menu');
+  const btn = document.getElementById('hamburger-btn');
+  const overlay = document.getElementById('mob-overlay');
+  const isOpen = menu.classList.toggle('open');
+  btn.classList.toggle('active', isOpen);
+  overlay.classList.toggle('active', isOpen);
+  document.body.style.overflow = isOpen ? 'hidden' : '';
 }
 
 function switchTab(group, tab, el) {
@@ -6110,7 +6188,7 @@ function submitPost() {
       </div>
       <span class="post-tag ${tag.cls}">${tag.label}</span>
     </div>
-    <div class="post-text">${text}</div>
+    <div class="post-text">${esc(text)}</div>
     <div class="post-actions">
       <button class="post-action" onclick="addLike(this)">👍 (0)</button>
       <button class="post-action" onclick="toast('Komentáře se otevírají...')">💬 0 komentářů</button>
@@ -6309,8 +6387,8 @@ function addGigCard() {
   card.onclick = function() { openGigDetail(card, em + ' ' + title, desc || 'Nová brigáda — čeká na zájemce.', price, '📍 ' + loc, '⏰ Ihned', '⏱️ ' + time, 'VY', 'Vy', '⭐ Nový', 'var(--green)'); };
   card.innerHTML = `
     <div class="gig-top">
-      <div><div class="gig-title">${em} ${title}</div><div class="gig-desc">${desc || 'Nová brigáda — čeká na zájemce.'}</div></div>
-      <div class="gig-price">${price}</div>
+      <div><div class="gig-title">${em} ${esc(title)}</div><div class="gig-desc">${esc(desc) || 'Nová brigáda — čeká na zájemce.'}</div></div>
+      <div class="gig-price">${esc(price)}</div>
     </div>
     <div class="gig-meta"><span>📍 ${loc}</span><span>⏰ Ihned</span><span>⏱️ ${time}</span></div>
     <div class="gig-footer">
@@ -6812,7 +6890,7 @@ function addPartnerCard() {
       <div class="partner-info">
         <div class="partner-name">Vy</div>
         <div class="partner-age">${about || 'Jesenice · ' + loc}</div>
-        <div class="partner-headline">${title}</div>
+        <div class="partner-headline">${esc(title)}</div>
       </div>
     </div>
     <div class="partner-tags">
@@ -6857,7 +6935,14 @@ function closeBazar(e) {
 function bazarFilter(el, filter) {
   document.querySelectorAll('#view-bazar .chips .chip').forEach(c => c.classList.remove('active'));
   el.classList.add('active');
-  toast(filter === 'vse' ? 'Zobrazuji vše' : 'Filtrováno: ' + el.textContent.split(' (')[0]);
+  let count = 0;
+  document.querySelectorAll('#bazar-grid .bazar-card').forEach(c => {
+    const show = filter === 'vse' || c.dataset.cat === filter;
+    c.style.display = show ? '' : 'none';
+    if (show) count++;
+  });
+  const counter = document.getElementById('bazar-count');
+  if (counter) counter.textContent = count;
 }
 // === ZLEPŠOVÁKY ===
 function openZlepModal() {
@@ -6938,8 +7023,8 @@ function submitZlep() {
     <div class="zlep-card-top">
       <div class="zlep-card-icon"${isNapad ? ' style="background:#EBF3FC"' : ''}>${isNapad ? '🎯' : emoji}</div>
       <div class="zlep-card-body">
-        <div class="zlep-card-title">${isNapad ? 'Nápad: ' : ''}${title}</div>
-        <div class="zlep-card-desc">${desc}</div>
+        <div class="zlep-card-title">${isNapad ? 'Nápad: ' : ''}${esc(title)}</div>
+        <div class="zlep-card-desc">${esc(desc)}</div>
         <div class="zlep-card-meta">
           <span>📍 ${locNames[loc]}${street ? ', ' + street : ''}</span>
           <span>🕐 právě teď</span>
@@ -6960,6 +7045,21 @@ function submitZlep() {
   document.getElementById('zlep-anon').checked = false;
   closeZlepModal();
   toast(isNapad ? 'Nápad zveřejněn! Sousedé mohou hlasovat.' : 'Zlepšovák nahlášen! Dostanete notifikaci o průběhu.');
+}
+
+function loginUser() {
+  const existing = localStorage.getItem('dvj-user');
+  if (existing) {
+    updateNavLogin();
+    toast('Přihlášení úspěšné! Vítejte.');
+    setTimeout(() => showView('profile'), 1000);
+  } else {
+    // Demo: create a basic user for login
+    localStorage.setItem('dvj-user', JSON.stringify({fname:'Jan', lname:'Novák', email:'jan@email.cz', location:'stredni-jesenice', nickname:'', joined: new Date().toISOString()}));
+    updateNavLogin();
+    toast('Přihlášení úspěšné! Vítejte.');
+    setTimeout(() => showView('profile'), 1000);
+  }
 }
 
 function registerUser() {
@@ -7000,8 +7100,8 @@ function addBazarItem() {
   card.innerHTML = `
     <div class="bazar-img" style="background:var(--green-light)">${em}<span class="bazar-badge bazar-badge-new">Nový přírůstek</span></div>
     <div class="bazar-body">
-      <div class="bazar-price${isFree?' free':''}">${displayPrice}</div>
-      <div class="bazar-title">${title}</div>
+      <div class="bazar-price${isFree?' free':''}">${esc(displayPrice)}</div>
+      <div class="bazar-title">${esc(title)}</div>
       <div class="bazar-meta"><span>📍 ${loc}</span><span>🕐 právě teď</span></div>
       <div class="bazar-seller"><div class="avatar" style="width:22px;height:22px;font-size:10px">VY</div> Vy</div>
     </div>`;
@@ -7094,7 +7194,7 @@ function submitEvent() {
     </div>
     <div class="evt-body">
       <div class="evt-badges"><span class="evt-badge" style="background:${bg};color:${color}">${label}</span></div>
-      <h4 class="evt-title">${title}</h4>
+      <h4 class="evt-title">${esc(title)}</h4>
       <div class="evt-detail">
         <span>🕐 ${time || '—'}</span><span>📍 ${place || locNames[loc]}</span><span>🎟️ ${price}</span>
       </div>
@@ -7372,9 +7472,9 @@ function getBadgeProgress(b) {
   return '';
 }
 
-function filterBadges(cat) {
+function filterBadges(cat, el) {
   document.querySelectorAll('.badge-tab').forEach(t => t.classList.remove('active'));
-  event.target.classList.add('active');
+  if (el) el.classList.add('active');
   document.querySelectorAll('.badge-card').forEach(c => {
     c.style.display = (cat === 'vse' || c.dataset.badgecat === cat) ? '' : 'none';
   });
@@ -7402,7 +7502,8 @@ function openBadgeDetail(idx) {
     progressHTML = '<div style="margin-bottom:4px;font-size:13px;font-weight:600">' + b.current + ' / ' + b.target + '</div><div style="height:8px;background:var(--border);border-radius:4px;overflow:hidden"><div style="width:' + pct + '%;height:100%;background:var(--green);border-radius:4px"></div></div>';
   }
 
-  const html = '<div class="badge-detail-popup" onclick="if(event.target===this)this.remove()">' +
+  document.body.style.overflow = 'hidden';
+  const html = '<div class="badge-detail-popup" onclick="if(event.target===this){this.remove();document.body.style.overflow=\'\'}">' +
     '<div class="badge-detail-card">' +
     '<div class="badge-detail-icon">' + b.icon + '</div>' +
     '<div class="badge-detail-name">' + b.name + '</div>' +
@@ -7410,7 +7511,7 @@ function openBadgeDetail(idx) {
     '<div class="badge-detail-desc">' + b.desc + '</div>' +
     (progressHTML ? '<div class="badge-detail-progress">' + progressHTML + '</div>' : '') +
     '<div style="font-size:13px;font-weight:600;color:' + (isEarned ? 'var(--green)' : 'var(--ink-light)') + '">' + (isEarned ? '✅ Získáno' : '🔒 Zatím nezískáno') + '</div>' +
-    '<button onclick="this.closest(\'.badge-detail-popup\').remove()" style="margin-top:16px;padding:8px 24px;border-radius:var(--r-sm);border:1px solid var(--border);background:white;cursor:pointer;font-size:13px">Zavřít</button>' +
+    '<button onclick="this.closest(\'.badge-detail-popup\').remove();document.body.style.overflow=\'\'" style="margin-top:16px;padding:8px 24px;border-radius:var(--r-sm);border:1px solid var(--border);background:white;cursor:pointer;font-size:13px">Zavřít</button>' +
     '</div></div>';
   document.body.insertAdjacentHTML('beforeend', html);
 }
@@ -7419,7 +7520,7 @@ function renderBadges() {
   const grid = document.getElementById('badge-grid');
   if (!grid) return;
   const earned = getBadgeEarnedCount();
-  document.getElementById('badge-summary').textContent = earned + '/47 odznaků získáno';
+  document.getElementById('badge-summary').textContent = earned + '/' + BADGES.length + ' odznaků získáno';
 
   grid.innerHTML = BADGES.map((b, i) => {
     const isEarned = !!b.earned;
