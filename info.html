@@ -1,0 +1,1479 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Doma v Jesenici — Komunitní portál pro vaši obec</title>
+<meta name="description" content="Moderní komunitní platforma pro obce. Propojte občany, zvyšte transparentnost, oživte komunitu.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;0,9..144,800;1,9..144,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --green: #1F5C3A;
+  --green-light: #2A7A4E;
+  --green-pale: #E8F5EE;
+  --green-gradient: linear-gradient(135deg, #1F5C3A 0%, #2A7A4E 100%);
+  --dark: #1A1A2E;
+  --text: #333340;
+  --text-light: #6B7080;
+  --bg: #FFFFFF;
+  --bg-alt: #F8FAF9;
+  --border: #E2E8F0;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.08);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.10);
+  --shadow-xl: 0 16px 48px rgba(0,0,0,0.12);
+  --radius: 12px;
+  --radius-lg: 20px;
+  --font-heading: 'Fraunces', serif;
+  --font-body: 'Plus Jakarta Sans', sans-serif;
+  --max-width: 1200px;
+  --nav-height: 72px;
+}
+
+html { scroll-behavior: smooth; font-size: 16px; }
+
+body {
+  font-family: var(--font-body);
+  color: var(--text);
+  background: var(--bg);
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4 { font-family: var(--font-heading); color: var(--dark); line-height: 1.25; }
+
+a { text-decoration: none; color: inherit; }
+
+img { max-width: 100%; display: block; }
+
+.container { max-width: var(--max-width); margin: 0 auto; padding: 0 24px; }
+
+/* Animations */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ========== NAV ========== */
+.nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: var(--nav-height);
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  z-index: 1000;
+  transition: box-shadow 0.3s ease;
+}
+.nav.scrolled { box-shadow: 0 1px 12px rgba(0,0,0,0.08); }
+
+.nav .container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 100%;
+}
+
+.nav-logo {
+  font-family: var(--font-heading);
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--green);
+  letter-spacing: -0.02em;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  list-style: none;
+}
+
+.nav-links a {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text);
+  transition: color 0.2s;
+  position: relative;
+}
+.nav-links a:hover { color: var(--green); }
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  bottom: -4px; left: 0; right: 0;
+  height: 2px;
+  background: var(--green);
+  transform: scaleX(0);
+  transition: transform 0.2s;
+}
+.nav-links a:hover::after { transform: scaleX(1); }
+
+.nav-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 22px;
+  background: var(--green);
+  color: #fff !important;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  transition: background 0.2s, transform 0.15s;
+}
+.nav-cta:hover { background: var(--green-light); transform: translateY(-1px); }
+.nav-cta::after { display: none !important; }
+
+/* Hamburger */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 8px;
+  z-index: 1001;
+}
+.hamburger span {
+  display: block;
+  width: 24px;
+  height: 2px;
+  background: var(--dark);
+  transition: transform 0.3s, opacity 0.3s;
+}
+.hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+.hamburger.active span:nth-child(2) { opacity: 0; }
+.hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+
+/* ========== BUTTONS ========== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 32px;
+  border-radius: 10px;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s ease;
+}
+
+.btn-primary {
+  background: var(--green);
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(31,92,58,0.3);
+}
+.btn-primary:hover {
+  background: var(--green-light);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(31,92,58,0.35);
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--green);
+  border: 2px solid var(--green);
+}
+.btn-outline:hover {
+  background: var(--green-pale);
+  transform: translateY(-2px);
+}
+
+/* ========== SECTION TITLES ========== */
+.section-label {
+  display: inline-block;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--green);
+  margin-bottom: 12px;
+}
+
+.section-title {
+  font-size: clamp(2rem, 4vw, 2.8rem);
+  font-weight: 700;
+  margin-bottom: 16px;
+  letter-spacing: -0.02em;
+}
+
+.section-subtitle {
+  font-size: 1.1rem;
+  color: var(--text-light);
+  max-width: 640px;
+  margin: 0 auto 48px;
+}
+
+.text-center { text-align: center; }
+
+/* ========== HERO ========== */
+.hero {
+  padding: calc(var(--nav-height) + 80px) 0 100px;
+  background: linear-gradient(180deg, #F0F7F3 0%, #FFFFFF 100%);
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -200px; right: -200px;
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(31,92,58,0.06) 0%, transparent 70%);
+  border-radius: 50%;
+}
+.hero::after {
+  content: '';
+  position: absolute;
+  bottom: -100px; left: -150px;
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(31,92,58,0.04) 0%, transparent 70%);
+  border-radius: 50%;
+}
+
+.hero .container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 64px;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+}
+
+.hero-content { max-width: 560px; }
+
+.hero h1 {
+  font-size: clamp(2.4rem, 5vw, 3.5rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+  margin-bottom: 20px;
+}
+.hero h1 span { color: var(--green); }
+
+.hero-subtitle {
+  font-size: 1.15rem;
+  color: var(--text-light);
+  line-height: 1.7;
+  margin-bottom: 36px;
+}
+
+.hero-ctas { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 32px; }
+
+.hero-proof {
+  font-size: 0.85rem;
+  color: var(--text-light);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.hero-proof .dot {
+  width: 6px; height: 6px;
+  background: var(--green);
+  border-radius: 50%;
+  display: inline-block;
+}
+
+/* Hero mockup */
+.hero-visual {
+  position: relative;
+}
+
+.mockup {
+  background: var(--bg);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-xl);
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+
+.mockup-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 18px;
+  background: #F5F7F6;
+  border-bottom: 1px solid var(--border);
+}
+.mockup-bar .dot-r { width: 10px; height: 10px; border-radius: 50%; background: #FF6058; }
+.mockup-bar .dot-y { width: 10px; height: 10px; border-radius: 50%; background: #FFBD2E; }
+.mockup-bar .dot-g { width: 10px; height: 10px; border-radius: 50%; background: #27C93F; }
+.mockup-bar .url {
+  flex: 1;
+  margin-left: 12px;
+  background: #fff;
+  border-radius: 6px;
+  padding: 6px 14px;
+  font-size: 0.75rem;
+  color: var(--text-light);
+}
+
+.mockup-body { padding: 20px; }
+
+.mockup-nav {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+.mockup-nav span {
+  padding: 6px 14px;
+  background: var(--green-pale);
+  border-radius: 6px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--green);
+}
+.mockup-nav span:first-child { background: var(--green); color: #fff; }
+
+.mockup-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+.mockup-card {
+  background: var(--bg-alt);
+  border-radius: 8px;
+  padding: 14px;
+  border: 1px solid var(--border);
+}
+.mockup-card .mc-icon { font-size: 1.2rem; margin-bottom: 6px; }
+.mockup-card .mc-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--dark);
+  margin-bottom: 4px;
+}
+.mockup-card .mc-bar {
+  height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+  margin-bottom: 3px;
+}
+.mockup-card .mc-bar.short { width: 60%; }
+.mockup-card .mc-bar.green { background: var(--green); opacity: 0.4; }
+
+/* ========== PROBLEMS ========== */
+.problems { padding: 100px 0; background: var(--bg); }
+
+.problems-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+  margin-top: 48px;
+}
+
+.problem-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 32px;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+.problem-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+.problem-card .pc-icon { font-size: 2rem; margin-bottom: 16px; }
+
+.problem-card .pc-problem {
+  font-size: 0.95rem;
+  color: #C0392B;
+  text-decoration: line-through;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.problem-card .pc-solution {
+  font-family: var(--font-heading);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--green);
+  margin-bottom: 10px;
+}
+
+.problem-card .pc-desc {
+  font-size: 0.9rem;
+  color: var(--text-light);
+  line-height: 1.6;
+}
+
+/* ========== MODULES ========== */
+.modules { padding: 100px 0; background: var(--bg-alt); }
+
+.modules-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin-top: 48px;
+}
+
+.module-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 28px;
+  text-align: center;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+.module-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+}
+.module-card .mod-icon { font-size: 2.2rem; margin-bottom: 12px; }
+.module-card .mod-name {
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--dark);
+  margin-bottom: 8px;
+}
+.module-card .mod-desc {
+  font-size: 0.85rem;
+  color: var(--text-light);
+  line-height: 1.55;
+}
+
+/* ========== FEATURES ========== */
+.features { padding: 100px 0; background: var(--bg); }
+
+.feature-block {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 64px;
+  align-items: center;
+  margin-bottom: 80px;
+}
+.feature-block:last-child { margin-bottom: 0; }
+.feature-block:nth-child(even) .feature-text { order: 2; }
+.feature-block:nth-child(even) .feature-visual { order: 1; }
+
+.feature-text .section-label { margin-bottom: 8px; }
+.feature-text h3 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 16px;
+  letter-spacing: -0.02em;
+}
+.feature-text p {
+  color: var(--text-light);
+  font-size: 1.05rem;
+  line-height: 1.7;
+  margin-bottom: 20px;
+}
+.feature-text ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.feature-text ul li {
+  font-size: 0.95rem;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.feature-text ul li::before {
+  content: '';
+  width: 20px; height: 20px;
+  background: var(--green-pale);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%231F5C3A' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.feature-visual {
+  background: var(--bg-alt);
+  border-radius: var(--radius-lg);
+  padding: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  border: 1px solid var(--border);
+}
+
+.feature-visual-inner {
+  text-align: center;
+}
+.feature-visual-inner .fv-icon { font-size: 4rem; margin-bottom: 16px; }
+.feature-visual-inner .fv-stats {
+  display: flex;
+  gap: 24px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.feature-visual-inner .fv-stat {
+  text-align: center;
+}
+.feature-visual-inner .fv-stat-num {
+  font-family: var(--font-heading);
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--green);
+}
+.feature-visual-inner .fv-stat-label {
+  font-size: 0.75rem;
+  color: var(--text-light);
+}
+
+/* ========== FOR WHOM ========== */
+.for-whom { padding: 100px 0; background: var(--bg-alt); }
+
+.whom-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+  margin-top: 48px;
+}
+
+.whom-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 32px 24px;
+  text-align: center;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+.whom-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+}
+.whom-card .wc-icon { font-size: 2.5rem; margin-bottom: 16px; }
+.whom-card .wc-title {
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--dark);
+  line-height: 1.4;
+}
+
+/* ========== NUMBERS ========== */
+.numbers {
+  padding: 80px 0;
+  background: var(--green-gradient);
+  color: #fff;
+}
+
+.numbers-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 32px;
+  text-align: center;
+}
+
+.number-item .ni-value {
+  font-family: var(--font-heading);
+  font-size: clamp(2.2rem, 4vw, 3.2rem);
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+.number-item .ni-label {
+  font-size: 0.95rem;
+  opacity: 0.85;
+}
+
+/* ========== PRICING ========== */
+.pricing { padding: 100px 0; background: var(--bg); }
+
+.pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-top: 48px;
+  align-items: start;
+}
+
+.price-card {
+  background: var(--bg);
+  border: 2px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 36px 28px;
+  position: relative;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+.price-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+.price-card.popular {
+  border-color: var(--green);
+  box-shadow: var(--shadow-lg);
+  transform: scale(1.03);
+}
+.price-card.popular:hover { transform: scale(1.03) translateY(-4px); }
+
+.price-badge {
+  position: absolute;
+  top: -14px; left: 50%;
+  transform: translateX(-50%);
+  background: var(--green);
+  color: #fff;
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 5px 20px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+
+.price-card .pc-name {
+  font-family: var(--font-heading);
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--dark);
+  margin-bottom: 8px;
+}
+
+.price-card .pc-price {
+  font-family: var(--font-heading);
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: var(--green);
+  margin-bottom: 4px;
+}
+.price-card .pc-price span {
+  font-size: 1rem;
+  font-weight: 400;
+  color: var(--text-light);
+}
+
+.price-card .pc-desc {
+  font-size: 0.85rem;
+  color: var(--text-light);
+  margin-bottom: 24px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--border);
+}
+
+.price-card ul {
+  list-style: none;
+  margin-bottom: 28px;
+}
+.price-card ul li {
+  font-size: 0.9rem;
+  color: var(--text);
+  padding: 7px 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+.price-card ul li::before {
+  content: "\2713";
+  color: var(--green);
+  font-weight: 700;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.price-card .btn {
+  width: 100%;
+  justify-content: center;
+  padding: 12px 24px;
+}
+
+.pricing-extras {
+  margin-top: 48px;
+  text-align: center;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.pricing-extras p {
+  font-size: 0.9rem;
+  color: var(--text-light);
+  margin-bottom: 6px;
+}
+.pricing-extras .price-note {
+  font-size: 0.8rem;
+  color: var(--text-light);
+  font-style: italic;
+  margin-top: 12px;
+}
+
+/* ========== CONTACT ========== */
+.contact { padding: 100px 0; background: var(--bg-alt); }
+
+.contact-wrapper {
+  max-width: 640px;
+  margin: 0 auto;
+  background: var(--bg);
+  border-radius: var(--radius-lg);
+  padding: 48px 40px;
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border);
+}
+
+.contact-wrapper h2 {
+  font-size: 1.8rem;
+  margin-bottom: 8px;
+  text-align: center;
+}
+.contact-wrapper .contact-sub {
+  text-align: center;
+  color: var(--text-light);
+  margin-bottom: 36px;
+  font-size: 1rem;
+}
+
+.form-group { margin-bottom: 20px; }
+.form-group label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--dark);
+  margin-bottom: 6px;
+}
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  color: var(--text);
+  background: var(--bg);
+  transition: border-color 0.2s, box-shadow 0.2s;
+  outline: none;
+}
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  border-color: var(--green);
+  box-shadow: 0 0 0 3px rgba(31,92,58,0.1);
+}
+.form-group textarea { resize: vertical; min-height: 120px; }
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.contact-wrapper .btn {
+  width: 100%;
+  justify-content: center;
+  padding: 14px 32px;
+  font-size: 1.05rem;
+  margin-top: 8px;
+}
+
+/* Toast */
+.toast {
+  position: fixed;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: var(--green);
+  color: #fff;
+  padding: 16px 32px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  box-shadow: var(--shadow-lg);
+  z-index: 9999;
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  white-space: nowrap;
+}
+.toast.show {
+  transform: translateX(-50%) translateY(0);
+}
+
+/* ========== FOOTER ========== */
+.footer {
+  padding: 60px 0 32px;
+  background: var(--dark);
+  color: rgba(255,255,255,0.7);
+}
+
+.footer .container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
+.footer-logo {
+  font-family: var(--font-heading);
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.footer-desc {
+  font-size: 0.9rem;
+  max-width: 400px;
+  text-align: center;
+  line-height: 1.6;
+}
+
+.footer-links {
+  display: flex;
+  gap: 32px;
+  list-style: none;
+}
+.footer-links a {
+  font-size: 0.9rem;
+  color: rgba(255,255,255,0.7);
+  transition: color 0.2s;
+}
+.footer-links a:hover { color: #fff; }
+
+.footer-copy {
+  font-size: 0.8rem;
+  margin-top: 16px;
+  text-align: center;
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 1024px) {
+  .hero .container { grid-template-columns: 1fr; gap: 48px; }
+  .hero-content { max-width: 100%; }
+  .feature-block { grid-template-columns: 1fr; gap: 32px; }
+  .feature-block:nth-child(even) .feature-text { order: 1; }
+  .feature-block:nth-child(even) .feature-visual { order: 2; }
+  .modules-grid { grid-template-columns: repeat(3, 1fr); }
+  .whom-grid { grid-template-columns: repeat(2, 1fr); }
+  .pricing-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (max-width: 768px) {
+  .nav-links {
+    position: fixed;
+    top: 0; right: 0;
+    width: 280px;
+    height: 100vh;
+    background: var(--bg);
+    flex-direction: column;
+    justify-content: center;
+    gap: 24px;
+    padding: 32px;
+    box-shadow: var(--shadow-xl);
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+  }
+  .nav-links.open { transform: translateX(0); }
+  .nav-links a { font-size: 1.1rem; }
+  .hamburger { display: flex; }
+
+  .hero { padding: calc(var(--nav-height) + 40px) 0 60px; }
+  .hero h1 { font-size: 2.2rem; }
+
+  .problems-grid { grid-template-columns: 1fr; }
+  .modules-grid { grid-template-columns: repeat(2, 1fr); }
+  .whom-grid { grid-template-columns: 1fr 1fr; }
+  .numbers-grid { grid-template-columns: repeat(2, 1fr); gap: 24px; }
+  .pricing-grid { grid-template-columns: 1fr; max-width: 420px; margin-left: auto; margin-right: auto; }
+  .price-card.popular { transform: none; }
+  .price-card.popular:hover { transform: translateY(-4px); }
+  .form-row { grid-template-columns: 1fr; }
+  .contact-wrapper { padding: 32px 24px; }
+  .footer-links { gap: 20px; }
+}
+
+@media (max-width: 480px) {
+  .hero h1 { font-size: 1.85rem; }
+  .hero-subtitle { font-size: 1rem; }
+  .hero-ctas { flex-direction: column; }
+  .hero-ctas .btn { width: 100%; justify-content: center; }
+  .modules-grid { grid-template-columns: 1fr; }
+  .whom-grid { grid-template-columns: 1fr; }
+  .numbers-grid { grid-template-columns: 1fr 1fr; }
+  .section-title { font-size: 1.75rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- ========== NAV ========== -->
+<nav class="nav" id="nav">
+  <div class="container">
+    <a href="#" class="nav-logo">Doma v Jesenici</a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#funkce" onclick="closeMenu()">Funkce</a></li>
+      <li><a href="#pro-koho" onclick="closeMenu()">Pro koho</a></li>
+      <li><a href="#cenik" onclick="closeMenu()">Cenový model</a></li>
+      <li><a href="#kontakt" onclick="closeMenu()">Kontakt</a></li>
+      <li><a href="index.html" class="nav-cta" onclick="closeMenu()">Vyzkoušet demo &rarr;</a></li>
+    </ul>
+    <button class="hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- ========== HERO ========== -->
+<section class="hero" id="hero">
+  <div class="container">
+    <div class="hero-content reveal">
+      <h1>Komunitní portál<br>pro <span>vaši obec</span></h1>
+      <p class="hero-subtitle">Propojte občany, zvyšte transparentnost, oživte komunitu. Vše na jednom místě — od sousedské nástěnky po participativní rozpočet.</p>
+      <div class="hero-ctas">
+        <a href="index.html" class="btn btn-primary">Vyzkoušet demo &rarr;</a>
+        <a href="#kontakt" class="btn btn-outline">Nezávazná konzultace</a>
+      </div>
+      <p class="hero-proof">
+        <span class="dot"></span>
+        Nasazeno v Jesenici &middot; 13 240 obyvatel &middot; 1 847 registrovaných
+      </p>
+    </div>
+    <div class="hero-visual reveal">
+      <div class="mockup">
+        <div class="mockup-bar">
+          <div class="dot-r"></div>
+          <div class="dot-y"></div>
+          <div class="dot-g"></div>
+          <div class="url">domavjesenici.cz</div>
+        </div>
+        <div class="mockup-body">
+          <div class="mockup-nav">
+            <span>Komunita</span>
+            <span>Akce</span>
+            <span>Rozpočet</span>
+            <span>Bazar</span>
+            <span>Brigády</span>
+          </div>
+          <div class="mockup-cards">
+            <div class="mockup-card">
+              <div class="mc-icon">💬</div>
+              <div class="mc-title">Nový příspěvek</div>
+              <div class="mc-bar"></div>
+              <div class="mc-bar short"></div>
+            </div>
+            <div class="mockup-card">
+              <div class="mc-icon">📅</div>
+              <div class="mc-title">Jarní slavnosti</div>
+              <div class="mc-bar green"></div>
+              <div class="mc-bar short green"></div>
+            </div>
+            <div class="mockup-card">
+              <div class="mc-icon">🔧</div>
+              <div class="mc-title">Zlepšovák #42</div>
+              <div class="mc-bar"></div>
+              <div class="mc-bar short"></div>
+            </div>
+            <div class="mockup-card">
+              <div class="mc-icon">📊</div>
+              <div class="mc-title">Rozpočet 2026</div>
+              <div class="mc-bar green"></div>
+              <div class="mc-bar"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== PROBLEMS ========== -->
+<section class="problems" id="funkce">
+  <div class="container">
+    <div class="text-center reveal">
+      <span class="section-label">Problémy &amp; řešení</span>
+      <h2 class="section-title">Problémy, které řešíme</h2>
+      <p class="section-subtitle">Každá obec se potýká s podobnými výzvami. Máme na ně odpovědi.</p>
+    </div>
+    <div class="problems-grid">
+      <div class="problem-card reveal">
+        <div class="pc-icon">📢</div>
+        <div class="pc-problem">Občané nevědí, co se děje</div>
+        <div class="pc-solution">Komunita + Akce</div>
+        <p class="pc-desc">Živá nástěnka s příspěvky občanů, přehledný kalendář akcí, spolky a organizace na jednom místě.</p>
+      </div>
+      <div class="problem-card reveal">
+        <div class="pc-icon">🔧</div>
+        <div class="pc-problem">Nahlášení problémů zaniká</div>
+        <div class="pc-solution">Zlepšováky</div>
+        <p class="pc-desc">Strukturované podněty s trackingem stavu, hlasováním občanů a oficiálním vyjádřením radnice.</p>
+      </div>
+      <div class="problem-card reveal">
+        <div class="pc-icon">💰</div>
+        <div class="pc-problem">Rozpočet je nepřehledný</div>
+        <div class="pc-solution">Vizuální rozpočet</div>
+        <p class="pc-desc">Interaktivní vizualizace z reálných dat obce, srozumitelné grafy a participativní rozpočet.</p>
+      </div>
+      <div class="problem-card reveal">
+        <div class="pc-icon">🏠</div>
+        <div class="pc-problem">Noví obyvatelé se neorientují</div>
+        <div class="pc-solution">Nový v obci</div>
+        <p class="pc-desc">Interaktivní průvodce, mapa důležitých míst, checklist pro nové občany.</p>
+      </div>
+      <div class="problem-card reveal">
+        <div class="pc-icon">🛒</div>
+        <div class="pc-problem">Chybí lokální ekonomika</div>
+        <div class="pc-solution">Bazar, Brigády, Podniky</div>
+        <p class="pc-desc">Místní bazar, mini brigády mezi sousedy, katalog místních podniků a služeb.</p>
+      </div>
+      <div class="problem-card reveal">
+        <div class="pc-icon">🤝</div>
+        <div class="pc-problem">Slabá sousedská komunita</div>
+        <div class="pc-solution">Parťáci, Challenge, Gamifikace</div>
+        <p class="pc-desc">Hledání parťáků na aktivity, komunitní výzvy a motivační systém bodů a odznaků.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== MODULES ========== -->
+<section class="modules">
+  <div class="container">
+    <div class="text-center reveal">
+      <span class="section-label">Platforma</span>
+      <h2 class="section-title">12 modulů pro kompletní řešení</h2>
+      <p class="section-subtitle">Každý modul řeší konkrétní potřebu obce. Aktivujte jen ty, které potřebujete.</p>
+    </div>
+    <div class="modules-grid">
+      <div class="module-card reveal">
+        <div class="mod-icon">💬</div>
+        <div class="mod-name">Komunita</div>
+        <p class="mod-desc">Nástěnka s příspěvky, komentáři a reakcemi. Sociální síť vaší obce.</p>
+      </div>
+      <div class="module-card reveal">
+        <div class="mod-icon">📅</div>
+        <div class="mod-name">Akce</div>
+        <p class="mod-desc">Kalendář akcí s registrací, filtrováním podle kategorie a mapou konání.</p>
+      </div>
+      <div class="module-card reveal">
+        <div class="mod-icon">🔧</div>
+        <div class="mod-name">Zlepšováky</div>
+        <p class="mod-desc">Podněty občanů s hlasováním, statusy a vyjádřením radnice.</p>
+      </div>
+      <div class="module-card reveal">
+        <div class="mod-icon">📋</div>
+        <div class="mod-name">Projekty</div>
+        <p class="mod-desc">Přehled investičních akcí obce s průběhem, rozpočtem a časovou osou.</p>
+      </div>
+      <div class="module-card reveal">
+        <div class="mod-icon">📊</div>
+        <div class="mod-name">Rozpočet</div>
+        <p class="mod-desc">Vizuální rozpočet z reálných dat obce. Participativní rozpočet s hlasováním.</p>
+      </div>
+      <div class="module-card reveal">
+        <div class="mod-icon">🏠</div>
+        <div class="mod-name">Nový v obci</div>
+        <p class="mod-desc">Průvodce pro nové obyvatele — mapa, checklist, důležité kontakty.</p>
+      </div>
+      <div class="module-card reveal">
+        <div class="mod-icon">🛒</div>
+        <div class="mod-name">Bazar</div>
+        <p class="mod-desc">Místní inzerce — prodej, darování, poptávka. Vše mezi sousedy.</p>
+      </div>
+      <div class="module-card reveal">
+        <div class="mod-icon">💼</div>
+        <div class="mod-name">Mini brigády</div>
+        <p class="mod-desc">Sousedská výpomoc — od sekání trávy po hlídání. S hodnocením.</p>
+      </div>
+      <div class="module-card reveal">
+        <div class="mod-icon">🎯</div>
+        <div class="mod-name">Hledám parťáka</div>
+        <p class="mod-desc">Najděte souseda na sport, procházky, vaření nebo cokoliv dalšího.</p>
+      </div>
+      <div class="module-card reveal">
+        <div class="mod-icon">🏪</div>
+        <div class="mod-name">Místní podniky</div>
+        <p class="mod-desc">Katalog místních firem a živnostníků s recenzemi a kontakty.</p>
+      </div>
+      <div class="module-card reveal">
+        <div class="mod-icon">🏆</div>
+        <div class="mod-name">Challenge</div>
+        <p class="mod-desc">Komunitní výzvy — sběr odpadu, kroky, dobrovolnictví. S odměnami.</p>
+      </div>
+      <div class="module-card reveal">
+        <div class="mod-icon">👤</div>
+        <div class="mod-name">Můj profil</div>
+        <p class="mod-desc">Osobní profil s body, odznaky, aktivitou a nastavením soukromí.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== FEATURES ========== -->
+<section class="features">
+  <div class="container">
+    <div class="text-center reveal">
+      <span class="section-label">Výhody</span>
+      <h2 class="section-title">Proč Doma v Jesenici?</h2>
+      <p class="section-subtitle">Nejsme jen další aplikace. Jsme kompletní řešení pro moderní obec.</p>
+    </div>
+
+    <div class="feature-block reveal">
+      <div class="feature-text">
+        <span class="section-label">Správa</span>
+        <h3>Administrace pod kontrolou</h3>
+        <p>Kompletní správa všech modulů z jednoho místa. Přidělujte role, moderujte obsah, sledujte statistiky zapojení.</p>
+        <ul>
+          <li>13 modulů s jednotnou administrací</li>
+          <li>Moderace obsahu a komentářů</li>
+          <li>Role: správce, moderátor, editor, občan</li>
+          <li>Statistiky a analytika zapojení</li>
+        </ul>
+      </div>
+      <div class="feature-visual">
+        <div class="feature-visual-inner">
+          <div class="fv-icon">⚙️</div>
+          <div class="fv-stats">
+            <div class="fv-stat">
+              <div class="fv-stat-num">13</div>
+              <div class="fv-stat-label">modulů</div>
+            </div>
+            <div class="fv-stat">
+              <div class="fv-stat-num">4</div>
+              <div class="fv-stat-label">role</div>
+            </div>
+            <div class="fv-stat">
+              <div class="fv-stat-num">24/7</div>
+              <div class="fv-stat-label">monitoring</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="feature-block reveal">
+      <div class="feature-text">
+        <span class="section-label">Data</span>
+        <h3>Reálná data, ne šablony</h3>
+        <p>Rozpočet importujeme z reálných PDF dokumentů obce. Podniky z veřejných databází. Vše aktuální a relevantní.</p>
+        <ul>
+          <li>Import rozpočtu z PDF výkazů obce</li>
+          <li>Podniky z živnostenského rejstříku</li>
+          <li>Automatická aktualizace dat</li>
+          <li>Žádné generické placeholder údaje</li>
+        </ul>
+      </div>
+      <div class="feature-visual">
+        <div class="feature-visual-inner">
+          <div class="fv-icon">📈</div>
+          <div class="fv-stats">
+            <div class="fv-stat">
+              <div class="fv-stat-num">PDF</div>
+              <div class="fv-stat-label">import</div>
+            </div>
+            <div class="fv-stat">
+              <div class="fv-stat-num">API</div>
+              <div class="fv-stat-label">napojení</div>
+            </div>
+            <div class="fv-stat">
+              <div class="fv-stat-num">Live</div>
+              <div class="fv-stat-label">data</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="feature-block reveal">
+      <div class="feature-text">
+        <span class="section-label">Motivace</span>
+        <h3>Gamifikace = zapojení</h3>
+        <p>Motivujte občany k aktivnímu zapojení. Body za příspěvky, odznaky za aktivity, žebříčky mezi sousedy.</p>
+        <ul>
+          <li>Bodový systém za aktivitu</li>
+          <li>Odznaky a achievementy</li>
+          <li>Žebříčky nejaktivnějších občanů</li>
+          <li>Komunitní challenge s odměnami</li>
+        </ul>
+      </div>
+      <div class="feature-visual">
+        <div class="feature-visual-inner">
+          <div class="fv-icon">🏆</div>
+          <div class="fv-stats">
+            <div class="fv-stat">
+              <div class="fv-stat-num">XP</div>
+              <div class="fv-stat-label">body</div>
+            </div>
+            <div class="fv-stat">
+              <div class="fv-stat-num">🎖️</div>
+              <div class="fv-stat-label">odznaky</div>
+            </div>
+            <div class="fv-stat">
+              <div class="fv-stat-num">TOP</div>
+              <div class="fv-stat-label">žebříčky</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="feature-block reveal">
+      <div class="feature-text">
+        <span class="section-label">Efektivita</span>
+        <h3>Jeden portál místo pěti nástrojů</h3>
+        <p>Konec s roztříštěnou komunikací. Nahradíme Facebook skupinu, úřední desku, Excel tabulky i papírové formuláře.</p>
+        <ul>
+          <li>Nahrazuje Facebook skupinu obce</li>
+          <li>Digitalizuje úřední desku</li>
+          <li>Eliminuje Excel a papírové formuláře</li>
+          <li>Jednotné místo pro veškerou komunikaci</li>
+        </ul>
+      </div>
+      <div class="feature-visual">
+        <div class="feature-visual-inner">
+          <div class="fv-icon">🎯</div>
+          <div class="fv-stats">
+            <div class="fv-stat">
+              <div class="fv-stat-num">1</div>
+              <div class="fv-stat-label">portál</div>
+            </div>
+            <div class="fv-stat">
+              <div class="fv-stat-num">0</div>
+              <div class="fv-stat-label">Excel</div>
+            </div>
+            <div class="fv-stat">
+              <div class="fv-stat-num">0</div>
+              <div class="fv-stat-label">papír</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== FOR WHOM ========== -->
+<section class="for-whom" id="pro-koho">
+  <div class="container">
+    <div class="text-center reveal">
+      <span class="section-label">Cílová skupina</span>
+      <h2 class="section-title">Pro koho to je</h2>
+      <p class="section-subtitle">Doma v Jesenici je navrženo pro obce, které chtějí moderní komunikaci s občany.</p>
+    </div>
+    <div class="whom-grid">
+      <div class="whom-card reveal">
+        <div class="wc-icon">🏘️</div>
+        <div class="wc-title">Obce 2 000 – 30 000 obyvatel</div>
+      </div>
+      <div class="whom-card reveal">
+        <div class="wc-icon">👔</div>
+        <div class="wc-title">Starosta, který chce moderní komunikaci</div>
+      </div>
+      <div class="whom-card reveal">
+        <div class="wc-icon">🗳️</div>
+        <div class="wc-title">Obce řešící participativní rozpočet</div>
+      </div>
+      <div class="whom-card reveal">
+        <div class="wc-icon">🏙️</div>
+        <div class="wc-title">Městské části Prahy</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== NUMBERS ========== -->
+<section class="numbers">
+  <div class="container">
+    <div class="numbers-grid">
+      <div class="number-item reveal">
+        <div class="ni-value">13 240</div>
+        <div class="ni-label">obyvatel v pilotní obci</div>
+      </div>
+      <div class="number-item reveal">
+        <div class="ni-value">1 847</div>
+        <div class="ni-label">registrovaných uživatelů</div>
+      </div>
+      <div class="number-item reveal">
+        <div class="ni-value">12</div>
+        <div class="ni-label">modulů</div>
+      </div>
+      <div class="number-item reveal">
+        <div class="ni-value">247</div>
+        <div class="ni-label">příspěvků týdně</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== PRICING ========== -->
+<section class="pricing" id="cenik">
+  <div class="container">
+    <div class="text-center reveal">
+      <span class="section-label">Ceník</span>
+      <h2 class="section-title">Cenový model</h2>
+      <p class="section-subtitle">Transparentní ceny bez skrytých poplatků. Vyberte si plán podle velikosti obce.</p>
+    </div>
+    <div class="pricing-grid">
+      <!-- Start -->
+      <div class="price-card reveal">
+        <div class="pc-name">Start</div>
+        <div class="pc-price">4 900 Kč <span>/měs</span></div>
+        <div class="pc-desc">Pro menší obce do 5 000 obyvatel</div>
+        <ul>
+          <li>Do 5 000 obyvatel</li>
+          <li>Komunita, Akce, Zlepšováky, Nový v obci</li>
+          <li>1 správce</li>
+          <li>Email podpora</li>
+          <li>Sdílená platforma</li>
+        </ul>
+        <a href="#kontakt" class="btn btn-outline">Mám zájem</a>
+      </div>
+      <!-- Standard -->
+      <div class="price-card popular reveal">
+        <div class="price-badge">Nejoblíbenější</div>
+        <div class="pc-name">Standard</div>
+        <div class="pc-price">9 900 Kč <span>/měs</span></div>
+        <div class="pc-desc">Pro obce do 15 000 obyvatel</div>
+        <ul>
+          <li>Do 15 000 obyvatel</li>
+          <li>Vše ze Start + Rozpočet, Projekty, Bazar, Podniky</li>
+          <li>3 správci + moderátoři</li>
+          <li>Email + telefon podpora</li>
+          <li>Vlastní subdoména</li>
+        </ul>
+        <a href="#kontakt" class="btn btn-primary">Mám zájem</a>
+      </div>
+      <!-- Premium -->
+      <div class="price-card reveal">
+        <div class="pc-name">Premium</div>
+        <div class="pc-price">19 900 Kč <span>/měs</span></div>
+        <div class="pc-desc">Pro města do 30 000 obyvatel</div>
+        <ul>
+          <li>Do 30 000 obyvatel</li>
+          <li>Všechny moduly včetně Brigád, Challenge, Parťáků, Part. rozpočet</li>
+          <li>Neomezeno správců + role</li>
+          <li>Dedikovaný kontakt</li>
+          <li>Vlastní doména + branding</li>
+          <li>Export + API</li>
+        </ul>
+        <a href="#kontakt" class="btn btn-outline">Mám zájem</a>
+      </div>
+    </div>
+    <div class="pricing-extras reveal">
+      <p><strong>Jednorázové náklady:</strong> Setup 15–35 tis. Kč &middot; Import dat 5–10 tis. Kč &middot; Školení 5 tis. Kč</p>
+      <p class="price-note">Všechny ceny bez DPH</p>
+    </div>
+  </div>
+</section>
+
+<!-- ========== CONTACT ========== -->
+<section class="contact" id="kontakt">
+  <div class="container">
+    <div class="contact-wrapper reveal">
+      <h2>Nezávazná konzultace zdarma</h2>
+      <p class="contact-sub">Napište nám a do 24 hodin se ozveme</p>
+      <form id="contactForm">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="name">Jméno</label>
+            <input type="text" id="name" name="name" placeholder="Jan Novák" required>
+          </div>
+          <div class="form-group">
+            <label for="obec">Obec</label>
+            <input type="text" id="obec" name="obec" placeholder="Název obce" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" placeholder="jan@obec.cz" required>
+          </div>
+          <div class="form-group">
+            <label for="obyvatel">Počet obyvatel</label>
+            <select id="obyvatel" name="obyvatel" required>
+              <option value="" disabled selected>Vyberte...</option>
+              <option value="do 2000">do 2 000</option>
+              <option value="2-5 tis.">2–5 tis.</option>
+              <option value="5-10 tis.">5–10 tis.</option>
+              <option value="10-20 tis.">10–20 tis.</option>
+              <option value="20-30 tis.">20–30 tis.</option>
+              <option value="nad 30 tis.">nad 30 tis.</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="message">Zpráva</label>
+          <textarea id="message" name="message" placeholder="Napište nám, co vás zajímá..."></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Odeslat poptávku</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ========== FOOTER ========== -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-logo">Doma v Jesenici</div>
+    <p class="footer-desc">Moderní komunitní platforma pro české obce. Propojujeme občany, zvyšujeme transparentnost a oživujeme komunity.</p>
+    <ul class="footer-links">
+      <li><a href="index.html">Demo</a></li>
+      <li><a href="#cenik">Cenový model</a></li>
+      <li><a href="#kontakt">Kontakt</a></li>
+    </ul>
+    <p class="footer-copy">&copy; 2026 Doma v Jesenici &middot; Vytvořeno s &#10084;&#65039; pro české obce</p>
+  </div>
+</footer>
+
+<!-- Toast -->
+<div class="toast" id="toast">Děkujeme! Ozveme se vám do 24 hodin.</div>
+
+<script>
+// Nav scroll effect
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 10);
+});
+
+// Hamburger menu
+const hamburger = document.getElementById('hamburger');
+const navLinks = document.getElementById('navLinks');
+
+hamburger.addEventListener('click', () => {
+  hamburger.classList.toggle('active');
+  navLinks.classList.toggle('open');
+});
+
+function closeMenu() {
+  hamburger.classList.remove('active');
+  navLinks.classList.remove('open');
+}
+
+// Close menu on outside click
+document.addEventListener('click', (e) => {
+  if (!navLinks.contains(e.target) && !hamburger.contains(e.target)) {
+    closeMenu();
+  }
+});
+
+// Scroll reveal
+const revealElements = document.querySelectorAll('.reveal');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((entry, index) => {
+    if (entry.isIntersecting) {
+      setTimeout(() => {
+        entry.target.classList.add('visible');
+      }, index * 60);
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+revealElements.forEach(el => observer.observe(el));
+
+// Contact form
+document.getElementById('contactForm').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const toast = document.getElementById('toast');
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 4000);
+  e.target.reset();
+});
+</script>
+
+</body>
+</html>
